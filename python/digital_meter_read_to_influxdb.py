@@ -8,7 +8,12 @@ import serial
 import sys
 import crcmod.predefined
 import re
+import os
+from dotenv import load_dotenv, dotenv_values
 from influxdb_client_3 import InfluxDBClient3
+
+# Loading variables from .env file
+load_dotenv()
 
 # Change your serial port here:
 serialport = '/dev/ttyUSB0'
@@ -48,9 +53,9 @@ obiscodes = {
     }
 
 # Add database client for InfluxDB Cloud Serverless
-client = InfluxDBClient3(token="upOfvyQI3R9TuALeNfGvnWO8nISU4xwISpZV1RsH0uFBRoaKXD1CM5N-K1UYV_GIHq8JLQIBXBtG8vYNroTeiQ==",
-                         host="eu-central-1-1.aws.cloud2.influxdata.com",
-                         database="meter_readings")
+client = InfluxDBClient3(token=os.getenv("ACCESS_TOKEN"),
+                         host=os.getenv("DB_HOST"),
+                         database=os.getenv("DB_NAME"))
 
 
 def checkcrc(p1telegram):
@@ -132,7 +137,6 @@ def main():
                 if debug:
                     print ("Found beginning of P1 telegram")
                 p1telegram = bytearray()
-                print('*' * 60 + "\n")
             # add line to complete telegram
             p1telegram.extend(p1line)
             # P1 telegram ends with ! + CRC16 checksum
@@ -151,7 +155,6 @@ def main():
                             output += r
                             if debug:
                                 print (output)
-                    print (output)
                     client.write(record=output)
         except KeyboardInterrupt:
             print("Stopping...")

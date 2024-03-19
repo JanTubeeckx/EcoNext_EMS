@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 
 # This script will read data from a solis inverter through a wifi-stick and write time series to influxdb
 
@@ -7,34 +6,49 @@
 
 import requests
 import time
+import os
+from dotenv import load_dotenv, dotenv_values
 from influxdb_client_3 import InfluxDBClient3
 
+# Loading variables from .env file
+load_dotenv()
+
 # Define url to server to get inverter data
-url = 'http://192.168.1.45/inverter.cgi?t=*'
-input = {}
+url = os.getenv("SERVER_URL")
+username = os.getenv("USERNAME")
+password = os.getenv("WIFI_PASSWORD")
 
 # Add database client for InfluxDB Cloud Serverless
-client = InfluxDBClient3(token="upOfvyQI3R9TuALeNfGvnWO8nISU4xwISpZV1RsH0uFBRoaKXD1CM5N-K1UYV_GIHq8JLQIBXBtG8vYNroTeiQ==",
-                         host="eu-central-1-1.aws.cloud2.influxdata.com",
-                         database="solar_inverter_readings")
+client = InfluxDBClient3(token=os.getenv("ACCESS_TOKEN"),
+                         host=os.getenv("DB_HOST"),
+                         database=os.getenv("DB_NAME"))
 
-while True:
-    try:
-        time.sleep(2)
-        # Get data from server
-        request = requests.get(url, data = input, auth = ('admin', 123456789))
-        result = request.text
-        # Filter the data to get the measurements
-        index = result.find(',')
-        output = result[:index]
-	temperature = "temperature" + "=" + str(output.split(';')[3])
-        current_power = "current_power" + "=" + str(output.split(';')[4])
-        day_total_power = "day_total_power" + "=" + str(output.split(';')[5])
-        # Initialize measurement for InfluxDB
-        dbline = "inverter_reading " + temperature + current_power + day_total_power
-        print (dbline)
-        # Write time serie to InfluxDB
-#        client.write(record=dbline)
-    except KeyboardInterrupt:
-        print ("Stopping...")
-        break
+
+def formatinverterdata(request):
+    # Filter the data to get the measurements
+    index = request.text.find(',')
+    data = request.text[:index]
+    temperature = "temperature" + "=" + str(output.split(';')[3]) + ","
+    current_power = "current_power" + "=" + str(output.split(';')[4]) + ","
+    day_total_power = "day_total_power" + "=" + str(output.split(';')[5])
+    # Initialize measurement for InfluxDB
+    dbline = "inverter_reading " + temperature + current_power + day_total_power
+
+
+def main():
+    while True:
+        try:
+            # Get data from server every 10 sec
+            time.sleep(10)
+            request = requests.get(url, auth = (username, password))
+            dbline = formatinverterdata(request)
+            # Write time serie to InfluxDB
+            client.write(record=dbline)
+        except KeyboardInterrupt:
+            print("Stopping...")
+            break
+        except:
+            print ("No connection...")
+
+if __name__ == '__main__':
+    main()
