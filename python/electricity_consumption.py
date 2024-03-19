@@ -18,11 +18,6 @@ client = InfluxDBClient3(
     host=os.getenv("DB_HOST"),
     database=os.getenv("DB_NAME"))
 
-# client = InfluxDBClient3(
-#     "https://eu-central-1-1.aws.cloud2.influxdata.com/",
-#     database="meter_readings",
-#     token="upOfvyQI3R9TuALeNfGvnWO8nISU4xwISpZV1RsH0uFBRoaKXD1CM5N-K1UYV_GIHq8JLQIBXBtG8vYNroTeiQ==")
-
 # Execute query to retrieve all time series
 table = client.query(
   '''SELECT *
