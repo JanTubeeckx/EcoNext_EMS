@@ -21,19 +21,19 @@ password = os.getenv("WIFI_PASSWORD")
 # Add database client for InfluxDB Cloud Serverless
 client = InfluxDBClient3(token=os.getenv("ACCESS_TOKEN"),
                          host=os.getenv("DB_HOST"),
-                         database=os.getenv("DB_NAME"))
+                         database=os.getenv("DB_NAME_PROD"))
 
 
 def formatinverterdata(request):
     # Filter the data to get the measurements
     index = request.text.find(',')
     data = request.text[:index]
-    temperature = "temperature" + "=" + str(output.split(';')[3]) + ","
-    current_power = "current_power" + "=" + str(output.split(';')[4]) + ","
-    day_total_power = "day_total_power" + "=" + str(output.split(';')[5])
+    temperature = "temperature" + "=" + str(data.split(';')[3]) + ","
+    current_power = "current_power" + "=" + str(data.split(';')[4]) + ","
+    day_total_power = "day_total_power" + "=" + str(data.split(';')[5])
     # Initialize measurement for InfluxDB
     dbline = "inverter_reading " + temperature + current_power + day_total_power
-
+    return dbline
 
 def main():
     while True:
@@ -42,6 +42,7 @@ def main():
             time.sleep(10)
             request = requests.get(url, auth = (username, password))
             dbline = formatinverterdata(request)
+            print (dbline)
             # Write time serie to InfluxDB
             client.write(record=dbline)
         except KeyboardInterrupt:
