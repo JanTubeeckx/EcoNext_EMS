@@ -155,7 +155,7 @@ def main():
                             output += r
                             if debug:
                                 print (output)
-                    client.write(record=output)
+                    client.write(record=output, write_precision="s")
         except KeyboardInterrupt:
             print("Stopping...")
             ser.close()
