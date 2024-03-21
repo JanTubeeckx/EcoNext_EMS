@@ -29,7 +29,7 @@ def formatinverterdata(request):
     index = request.text.find(',')
     data = request.text[:index]
     temperature = "temperature" + "=" + str(data.split(';')[3]) + ","
-    current_power = "current_power" + "=" + str(data.split(';')[4]) + ","
+    current_power = "current_power" + "=" + str(float(data.split(';')[4])/1000) + ","
     day_total_power = "day_total_power" + "=" + str(data.split(';')[5])
     # Initialize measurement for InfluxDB
     dbline = "inverter_reading " + temperature + current_power + day_total_power
@@ -38,17 +38,18 @@ def formatinverterdata(request):
 def main():
     while True:
         try:
-            # Get data from server every 10 sec
-            time.sleep(10)
+            # Get data from server every second
+            time.sleep(1)
             request = requests.get(url, auth = (username, password))
             dbline = formatinverterdata(request)
-            print (dbline)
             # Write time serie to InfluxDB
             client.write(record=dbline)
         except KeyboardInterrupt:
             print("Stopping...")
             break
         except:
+            dbline = "inverter_reading temperature=0.0,current_power=0.0,day_total_power=0.0"
+            client.write(record=dbline)
             print ("No connection...")
 
 if __name__ == '__main__':
