@@ -43,13 +43,13 @@ def main():
             request = requests.get(url, auth = (username, password))
             dbline = formatinverterdata(request)
             # Write time serie to InfluxDB
-            client.write(record=dbline)
+            client.write(record=dbline, write_precision="s")
         except KeyboardInterrupt:
             print("Stopping...")
             break
         except:
             dbline = "inverter_reading temperature=0.0,current_power=0.0,day_total_power=0.0"
-            client.write(record=dbline)
+            client.write(record=dbline, write_precision="s")
             print ("No connection...")
 
 if __name__ == '__main__':
