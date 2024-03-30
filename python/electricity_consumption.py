@@ -5,6 +5,7 @@
 
 from influxdb_client_3 import InfluxDBClient3
 from dotenv import load_dotenv, dotenv_values
+from datetime import datetime, time
 import os
 import pandas
 import matplotlib.pyplot as plt
@@ -24,7 +25,9 @@ client2 = InfluxDBClient3(
     database=os.getenv("DB_NAME_PROD"))
 
 # Define variables
-time_interval = 10
+start_of_day = datetime.combine(datetime.now(), time.min)
+current_time = datetime.now().time()
+time_interval = current_time.hour + current_time.minute/60.0
 current_injection_price = 0.075
 
 # Execute query to retrieve all time series
