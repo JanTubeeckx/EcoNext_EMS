@@ -25,10 +25,12 @@ client2 = InfluxDBClient3(
     database=os.getenv("DB_NAME_PROD"))
 
 # Create function to filter period
+current_time = datetime.now().time()
+current_time_in_decimals = current_time.hour + current_time.minute/60.0
+
 def period_filter(nr_of_days):
   if nr_of_days == 1:
-    current_time = datetime.now().time()
-    result = current_time.hour + current_time.minute/60.0
+    result = current_time_in_decimals
   else:
     period = datetime.now() - timedelta(nr_of_days)
     start = datetime.combine(period, time.min)
@@ -38,7 +40,7 @@ def period_filter(nr_of_days):
 day = 1
 week = 7
 month = 30
-time_interval = period_filter(day)
+time_interval = period_filter(week)
 current_injection_price = 0.075
 
 # Execute query to retrieve all time series
@@ -65,7 +67,8 @@ total_solar_production = client2.query(
 )
 
 total_day_solar_production = client2.query(
-  "SELECT time, day_total_power FROM inverter_reading WHERE time >= now() - INTERVAL '10 seconds'"
+  "SELECT time, day_total_power FROM inverter_reading WHERE time >= now() - INTERVAL '" 
+  + str(current_time_in_decimals) + " hours'"
 )
 
 client2.close()
@@ -76,8 +79,6 @@ dataframe2 = current_solar_production.to_pandas()
 dataframe3 = total_day_solar_production.to_pandas()
 dataframe4 = total_solar_production.to_pandas()
 dataframe5 = injection.to_pandas()
-
-plt.figure(figsize=(64, 32), dpi=150) 
 
 # dataframe1.plot.area(x='time', y='current_consumption', color="orange")
 # dataframe2.plot.area(x='time', y='current_power', color="green")
@@ -121,7 +122,7 @@ current_inj = round(dataframe5.iloc[-1]['current_production'], 2)
 total_consumption = dataframe1['current_consumption'].sum()/3600
 # Fill missing values with first previous value by using ffill
 total_calculated_production = dataframe2.ffill()['current_power'].sum()/3600
-total_daily_production = dataframe3['day_total_power'].iloc[-1]
+total_daily_production = dataframe4.iloc[-1]['day_total_power']
 total_production = dataframe4['day_total_power'].sum()
 total_injection = dataframe5['current_production'].sum()/3600
 revenue_sold_electricity = total_injection * current_injection_price
@@ -129,7 +130,7 @@ revenue_sold_electricity = total_injection * current_injection_price
 print('Huidige consumptie: ' + str(current_consumption) + ' kW')
 print('Huidige productie: ' + str(current_production) + ' kW')
 print('Huidige injectie: ' + str(current_inj) + ' kW')
-print('Totale dagproductie: ' + str(round(total_daily_production, 2)) + ' kWh')
+print('Huidige totale dagproductie: ' + str(round(total_daily_production, 2)) + ' kWh')
 print('\n')
 print('Totale consumptie: ' + str(round(total_consumption, 2)) + ' kWh')
 print('Totale productie: ' + str(round(total_production, 2)) + ' kWh')
