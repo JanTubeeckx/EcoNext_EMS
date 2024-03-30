@@ -5,7 +5,7 @@
 
 from influxdb_client_3 import InfluxDBClient3
 from dotenv import load_dotenv, dotenv_values
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 import os
 import pandas
 import matplotlib.pyplot as plt
@@ -24,10 +24,21 @@ client2 = InfluxDBClient3(
     host=os.getenv("DB_HOST"),
     database=os.getenv("DB_NAME_PROD"))
 
-# Define variables
-start_of_day = datetime.combine(datetime.now(), time.min)
-current_time = datetime.now().time()
-time_interval = current_time.hour + current_time.minute/60.0
+# Create function to filter period
+def period_filter(nr_of_days):
+  if nr_of_days == 1:
+    current_time = datetime.now().time()
+    result = current_time.hour + current_time.minute/60.0
+  else:
+    period = datetime.now() - timedelta(nr_of_days)
+    start = datetime.combine(period, time.min)
+    result = (datetime.now() - start).total_seconds()/3600
+  return result
+
+day = 1
+week = 7
+month = 30
+time_interval = period_filter(day)
 current_injection_price = 0.075
 
 # Execute query to retrieve all time series
