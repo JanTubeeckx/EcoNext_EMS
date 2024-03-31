@@ -40,7 +40,7 @@ def period_filter(nr_of_days):
 day = 1
 week = 7
 month = 30
-time_interval = period_filter(week)
+time_interval = period_filter(day)
 current_injection_price = 0.075
 
 # Execute query to retrieve all time series
@@ -74,35 +74,39 @@ total_day_solar_production = client2.query(
 client2.close()
 
 # Create dataframes
-dataframe1 = consumption.to_pandas()
-dataframe2 = current_solar_production.to_pandas()
-dataframe3 = total_day_solar_production.to_pandas()
-dataframe4 = total_solar_production.to_pandas()
-dataframe5 = injection.to_pandas()
+dataframe_current_consumption = consumption.to_pandas()
+dataframe_current_production = current_solar_production.to_pandas()
+dataframe_total_day_production = total_day_solar_production.to_pandas()
+dataframe_total_production = total_solar_production.to_pandas()
+dataframe_injection = injection.to_pandas()
+
+# Convert UTC to local time
+dataframe_current_consumption['time'] = dataframe_current_consumption['time'] + timedelta(hours=2)
+dataframe_current_production['time'] = dataframe_current_production['time'] + timedelta(hours=2)
 
 # dataframe1.plot.area(x='time', y='current_consumption', color="orange")
 # dataframe2.plot.area(x='time', y='current_power', color="green")
 
 # Plot both consumption and prodution datafames
-firstDataFrame = dataframe1.plot(x='time', color='orange')
-dataframe2.plot(x='time', ax=firstDataFrame, color='green')
+firstDataFrame = dataframe_current_consumption.plot(x='time', color='orange')
+dataframe_current_production.plot(x='time', ax=firstDataFrame, color='green')
 
 plt.show()
 
 # Remove nanoseconds from timestamp
-dataframe1['time'] = pandas.to_datetime(dataframe1['time'])
-dataframe2['time'] = pandas.to_datetime(dataframe2['time'])
+# dataframe1['time'] = pandas.to_datetime(dataframe1['time'])
+# dataframe2['time'] = pandas.to_datetime(dataframe2['time'])
 
-dataframe1['time'] = dataframe1['time'].dt.strftime('%Y/%m/%d %H:%M:%S')
-dataframe2['time'] = dataframe2['time'].dt.strftime('%Y/%m/%d %H:%M:%S')
-dataframe4['time'] = dataframe4['time'].dt.strftime('%Y/%m/%d')
+# dataframe1['time'] = dataframe1['time'].dt.strftime('%Y/%m/%d %H:%M:%S')
+# dataframe2['time'] = dataframe2['time'].dt.strftime('%Y/%m/%d %H:%M:%S')
+dataframe_total_production['time'] = dataframe_total_production['time'].dt.strftime('%Y/%m/%d')
 
 # Remove rows with same timestamp from production dataframe
-dataframe2.drop_duplicates(subset=['time'], inplace=True)
+# dataframe2.drop_duplicates(subset=['time'], inplace=True)
 
 # Get day total production from time interval
-dataframe4.drop(dataframe4[dataframe4['day_total_power']==0].index, inplace=True)
-dataframe4.drop_duplicates(subset=['time'], keep='last', inplace=True)
+dataframe_total_production.drop(dataframe_total_production[dataframe_total_production['day_total_power']==0].index, inplace=True)
+dataframe_total_production.drop_duplicates(subset=['time'], keep='last', inplace=True)
 
 # # Merge production and consumption to 1 dataframe
 # frames = [dataframe1, dataframe2]
@@ -116,15 +120,15 @@ dataframe4.drop_duplicates(subset=['time'], keep='last', inplace=True)
 # def pos(col):
 #   return col[col > 0].sum()
 
-current_consumption = round(dataframe1.iloc[-1]['current_consumption'], 2)
-current_production = round(dataframe2.iloc[-1]['current_power'], 2)
-current_inj = round(dataframe5.iloc[-1]['current_production'], 2)
-total_consumption = dataframe1['current_consumption'].sum()/3600
+current_consumption = round(dataframe_current_consumption.iloc[-1]['current_consumption'], 2)
+current_production = round(dataframe_current_production.iloc[-1]['current_power'], 2)
+current_inj = round(dataframe_injection.iloc[-1]['current_production'], 2)
+total_consumption = dataframe_current_consumption['current_consumption'].sum()/3600
 # Fill missing values with first previous value by using ffill
-total_calculated_production = dataframe2.ffill()['current_power'].sum()/3600
-total_daily_production = dataframe4.iloc[-1]['day_total_power']
-total_production = dataframe4['day_total_power'].sum()
-total_injection = dataframe5['current_production'].sum()/3600
+total_calculated_production = dataframe_current_production.ffill()['current_power'].sum()/3600
+total_daily_production = dataframe_total_production.iloc[-1]['day_total_power']
+total_production = dataframe_total_production['day_total_power'].sum()
+total_injection = dataframe_injection['current_production'].sum()/3600
 revenue_sold_electricity = total_injection * current_injection_price
 
 print('Huidige consumptie: ' + str(current_consumption) + ' kW')
