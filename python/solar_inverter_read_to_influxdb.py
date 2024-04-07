@@ -13,6 +13,9 @@ from influxdb_client_3 import InfluxDBClient3
 # Loading variables from .env file
 load_dotenv()
 
+# Enable debug if needed:
+debug = False
+
 # Define url to server to get inverter data
 url = os.getenv("SERVER_URL")
 username = os.getenv("USERNAME")
@@ -39,18 +42,22 @@ def main():
     while True:
         try:
             # Get data from server every second
-            time.sleep(1)
             request = requests.get(url, auth = (username, password))
             dbline = formatinverterdata(request)
+            if debug:
+                print (dbline)
             # Write time serie to InfluxDB
             client.write(record=dbline, write_precision="s")
+            time.sleep(5)
         except KeyboardInterrupt:
-            print("Stopping...")
+            print ("Stopping...")
             break
         except:
             dbline = "inverter_reading temperature=0.0,current_power=0.0,day_total_power=0.0"
             client.write(record=dbline, write_precision="s")
-            print ("No connection...")
+            if debug:
+                print ("No connection...")
+            time.sleep(10)
 
 if __name__ == '__main__':
     main()
