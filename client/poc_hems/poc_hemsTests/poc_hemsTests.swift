@@ -1,14 +1,14 @@
 //
-//  BP_HoGent_POC_HEMSTests.swift
-//  BP_HoGent_POC_HEMSTests
+//  poc_hemsTests.swift
+//  poc_hemsTests
 //
 //  Created by Jan Tubeeckx on 07/04/2024.
 //
 
 import XCTest
-@testable import BP_HoGent_POC_HEMS
+@testable import poc_hems
 
-final class BP_HoGent_POC_HEMSTests: XCTestCase {
+final class poc_hemsTests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.

@@ -1,6 +1,6 @@
 //
-//  BP_HoGent_POC_HEMSApp.swift
-//  BP_HoGent_POC_HEMS
+//  poc_hemsApp.swift
+//  poc_hems
 //
 //  Created by Jan Tubeeckx on 07/04/2024.
 //
@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct BP_HoGent_POC_HEMSApp: App {
+struct poc_hemsApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()

@@ -1,13 +1,13 @@
 //
-//  BP_HoGent_POC_HEMSUITestsLaunchTests.swift
-//  BP_HoGent_POC_HEMSUITests
+//  poc_hemsUITestsLaunchTests.swift
+//  poc_hemsUITests
 //
 //  Created by Jan Tubeeckx on 07/04/2024.
 //
 
 import XCTest
 
-final class BP_HoGent_POC_HEMSUITestsLaunchTests: XCTestCase {
+final class poc_hemsUITestsLaunchTests: XCTestCase {
 
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true
