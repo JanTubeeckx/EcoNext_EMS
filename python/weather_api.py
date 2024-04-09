@@ -5,8 +5,10 @@ import pandas as pd
 from retry_requests import retry
 from geopy.geocoders import Nominatim
 
-# User input for address
+# User input
 user_address = "Toekomststraat 67, 9040 Sint-Amandsberg"
+gradient = 45
+orientation = -135
 
 # Determine coordinates of entered address
 loc = Nominatim(user_agent="Geopy Library")
@@ -25,11 +27,11 @@ url = "https://api.open-meteo.com/v1/forecast"
 params = {
 	"latitude": latitude,
 	"longitude": longitude,
-	"hourly": ["temperature_2m", "cloud_cover", "wind_speed_10m", "shortwave_radiation_instant", "direct_radiation_instant", "diffuse_radiation_instant", "direct_normal_irradiance_instant"],
+	"hourly": ["temperature_2m", "cloud_cover", "wind_speed_10m", "shortwave_radiation", "direct_radiation", "diffuse_radiation", "direct_normal_irradiance", "global_tilted_irradiance"],
   "past_days": 7,
-	"forecast_days": 1,
-	"tilt": 45,
-	"azimuth": -135
+	"forecast_days": 2,
+	"tilt": gradient,
+	"azimuth": orientation
 }
 responses = openmeteo.weather_api(url, params=params)
 
@@ -45,10 +47,11 @@ hourly = response.Hourly()
 hourly_temperature_2m = hourly.Variables(0).ValuesAsNumpy()
 hourly_cloud_cover = hourly.Variables(1).ValuesAsNumpy()
 hourly_wind_speed_10m = hourly.Variables(2).ValuesAsNumpy()
-hourly_shortwave_radiation_instant = hourly.Variables(3).ValuesAsNumpy()
-hourly_direct_radiation_instant = hourly.Variables(4).ValuesAsNumpy()
-hourly_diffuse_radiation_instant = hourly.Variables(5).ValuesAsNumpy()
-hourly_direct_normal_irradiance_instant = hourly.Variables(6).ValuesAsNumpy()
+hourly_shortwave_radiation = hourly.Variables(3).ValuesAsNumpy()
+hourly_direct_radiation = hourly.Variables(4).ValuesAsNumpy()
+hourly_diffuse_radiation = hourly.Variables(5).ValuesAsNumpy()
+hourly_direct_normal_irradiance = hourly.Variables(6).ValuesAsNumpy()
+hourly_global_tilted_irradiance = hourly.Variables(7).ValuesAsNumpy()
 
 hourly_data = {"date": pd.date_range(
 	start = pd.to_datetime(hourly.Time(), unit = "s", utc = True),
@@ -59,13 +62,17 @@ hourly_data = {"date": pd.date_range(
 hourly_data["temperature_2m"] = hourly_temperature_2m
 hourly_data["cloud_cover"] = hourly_cloud_cover
 hourly_data["wind_speed_10m"] = hourly_wind_speed_10m
-hourly_data["shortwave_radiation_instant"] = hourly_shortwave_radiation_instant
-hourly_data["direct_radiation_instant"] = hourly_direct_radiation_instant
-hourly_data["diffuse_radiation_instant"] = hourly_diffuse_radiation_instant
-hourly_data["direct_normal_irradiance_instant"] = hourly_direct_normal_irradiance_instant
+hourly_data["shortwave_radiation"] = hourly_shortwave_radiation
+hourly_data["direct_radiation"] = hourly_direct_radiation
+hourly_data["diffuse_radiation"] = hourly_diffuse_radiation
+hourly_data["direct_normal_irradiance"] = hourly_direct_normal_irradiance
+hourly_data["global_tilted_irradiance"] = hourly_global_tilted_irradiance
+
 
 hourly_dataframe = pd.DataFrame(data = hourly_data)
 print(hourly_dataframe)
 
-hourly_dataframe.plot(x='date', y='direct_radiation_instant', color='red')
-hourly_dataframe.plot(x='date', y='diffuse_radiation_instant', color='green')
+hourly_dataframe.plot(x='date', y='direct_radiation', color='red')
+hourly_dataframe.plot(x='date', y='diffuse_radiation', color='green')
+hourly_dataframe.plot(x='date', y='shortwave_radiation', color='green')
+hourly_dataframe.plot(x='date', y='global_tilted_irradiance', color='green')

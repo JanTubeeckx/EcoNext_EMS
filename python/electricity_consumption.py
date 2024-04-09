@@ -115,14 +115,6 @@ dataframe_yearly_capacity_rate = dataframe_quarter_peak.drop_duplicates(subset=[
 dataframe_total_production.drop(dataframe_total_production[dataframe_total_production['day_total_power']==0].index, inplace=True)
 dataframe_total_production.drop_duplicates(subset=['time'], keep='last', inplace=True)
 
-# # Merge production and consumption to 1 dataframe
-# frames = [dataframe1, dataframe2]
-# merged = pandas.merge(dataframe1, dataframe2, on='time')
-# merged['diff_cons_prod'] = merged['current_power'].sub(merged['current_consumption'], axis=0)
-
-# # Add column with difference between production and consumption (prod - cons)
-# merged.groupby(merged['diff_cons_prod'])
-
 # # Create function to sum only positive values of a column
 # def pos(col):
 #   return col[col > 0].sum()
