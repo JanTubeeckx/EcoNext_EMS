@@ -26,7 +26,7 @@ params = {
 	"latitude": latitude,
 	"longitude": longitude,
 	"hourly": ["temperature_2m", "cloud_cover", "wind_speed_10m", "shortwave_radiation_instant", "direct_radiation_instant", "diffuse_radiation_instant", "direct_normal_irradiance_instant"],
-  "past_days": 2,
+  "past_days": 7,
 	"forecast_days": 1,
 	"tilt": 45,
 	"azimuth": -135
@@ -67,4 +67,5 @@ hourly_data["direct_normal_irradiance_instant"] = hourly_direct_normal_irradianc
 hourly_dataframe = pd.DataFrame(data = hourly_data)
 print(hourly_dataframe)
 
-hourly_dataframe.plot(x='date', y='direct_radiation_instant', color='green')
+hourly_dataframe.plot(x='date', y='direct_radiation_instant', color='red')
+hourly_dataframe.plot(x='date', y='diffuse_radiation_instant', color='green')
