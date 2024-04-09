@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		C93716C62BC322D5009CA28E /* poc_hemsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93716C52BC322D5009CA28E /* poc_hemsApp.swift */; };
-		C93716C82BC322D5009CA28E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93716C72BC322D5009CA28E /* ContentView.swift */; };
+		C93716C82BC322D5009CA28E /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93716C72BC322D5009CA28E /* ChartView.swift */; };
 		C93716CA2BC322D6009CA28E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C93716C92BC322D6009CA28E /* Assets.xcassets */; };
 		C93716CD2BC322D6009CA28E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C93716CC2BC322D6009CA28E /* Preview Assets.xcassets */; };
 		C93716D72BC322D6009CA28E /* poc_hemsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93716D62BC322D6009CA28E /* poc_hemsTests.swift */; };
@@ -36,7 +36,7 @@
 /* Begin PBXFileReference section */
 		C93716C22BC322D5009CA28E /* poc_hems.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = poc_hems.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C93716C52BC322D5009CA28E /* poc_hemsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = poc_hemsApp.swift; sourceTree = "<group>"; };
-		C93716C72BC322D5009CA28E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		C93716C72BC322D5009CA28E /* ChartView.swift */ = {isa = PBXFileReference; indentWidth = 16; lastKnownFileType = sourcecode.swift; path = ChartView.swift; sourceTree = "<group>"; tabWidth = 17; };
 		C93716C92BC322D6009CA28E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C93716CC2BC322D6009CA28E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C93716D22BC322D6009CA28E /* poc_hemsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = poc_hemsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -95,7 +95,7 @@
 			isa = PBXGroup;
 			children = (
 				C93716C52BC322D5009CA28E /* poc_hemsApp.swift */,
-				C93716C72BC322D5009CA28E /* ContentView.swift */,
+				C93716C72BC322D5009CA28E /* ChartView.swift */,
 				C93716C92BC322D6009CA28E /* Assets.xcassets */,
 				C93716CB2BC322D6009CA28E /* Preview Content */,
 			);
@@ -257,7 +257,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C93716C82BC322D5009CA28E /* ContentView.swift in Sources */,
+				C93716C82BC322D5009CA28E /* ChartView.swift in Sources */,
 				C93716C62BC322D5009CA28E /* poc_hemsApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
