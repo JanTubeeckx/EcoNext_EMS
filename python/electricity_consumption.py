@@ -4,7 +4,7 @@
 # https://github.com/JanTubeeckx
 
 from influxdb_client_3 import InfluxDBClient3
-from dotenv import load_dotenv, dotenv_values
+from dotenv import load_dotenv
 from datetime import datetime, time, timedelta
 import os
 import pandas
@@ -13,12 +13,13 @@ import matplotlib.pyplot as plt
 # Loading variables from .env file
 load_dotenv()
 
-# Instantiate an InfluxDB client
+# Instantiate InfluxDB client for electricity consumption
 client1 = InfluxDBClient3(
     token=os.getenv("ACCESS_TOKEN"),
     host=os.getenv("DB_HOST"),
     database=os.getenv("DB_NAME"))
 
+# Instantiate InfluxDB client for PV production
 client2 = InfluxDBClient3(
     token=os.getenv("ACCESS_TOKEN"),
     host=os.getenv("DB_HOST"),
@@ -38,7 +39,7 @@ def period_filter(nr_of_days):
   return result
 
 day = 1
-week = 6
+week = 3
 month = 30
 time_interval = period_filter(week)
 current_injection_price = 0.075
