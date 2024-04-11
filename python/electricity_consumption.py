@@ -38,7 +38,7 @@ def period_filter(nr_of_days):
   return result
 
 day = 1
-week = 7
+week = 6
 month = 30
 time_interval = period_filter(week)
 current_injection_price = 0.075

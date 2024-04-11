@@ -7,9 +7,9 @@ solar_irradiance_2019 = pd.read_csv('./data/459177_51.05_3.74_2019.csv')
 solar_irradiance_2018 = pd.read_csv('./data/459177_51.05_3.74_2018.csv')
 solar_irradiance_2017 = pd.read_csv('./data/459177_51.05_3.74_2017.csv')
 solar_irradiance_2016 = pd.read_csv('./data/459177_51.05_3.74_2016.csv')
-historical_solar_irradiance = pd.read_csv('./data/459177_51.05_3.74_2015.csv')
+historical_solar_2015 = pd.read_csv('./data/459177_51.05_3.74_2015.csv')
 
-solar_irradiance_frames = [historical_solar_irradiance,
+solar_irradiance_frames = [historical_solar_2015,
                            solar_irradiance_2016,
                            solar_irradiance_2017,
                            solar_irradiance_2018,

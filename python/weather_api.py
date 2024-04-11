@@ -16,6 +16,9 @@ getLoc = loc.geocode(user_address)
 latitude = getLoc.latitude
 longitude = getLoc.longitude
 
+print(latitude)
+print(longitude)
+
 # Setup the Open-Meteo API client with cache and retry on error
 cache_session = requests_cache.CachedSession('.cache', expire_after = 3600)
 retry_session = retry(cache_session, retries = 5, backoff_factor = 0.2)
@@ -28,8 +31,8 @@ params = {
 	"latitude": latitude,
 	"longitude": longitude,
 	"hourly": ["temperature_2m", "cloud_cover", "wind_speed_10m", "shortwave_radiation", "direct_radiation", "diffuse_radiation", "direct_normal_irradiance", "global_tilted_irradiance"],
-  "past_days": 7,
-	"forecast_days": 2,
+  "past_days": 5,
+	"forecast_days": 1,
 	"tilt": gradient,
 	"azimuth": orientation
 }
