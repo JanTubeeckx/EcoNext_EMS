@@ -31,8 +31,8 @@ params = {
 	"latitude": latitude,
 	"longitude": longitude,
 	"hourly": ["temperature_2m", "cloud_cover", "wind_speed_10m", "shortwave_radiation", "direct_radiation", "diffuse_radiation", "direct_normal_irradiance", "global_tilted_irradiance"],
-  "past_days": 5,
-	"forecast_days": 1,
+  "past_days": 2,
+	"forecast_days": 5,
 	"tilt": gradient,
 	"azimuth": orientation
 }
@@ -75,7 +75,7 @@ hourly_data["global_tilted_irradiance"] = hourly_global_tilted_irradiance
 hourly_dataframe = pd.DataFrame(data = hourly_data)
 print(hourly_dataframe)
 
-hourly_dataframe.plot(x='date', y='direct_radiation', color='red')
-hourly_dataframe.plot(x='date', y='diffuse_radiation', color='green')
-hourly_dataframe.plot(x='date', y='shortwave_radiation', color='green')
-hourly_dataframe.plot(x='date', y='global_tilted_irradiance', color='green')
+hourly_dataframe.plot(x='date', y='direct_radiation', color='red', figsize=(15,5))
+hourly_dataframe.plot(x='date', y='diffuse_radiation', color='green', figsize=(15,5))
+# hourly_dataframe.plot(x='date', y='shortwave_radiation', color='green')
+hourly_dataframe.plot(x='date', y='global_tilted_irradiance', color='green', figsize=(15,5))

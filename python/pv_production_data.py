@@ -26,13 +26,13 @@ def period_filter(nr_of_days):
   if nr_of_days == 1:
     result = current_time_in_decimals
   else:
-    period = datetime.now() - timedelta(2) - timedelta(nr_of_days)
+    period = datetime.now() - timedelta(nr_of_days)
     start = datetime.combine(period, time.min)
     result = (datetime.now() - start).total_seconds()/3600
   return result
 
 # Execute query to retrieve time series 
-time_interval = period_filter(9)
+time_interval = period_filter(4)
 current_solar_production = client2.query(
   "SELECT time, current_power FROM inverter_reading WHERE time >= now() - INTERVAL '" 
   + str(time_interval) + " hours' ORDER BY time"
@@ -42,3 +42,4 @@ current_solar_production = client2.query(
 dataframe_current_production = current_solar_production.to_pandas()
 # Convert 5 seconds data to hourly data
 hourly_production_df = dataframe_current_production.resample('h', on='time', closed='right').mean().reset_index()
+hourly_production_df['time'] = hourly_production_df['time'] + pd.Timedelta(hours=2)

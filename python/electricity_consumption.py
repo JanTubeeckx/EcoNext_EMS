@@ -39,7 +39,7 @@ def period_filter(nr_of_days):
   return result
 
 day = 1
-week = 3
+week = 2
 month = 30
 time_interval = period_filter(week)
 current_injection_price = 0.075
@@ -99,8 +99,7 @@ dataframe_quarter_peak['time'] = dataframe_quarter_peak['time'] + timedelta(hour
 
 # Plot both consumption and prodution datafames
 firstDataFrame = dataframe_current_consumption.plot(x='time', color='orange')
-dataframe_current_production.plot(x='time', ax=firstDataFrame, color='green')
-
+dataframe_current_production.plot(figsize=(15,5), x='time', ax=firstDataFrame, color='green')
 plt.show()
 
 # Remove nanoseconds from timestamp
