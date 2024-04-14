@@ -30,9 +30,10 @@ url = "https://api.open-meteo.com/v1/forecast"
 params = {
 	"latitude": latitude,
 	"longitude": longitude,
-	"hourly": ["temperature_2m", "cloud_cover", "wind_speed_10m", "shortwave_radiation", "direct_radiation", "diffuse_radiation", "direct_normal_irradiance", "global_tilted_irradiance"],
-  "past_days": 2,
-	"forecast_days": 5,
+	"hourly": ["temperature_2m", "cloud_cover", "shortwave_radiation", "direct_radiation", "diffuse_radiation", "direct_normal_irradiance", "global_tilted_irradiance"],
+	"timezone": "Europe/Berlin",
+  "past_days": 3,
+	"forecast_days": 1,
 	"tilt": gradient,
 	"azimuth": orientation
 }
@@ -45,16 +46,22 @@ print(f"Elevation {response.Elevation()} m asl")
 print(f"Timezone {response.Timezone()} {response.TimezoneAbbreviation()}")
 print(f"Timezone difference to GMT+0 {response.UtcOffsetSeconds()} s")
 
+# Process first location. Add a for-loop for multiple locations or weather models
+response = responses[0]
+print(f"Coordinates {response.Latitude()}°N {response.Longitude()}°E")
+print(f"Elevation {response.Elevation()} m asl")
+print(f"Timezone {response.Timezone()} {response.TimezoneAbbreviation()}")
+print(f"Timezone difference to GMT+0 {response.UtcOffsetSeconds()} s")
+
 # Process hourly data. The order of variables needs to be the same as requested.
 hourly = response.Hourly()
 hourly_temperature_2m = hourly.Variables(0).ValuesAsNumpy()
 hourly_cloud_cover = hourly.Variables(1).ValuesAsNumpy()
-hourly_wind_speed_10m = hourly.Variables(2).ValuesAsNumpy()
-hourly_shortwave_radiation = hourly.Variables(3).ValuesAsNumpy()
-hourly_direct_radiation = hourly.Variables(4).ValuesAsNumpy()
-hourly_diffuse_radiation = hourly.Variables(5).ValuesAsNumpy()
-hourly_direct_normal_irradiance = hourly.Variables(6).ValuesAsNumpy()
-hourly_global_tilted_irradiance = hourly.Variables(7).ValuesAsNumpy()
+hourly_shortwave_radiation = hourly.Variables(2).ValuesAsNumpy()
+hourly_direct_radiation = hourly.Variables(3).ValuesAsNumpy()
+hourly_diffuse_radiation = hourly.Variables(4).ValuesAsNumpy()
+hourly_direct_normal_irradiance = hourly.Variables(5).ValuesAsNumpy()
+hourly_global_tilted_irradiance = hourly.Variables(6).ValuesAsNumpy()
 
 hourly_data = {"date": pd.date_range(
 	start = pd.to_datetime(hourly.Time(), unit = "s", utc = True),
@@ -64,18 +71,47 @@ hourly_data = {"date": pd.date_range(
 )}
 hourly_data["temperature_2m"] = hourly_temperature_2m
 hourly_data["cloud_cover"] = hourly_cloud_cover
-hourly_data["wind_speed_10m"] = hourly_wind_speed_10m
 hourly_data["shortwave_radiation"] = hourly_shortwave_radiation
 hourly_data["direct_radiation"] = hourly_direct_radiation
 hourly_data["diffuse_radiation"] = hourly_diffuse_radiation
 hourly_data["direct_normal_irradiance"] = hourly_direct_normal_irradiance
 hourly_data["global_tilted_irradiance"] = hourly_global_tilted_irradiance
 
-
 hourly_dataframe = pd.DataFrame(data = hourly_data)
+hourly_dataframe = hourly_dataframe.set_index('date', drop=True)
 print(hourly_dataframe)
 
-hourly_dataframe.plot(x='date', y='direct_radiation', color='red', figsize=(15,5))
-hourly_dataframe.plot(x='date', y='diffuse_radiation', color='green', figsize=(15,5))
-# hourly_dataframe.plot(x='date', y='shortwave_radiation', color='green')
-hourly_dataframe.plot(x='date', y='global_tilted_irradiance', color='green', figsize=(15,5))
+# # Process hourly data. The order of variables needs to be the same as requested.
+# hourly = response.Hourly()
+# hourly_temperature_2m = hourly.Variables(0).ValuesAsNumpy()
+# hourly_cloud_cover = hourly.Variables(1).ValuesAsNumpy()
+# hourly_wind_speed_10m = hourly.Variables(2).ValuesAsNumpy()
+# hourly_shortwave_radiation = hourly.Variables(3).ValuesAsNumpy()
+# hourly_direct_radiation = hourly.Variables(4).ValuesAsNumpy()
+# hourly_diffuse_radiation = hourly.Variables(5).ValuesAsNumpy()
+# hourly_direct_normal_irradiance = hourly.Variables(6).ValuesAsNumpy()
+# hourly_global_tilted_irradiance = hourly.Variables(7).ValuesAsNumpy()
+
+# hourly_data = {"date": pd.date_range(
+# 	start = pd.to_datetime(hourly.Time(), unit = "s", utc = True),
+# 	end = pd.to_datetime(hourly.TimeEnd(), unit = "s", utc = True),
+# 	freq = pd.Timedelta(seconds = hourly.Interval()),
+# 	inclusive = "left"
+# )}
+# hourly_data["temperature_2m"] = hourly_temperature_2m
+# hourly_data["cloud_cover"] = hourly_cloud_cover
+# hourly_data["wind_speed_10m"] = hourly_wind_speed_10m
+# hourly_data["shortwave_radiation"] = hourly_shortwave_radiation
+# hourly_data["direct_radiation"] = hourly_direct_radiation
+# hourly_data["diffuse_radiation"] = hourly_diffuse_radiation
+# hourly_data["direct_normal_irradiance"] = hourly_direct_normal_irradiance
+# hourly_data["global_tilted_irradiance"] = hourly_global_tilted_irradiance
+
+
+# hourly_dataframe = pd.DataFrame(data = hourly_data)
+# print(hourly_dataframe)
+
+# hourly_dataframe.plot(x='date', y='direct_radiation', color='red', figsize=(15,5))
+# hourly_dataframe.plot(x='date', y='diffuse_radiation', color='green', figsize=(15,5))
+# # hourly_dataframe.plot(x='date', y='shortwave_radiation', color='green')
+# hourly_dataframe.plot(x='date', y='global_tilted_irradiance', color='green', figsize=(15,5))

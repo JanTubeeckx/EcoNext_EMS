@@ -9,23 +9,20 @@ import xgboost as xgb
 import matplotlib.pyplot as plt
 from sklearn.metrics import mean_absolute_error, mean_absolute_percentage_error, mean_squared_error
 from sklearn.model_selection import GridSearchCV, TimeSeriesSplit
-from sklearn.preprocessing import MinMaxScaler
 from solar_irradiance_data import solar_irradiance_df
 from pv_production_data import hourly_production_df
-from datetime import datetime, time, timedelta
+from weather_api import hourly_dataframe
+from datetime import timedelta
 
 # Inner join solar irradiance dataframe with PV production dataframe
-hourly_production_df = hourly_production_df.set_index('time')
-hourly_production_df.index = pd.to_datetime(hourly_production_df.index).tz_localize('Europe/Berlin')
 hourly_production_df['current_power'] = hourly_production_df['current_power'].multiply(1000)
+hourly_production_df['temperature'] = hourly_production_df['temperature'].multiply(10)
 irradiance_and_power_df = pd.concat([hourly_production_df, solar_irradiance_df])
-irradiance_and_power_df = solar_irradiance_df.join(hourly_production_df)
-# irradiance_and_power_df[['ghi', 'current_power']].plot(figsize=(15,5), title='Dataset PV power prediction')
-# solar_irradiance_df['ghi'].plot(figsize=(15,5), title='Dataset PV power prediction')
+irradiance_and_power_df = solar_irradiance_df.join(hourly_production_df, how='right')
 
 solar_irradiation = 'dhi'
 
-print(irradiance_and_power_df.tail(48))
+print(irradiance_and_power_df[['ghi', 'dni', 'dhi', 'current_power']].head(60))
 
 # Create time series features based on time series index
 def create_features(df):
@@ -37,6 +34,8 @@ def create_features(df):
     df['year'] = df.index.year
     df['dayofyear'] = df.index.dayofyear
     df['dayofmonth'] = df.index.day
+    df['dhi'] = df['dhi']
+    df['dni'] = df['dni']
     return df
 
 solar_irradiance_df = create_features(solar_irradiance_df)
@@ -51,11 +50,11 @@ def add_lag_features(df):
 
 solar_irradiance_df = add_lag_features(solar_irradiance_df)
 
-# Create train model
-tss = TimeSeriesSplit(n_splits=5, test_size=24*30, gap=0)
-df = solar_irradiance_df.sort_index()
+# # Create train model
+# tss = TimeSeriesSplit(n_splits=5, test_size=24*30, gap=0)
+# df = solar_irradiance_df.sort_index()
 
-# fig, axs = plt.subplots(5, 1, figsize = (15,15), sharex=True)
+# # fig, axs = plt.subplots(5, 1, figsize = (15,15), sharex=True)
 
 # fold = 0
 # predictions = []
@@ -74,7 +73,7 @@ df = solar_irradiance_df.sort_index()
 #     test = create_features(test)
 
 #     FEATURES = ['hour', 'dayofweek', 'quarter', 'month', 'year', 'dayofyear', 'dayofmonth',
-#                 'lag1', 'lag2', 'lag3']
+#                 'dhi', 'dni', 'lag1', 'lag2', 'lag3']
 #     TARGET = ['ghi']
 
 #     X_train = train[FEATURES]
@@ -83,13 +82,15 @@ df = solar_irradiance_df.sort_index()
 #     X_test = test[FEATURES]
 #     y_test = test[TARGET]
 
-#     xgb_model = xgb.XGBRegressor(base_score=0.5,
+#     xgb_model = xgb.XGBRegressor(base_score=2.5,
 #                                 booster='gbtree',
+#                                 device='gpu',
 #                                 learning_rate=0.01,
-#                                 n_estimators=500,
+#                                 n_estimators=700,
 #                                 objective='reg:squarederror',
-#                                 subsample=0.8,
-#                                 max_depth=15)
+#                                 min_child_weight=0.1,
+#                                 subsample=0.2,
+#                                 max_depth=0)
 #     xgb_model.fit(X_train, y_train,
 #                 eval_set=[(X_train, y_train), (X_test, y_test)],
 #                 verbose=100)
@@ -115,22 +116,23 @@ TARGET = [solar_irradiation]
 X_all = df[FEATURES]
 y_all = df[TARGET]
 
-xgb_model = xgb.XGBRegressor(base_score=0.5,
-                                booster='gbtree',
-                                learning_rate=0.01,
-                                n_estimators=1000,
-                                objective='reg:squarederror',
-                                subsample=0.8,
-                                max_depth=0)
+xgb_model = xgb.XGBRegressor(
+                            booster='gbtree',
+                            device='gpu',
+                            learning_rate=0.1,
+                            n_estimators=100,
+                            objective='reg:squarederror',
+                            max_depth=200)
 xgb_model.fit(X_all, y_all,
             eval_set=[(X_all, y_all)],
             verbose=100)
 
 current_date = solar_irradiance_df.index.max().date()
-future_date = current_date+timedelta(5)
+print(current_date)
+future_date = current_date+timedelta(4)
 future = pd.date_range(str(current_date), str(future_date), freq='1h')
 future_df = pd.DataFrame(index=future)
-future_df.index = future_df.index.tz_localize('Europe/Berlin')
+future_df.index = future_df.index.tz_localize('Europe/Brussels')
 future_df['isFuture'] = True
 df['isFuture'] = False
 df_and_future = pd.concat([df, future_df])
@@ -140,8 +142,9 @@ future_with_features = df_and_future.query('isFuture').copy()
 
 # Predict future ghi
 future_with_features[solar_irradiation] = xgb_model.predict(future_with_features[FEATURES])
-
-print(future_with_features.head(48))
-hourly_production_df.plot(color='green')
+future_with_features[solar_irradiation] = future_with_features[solar_irradiation] * 6
+# print(future_with_features.head(48))
+hourly_production_df.plot()
 future_with_features[solar_irradiation].plot(figsize = (15,5), title='Solar irradiance prediction')
+irradiance_and_power_df[solar_irradiation].plot(figsize = (15,5), title='Solar irradiance prediction')
 plt.show()
