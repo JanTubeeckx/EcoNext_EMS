@@ -30,7 +30,7 @@ data = Hourly(location, start, end)
 weather_data = data.fetch()
 weather_data.drop(columns=['snow', 'wdir', 'wspd', 'wpgt', 'tsun', 'coco'], inplace=True)
 weather_data.rename(columns={'temp':'temperatuur', 'dwpt':'dauwpunt', 'rhum':'luchtvochtigheid', 'prcp':'neerslag', 'pres':'luchtdruk'}, inplace=True)
-weather_data.index = pd.to_datetime(weather_data.index).tz_localize('UTC')
+weather_data.index = pd.to_datetime(weather_data.index)
 
 # # Plot line chart including average, minimum and maximum temperature
 # data.plot(y=['tavg', 'tmin', 'tmax'])
@@ -48,7 +48,7 @@ params = {
 	"latitude": latitude,
 	"longitude": longitude,
 	"hourly": ["temperature_2m", "relative_humidity_2m", "precipitation", "cloud_cover"],
-	"timezone": "Europe/Brussels",
+	"timezone": "auto",
   "past_days": 1,
 	"forecast_days": 2,
 	"tilt": gradient,
@@ -83,7 +83,7 @@ hourly_data["cloud_cover"] = hourly_cloud_cover
 
 hourly_dataframe = pd.DataFrame(data = hourly_data)
 weather_forecast = hourly_dataframe.set_index('date', drop=True)
-# print(hourly_dataframe)
+weather_forecast.index = pd.to_datetime(weather_forecast.index).tz_convert(None)
 
 # hourly_dataframe.plot(y='temperature_2m', color='red', figsize=(15,5))
 # hourly_dataframe.plot(y='relative_humidity_2m', color='red', figsize=(15,5))
