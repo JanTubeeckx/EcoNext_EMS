@@ -51,8 +51,8 @@ def get_electricity_consumption_data(period):
   time_interval = period_filter(period)
   consumption = client1.query(
   "SELECT time, current_consumption, current_production, average_quarter_peak," + 
-  "quarter_peak FROM meter_reading WHERE time >= now() - INTERVAL '40" 
-   + " hours' ORDER BY time")
+  "quarter_peak FROM meter_reading WHERE time >= now() - INTERVAL '" +
+  str(time_interval) + " hours' ORDER BY time")
   # client1.close()
   consumption_df = consumption.to_pandas()
   # Convert UTC-timestamp InfluxDB to local time
