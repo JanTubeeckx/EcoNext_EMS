@@ -3,15 +3,16 @@ from electricity_consumption import *
 
 app = Flask(__name__)
 
-@app.route('/electricity-data', methods = ['GET'])
+@app.route('/consumption-production-details', methods = ['GET'])
 def return_electricity_data():
   if(request.method == 'GET'):
-    data = {
-      "Current_consumption": current_consumption,
-      "Current_production": current_production,
-      "Current_injection": current_injection,
+    data = get_electricity_consumption_and_production_details(1)
+    response = {
+      "Current_consumption": data[0],
+      "Current_production": data[1],
+      "Current_injection": data[2],
     }
-    return jsonify(data)
+    return jsonify(response)
   
   if __name__=='__main__': 
     app.run(debug=True)

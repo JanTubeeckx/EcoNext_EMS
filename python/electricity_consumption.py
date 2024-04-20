@@ -53,12 +53,12 @@ def get_electricity_consumption_data(period):
   "SELECT time, current_consumption, current_production, average_quarter_peak," + 
   "quarter_peak FROM meter_reading WHERE time >= now() - INTERVAL '40" 
    + " hours' ORDER BY time")
-  client1.close()
+  # client1.close()
   consumption_df = consumption.to_pandas()
   # Convert UTC-timestamp InfluxDB to local time
   consumption_df['time'] = consumption_df['time'] + timedelta(hours=2)
   # Remove nanoseconds from timestamp
-  consumption_df['time'] = consumption_df['time'].dt.strftime('%Y/%m/%d %H:%M:%S')
+  consumption_df['time'] = consumption_df['time'].astype('datetime64[s]')
   return consumption_df
 
 def get_electricity_production_data(period):
@@ -66,22 +66,22 @@ def get_electricity_production_data(period):
   solar_production = client2.query(
   "SELECT time, current_power, day_total_power FROM inverter_reading WHERE time" + 
   ">= now() - INTERVAL '" + str(time_interval) + " hours' ORDER BY time")
-  client2.close()
+  # client2.close()
   production_df = solar_production.to_pandas()
   # Convert UTC-timestamp InfluxDB to local time
   production_df['time'] = production_df['time'] + timedelta(hours=2)
   # Remove nanoseconds from timestamp
-  production_df['time'] = production_df['time'].dt.strftime('%Y/%m/%d %H:%M:%S')
+  production_df['time'] = production_df['time'].astype('datetime64[s]')
   return production_df
 
-print(get_electricity_consumption_data(1).tail(60))
+# print(get_electricity_consumption_data(1).tail(60))
 
 def get_electricity_data(period):
   electricity_consumption = get_electricity_consumption_data(period)
   electricity_production = get_electricity_production_data(period)
   return electricity_consumption, electricity_production
 
-def get_electrictiy_consumption_and_production_details(period):
+def get_electricity_consumption_and_production_details(period):
   # Current consumption and production data
   electricity_data = get_electricity_data(period)
   current_consumption = round(electricity_data[0].iloc[-1]['current_consumption'], 2)
@@ -99,7 +99,6 @@ def get_electrictiy_consumption_and_production_details(period):
   electricity_data[1]['time'] = electricity_data[1]['time'].dt.strftime('%Y/%m/%d')
   electricity_data[1].drop(electricity_data[1][electricity_data[1]['day_total_power']==0].index, inplace=True)
   electricity_data[1].drop_duplicates(subset=['time'], keep='last', inplace=True)
-  print(electricity_data[1].head(60))
   total_production = round(electricity_data[1]['day_total_power'].sum(), 2)
   total_injection = round(electricity_data[0]['current_production'].sum()/3600, 2)
   revenue_sold_electricity = round(total_injection * current_injection_price, 2)
