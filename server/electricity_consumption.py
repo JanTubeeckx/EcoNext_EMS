@@ -7,7 +7,7 @@ from influxdb_client_3 import InfluxDBClient3
 from dotenv import load_dotenv
 from datetime import datetime, time, timedelta
 import os
-import pandas
+import pandas as pd
 import matplotlib.pyplot as plt
 
 # Loading variables from .env file
@@ -59,6 +59,7 @@ def get_electricity_consumption_data(period):
   consumption_df['time'] = consumption_df['time'] + timedelta(hours=2)
   # Remove nanoseconds from timestamp
   consumption_df['time'] = consumption_df['time'].astype('datetime64[s]')
+  consumption_df['current_consumption'] = consumption_df['current_consumption'] * 1000
   return consumption_df
 
 def get_electricity_production_data(period):
@@ -72,6 +73,7 @@ def get_electricity_production_data(period):
   production_df['time'] = production_df['time'] + timedelta(hours=2)
   # Remove nanoseconds from timestamp
   production_df['time'] = production_df['time'].astype('datetime64[s]')
+  production_df['current_power'] = production_df['current_power'] * 1000
   return production_df
 
 # test = get_electricity_consumption_data(1)
@@ -80,8 +82,11 @@ def get_electricity_production_data(period):
 
 def get_electricity_data(period):
   electricity_consumption = get_electricity_consumption_data(period)
+  electricity_consumption.drop(columns=['current_production', 'average_quarter_peak', 'quarter_peak'], inplace=True)
   electricity_production = get_electricity_production_data(period)
-  return electricity_consumption, electricity_production
+  consumption_and_production = electricity_consumption.merge(electricity_production[['time', 'current_power']]) 
+  consumption_and_production['time'] = consumption_and_production['time'].dt.strftime("%Y-%m-%d %H:%M:") 
+  return consumption_and_production
 
 def get_electricity_consumption_and_production_details(period):
   # Current consumption and production data

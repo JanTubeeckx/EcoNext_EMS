@@ -7,9 +7,17 @@ app = Flask(__name__)
 def return_electricity_data():
   if(request.method == 'GET'):
     period = int(request.args.get('period'))
-    consumption = get_electricity_consumption_data(period)
-    consumption['time'] = consumption['time'].dt.strftime("%Y-%m-%d %H:%M:%S") 
-    response = consumption.to_json(orient ='records')
+    consumption_and_production = get_electricity_data(period)
+    response = consumption_and_production.to_json(orient ='records')
+    return response
+
+@app.route("/electricity-production-data", methods = ['GET'])
+def return_electricity_production_data():
+  if(request.method == 'GET'):
+    period = int(request.args.get('period'))
+    production = get_electricity_production_data(period)
+    production['time'] = production['time'].dt.strftime("%Y-%m-%d %H:%M:") 
+    response = production.to_json(orient ='records')
     return response
 
 @app.route('/consumption-production-details', methods = ['GET'])
