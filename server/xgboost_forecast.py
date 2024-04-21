@@ -18,7 +18,7 @@ from datetime import timedelta
 
 # Define variables
 solar_irradiation = 'ghi'
-nr_of_days_to_predict = 2
+nr_of_days_to_predict = 1
 
 # Inner join solar irradiance dataframe with PV production dataframe
 hourly_production_df['current_power'] = hourly_production_df['current_power'].multiply(1000).round(2)
@@ -179,7 +179,7 @@ future_with_features['solar_irr_prediction'] = future_with_features[solar_irradi
 # future_with_features['solar_irr_prediction'] = np.where(future_with_features.index.hour < 8, 0, 
 #                                                         (np.where(future_with_features.index.hour > 20), 0,
 #                                                          future_with_features['solar_irr_prediction']))
-future_with_features.loc[future_with_features.index.hour < 8,'solar_irr_prediction'] = 0
+future_with_features.loc[future_with_features.index.hour < 7,'solar_irr_prediction'] = 0
 future_with_features.loc[future_with_features.index.hour > 20, 'solar_irr_prediction'] = 0
 future_with_features.drop(columns=['hour', 'dayofweek', 'quarter', 'month', 'year', 'dayofyear', 
                                    'dayofmonth', 'temperatuur', 'luchtvochtigheid', 'lag1', 'ghi', 
@@ -189,7 +189,7 @@ future_with_features.drop(columns=['hour', 'dayofweek', 'quarter', 'month', 'yea
 prediction = future_with_features.join(weather_forecast)
 prediction['final_prediction'] = (prediction['solar_irr_prediction'] *
                                   (prediction['temperature_2m'].div(10)) /
-                                  (prediction['relative_humidity_2m'] / 100)) 
+                                  (prediction['relative_humidity_2m'] / 100)) * 1.8
 
 print(prediction.tail(60))
 # irradiance_and_power_df.loc[irradiance_and_power_df.index.hour>=13, 

@@ -74,7 +74,9 @@ def get_electricity_production_data(period):
   production_df['time'] = production_df['time'].astype('datetime64[s]')
   return production_df
 
-# print(get_electricity_consumption_data(1).tail(60))
+# test = get_electricity_consumption_data(1)
+# test['time'] = test['time'].dt.strftime("%Y-%m-%d %H:%M:%S") 
+# print(test.to_json(orient ='index'))
 
 def get_electricity_data(period):
   electricity_consumption = get_electricity_consumption_data(period)

@@ -9,9 +9,9 @@ import SwiftUI
 
 @main
 struct poc_hemsApp: App {
-    var body: some Scene {
-        WindowGroup {
-            ChartView()
-        }
+  var body: some Scene {
+    WindowGroup {
+      ChartsView()
     }
+  }
 }

@@ -7,8 +7,9 @@ app = Flask(__name__)
 def return_electricity_data():
   if(request.method == 'GET'):
     period = int(request.args.get('period'))
-    consumption_csv = get_electricity_consumption_data(period).to_csv()
-    response = Response(consumption_csv, mimetype='text/plain')
+    consumption = get_electricity_consumption_data(period)
+    consumption['time'] = consumption['time'].dt.strftime("%Y-%m-%d %H:%M:%S") 
+    response = consumption.to_json(orient ='records')
     return response
 
 @app.route('/consumption-production-details', methods = ['GET'])
