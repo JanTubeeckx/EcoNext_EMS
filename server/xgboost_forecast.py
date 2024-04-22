@@ -61,7 +61,7 @@ historical_data = create_features(historical_data)
 # Create lag features
 def add_lag_features(df):
     target_map = df[solar_irradiation].to_dict()
-    df['lag_1'] = (df.index - pd.Timedelta('5 days')).map(target_map)
+    df['lag_1'] = (df.index - pd.Timedelta('6 days')).map(target_map)
     # df['lag_2'] = (df.index - pd.Timedelta('2 days')).map(target_map)
     # df['lag_3'] = (df.index - pd.Timedelta('4 days')).map(target_map)
     # df['lag_4'] = (df.index - pd.Timedelta('728 days')).map(target_map)
