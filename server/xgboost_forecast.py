@@ -8,7 +8,7 @@ import numpy as np
 import xgboost as xgb
 import seaborn as sns
 import matplotlib.pyplot as plt
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import mean_absolute_error, mean_squared_error
 from sklearn.model_selection import GridSearchCV, TimeSeriesSplit
 from sklearn.preprocessing import StandardScaler
 from solar_irradiance_data import solar_irradiance_df
@@ -18,7 +18,7 @@ from datetime import timedelta
 
 # Define variables
 solar_irradiation = 'ghi'
-nr_of_days_to_predict = 1
+nr_of_days_to_predict = 2
 
 # Inner join solar irradiance dataframe with PV production dataframe
 hourly_production_df['current_power'] = hourly_production_df['current_power'].multiply(1000).round(2)
@@ -61,11 +61,12 @@ historical_data = create_features(historical_data)
 # Create lag features
 def add_lag_features(df):
     target_map = df[solar_irradiation].to_dict()
-    df['lag1'] = (df.index - pd.Timedelta('12 hours')).map(target_map)
-    # df['lag2'] = (df.index - pd.Timedelta('24 hours')).map(target_map)
-    # df['lag3'] = (df.index - pd.Timedelta('48 hours')).map(target_map)
-    # df['lag4'] = (df.index - pd.Timedelta('12 hours')).map(target_map)
-    # df['lag5'] = (df.index - pd.Timedelta('24 hours')).map(target_map)
+    df['lag_1'] = (df.index - pd.Timedelta('5 days')).map(target_map)
+    # df['lag_2'] = (df.index - pd.Timedelta('2 days')).map(target_map)
+    # df['lag_3'] = (df.index - pd.Timedelta('4 days')).map(target_map)
+    # df['lag_4'] = (df.index - pd.Timedelta('728 days')).map(target_map)
+    # df['lag_5'] = (df.index - pd.Timedelta('1456 days')).map(target_map)
+    # df['lag_6'] = (df.index - pd.Timedelta('728 days')).map(target_map)
     return df
 
 historical_data = add_lag_features(historical_data)
@@ -100,8 +101,8 @@ X = pd.DataFrame(scaler.fit_transform(X), columns = X.columns)
 #     train = create_features(train)
 #     test = create_features(test)
 
-#     FEATURES = ['hour', 'dayofweek', 'quarter', 'month', 'year', 'dayofyear', 'dayofmonth',
-#                  'dhi', 'bhi', 'temperatuur', 'luchtvochtigheid', 'lag1', 'lag2', 'lag3']
+#     FEATURES = ['hour', 'dayofweek', 'quarter', 'month', 'year', 'dayofyear', 
+#                 'dayofmonth', 'dhi', 'bhi', 'temperatuur', 'luchtvochtigheid', 'lag1']
 #     TARGET = [solar_irradiation]
 
 #     X_train = train[FEATURES]
@@ -143,8 +144,10 @@ X = pd.DataFrame(scaler.fit_transform(X), columns = X.columns)
 df = create_features(historical_data)
 df = add_lag_features(historical_data)
 
+print(df)
+
 FEATURES = ['hour', 'dayofweek', 'quarter', 'month', 'year', 'dayofyear', 'dayofmonth',
-            'temperatuur', 'luchtvochtigheid', 'lag1']
+            'temperatuur', 'luchtvochtigheid', 'lag_1']
 TARGET = [solar_irradiation]
 
 X_all = df[FEATURES]
@@ -182,18 +185,15 @@ future_with_features['solar_irr_prediction'] = future_with_features[solar_irradi
 future_with_features.loc[future_with_features.index.hour < 7,'solar_irr_prediction'] = 0
 future_with_features.loc[future_with_features.index.hour > 20, 'solar_irr_prediction'] = 0
 future_with_features.drop(columns=['hour', 'dayofweek', 'quarter', 'month', 'year', 'dayofyear', 
-                                   'dayofmonth', 'temperatuur', 'luchtvochtigheid', 'lag1', 'ghi', 
+                                   'dayofmonth', 'temperatuur', 'luchtvochtigheid', 'lag_1', 'ghi', 
                                    'dhi', 'bhi'], inplace=True)
-
+print(weather_forecast)
 # Combine time series forecast with weather forecast for most important parameters
 prediction = future_with_features.join(weather_forecast)
 prediction['final_prediction'] = (prediction['solar_irr_prediction'] *
-                                  (prediction['temperature_2m'].div(10)) /
-                                  (prediction['relative_humidity_2m'] / 100)) * 1.8
-
+                                 (prediction['temperature_2m'].div(10)) /
+                                 (prediction['relative_humidity_2m'] / 100)) 
 print(prediction.tail(60))
-# irradiance_and_power_df.loc[irradiance_and_power_df.index.hour>=13, 
-#                             solar_irradiation] = irradiance_and_power_df[solar_irradiation] * 0.4
 
 # Visualize results 
 hourly_production_df.plot()

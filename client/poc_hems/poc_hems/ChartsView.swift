@@ -13,6 +13,7 @@ struct ChartsView: View {
   @State private var data: [ElectricityData] = []
   
   var body: some View {
+    Text("Elektriciteit (Watt)")
     Chart {
       ForEach(data, id: \.time) { e in
         LineMark(
@@ -21,20 +22,20 @@ struct ChartsView: View {
           series: .value("Consumption", "Huidige consumptie (Watt)")
         )
         .lineStyle(StrokeStyle(lineWidth: 1))
-        .foregroundStyle(by: .value("Consumption", "Huidige consumptie (W)"))
+        .foregroundStyle(by: .value("Consumption", "Huidige consumptie"))
         
         LineMark(
           x: .value("Time", e.time),
           y: .value("Current consumption", e.current_power),
           series: .value("Production", "Huidige productie (Watt)")
         )
-        .lineStyle(StrokeStyle(lineWidth: 1.5))
-        .foregroundStyle(by: .value("Production", "Huidige productie(W)"))
+        .lineStyle(StrokeStyle(lineWidth: 2.5))
+        .foregroundStyle(by: .value("Production", "Huidige productie"))
       }
     }
     .chartXAxis {
       AxisMarks(
-        values: .automatic(desiredCount: 12)
+        values: .automatic(desiredCount: 6)
       )
     }
     .chartYAxis {
@@ -47,6 +48,8 @@ struct ChartsView: View {
     }
     .frame(height: 200)
     .padding(30)
+    
+    ElectricityDetailsView().padding(30)
   }
   
   func fetchElectricityData() {
@@ -57,8 +60,6 @@ struct ChartsView: View {
         let decoder = JSONDecoder()
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:"
-        dateFormatter.locale = Locale(identifier: "nl_BE")
-        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
         decoder.dateDecodingStrategy = .formatted(dateFormatter)
         let decodedData = try
         decoder.decode([ElectricityData].self, from: data)
@@ -77,6 +78,18 @@ struct ElectricityData: Codable {
   let time: Date
   let current_consumption: Float
   let current_power: Float
+}
+
+struct ElectricityDetailsView: View {
+  var body: some View {
+    VStack {
+      Text("Huidige consumptie:").frame(maxWidth: .infinity, alignment: .leading)
+      Text("Huidige productie:").frame(maxWidth: .infinity, alignment: .leading)
+      Text("Huidige injectie:").frame(maxWidth: .infinity, alignment: .leading)
+      Text("Huidige totale dagproductie:").frame(maxWidth: .infinity, alignment: .leading)
+    }
+    
+  }
 }
 
 #Preview {
