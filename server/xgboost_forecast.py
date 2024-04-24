@@ -18,7 +18,7 @@ from datetime import timedelta
 
 # Define variables
 solar_irradiation = 'ghi'
-nr_of_days_to_predict = 2
+nr_of_days_to_predict = 3
 
 # Inner join solar irradiance dataframe with PV production dataframe
 hourly_production_df['current_power'] = hourly_production_df['current_power'].multiply(1000).round(2)
@@ -31,11 +31,11 @@ historical_data.index = pd.to_datetime(historical_data.index)
 # Add measured power output PV system
 irradiance_and_power_df = historical_data.join(hourly_production_df, how='right')
 
-# Investigate correlations
-plt.figure(figsize=(15, 5))
-corrmat = historical_data.corr()
-corr_heatmap = sns.heatmap(corrmat, vmin=-1, vmax=1, square=True, annot=True)
-corr_heatmap.set_title('Correlatie heatmap', fontdict={'fontsize': 12}, pad=12)
+# # Investigate correlations
+# plt.figure(figsize=(15, 5))
+# corrmat = historical_data.corr()
+# corr_heatmap = sns.heatmap(corrmat, vmin=-1, vmax=1, square=True, annot=True)
+# corr_heatmap.set_title('Correlatie heatmap', fontdict={'fontsize': 12}, pad=12)
 
 # Remove parameters with low correlation
 historical_data.drop(columns=['dauwpunt', 'neerslag', 'luchtdruk'], inplace=True)
@@ -61,9 +61,9 @@ historical_data = create_features(historical_data)
 # Create lag features
 def add_lag_features(df):
     target_map = df[solar_irradiation].to_dict()
-    df['lag_1'] = (df.index - pd.Timedelta('6 days')).map(target_map)
-    # df['lag_2'] = (df.index - pd.Timedelta('2 days')).map(target_map)
-    # df['lag_3'] = (df.index - pd.Timedelta('4 days')).map(target_map)
+    df['lag_1'] = (df.index - pd.Timedelta('4 days')).map(target_map)
+    # df['lag_2'] = (df.index - pd.Timedelta('14 days')).map(target_map)
+    # df['lag_3'] = (df.index - pd.Timedelta('14 days')).map(target_map)
     # df['lag_4'] = (df.index - pd.Timedelta('728 days')).map(target_map)
     # df['lag_5'] = (df.index - pd.Timedelta('1456 days')).map(target_map)
     # df['lag_6'] = (df.index - pd.Timedelta('728 days')).map(target_map)
@@ -147,7 +147,7 @@ df = add_lag_features(historical_data)
 print(df)
 
 FEATURES = ['hour', 'dayofweek', 'quarter', 'month', 'year', 'dayofyear', 'dayofmonth',
-            'temperatuur', 'luchtvochtigheid', 'lag_1']
+            'temperatuur', 'luchtvochtigheid', 'lag_1', ]
 TARGET = [solar_irradiation]
 
 X_all = df[FEATURES]
@@ -163,8 +163,6 @@ xgb_model.fit(X_all, y_all,
             eval_set=[(X_all, y_all)],
             verbose=100)
 
-xgb.plot_importance(xgb_model)
-
 current_date = solar_irradiance_df.index.max().date()
 future_date = current_date+timedelta(nr_of_days_to_predict)
 future = pd.date_range(str(current_date), str(future_date), freq='1h')
@@ -179,25 +177,23 @@ future_with_features = df_and_future.query('isFuture').copy()
 # Predict future ghi
 future_with_features[solar_irradiation] = xgb_model.predict(future_with_features[FEATURES])
 future_with_features['solar_irr_prediction'] = future_with_features[solar_irradiation]
-# future_with_features['solar_irr_prediction'] = np.where(future_with_features.index.hour < 8, 0, 
-#                                                         (np.where(future_with_features.index.hour > 20), 0,
-#                                                          future_with_features['solar_irr_prediction']))
 future_with_features.loc[future_with_features.index.hour < 7,'solar_irr_prediction'] = 0
 future_with_features.loc[future_with_features.index.hour > 20, 'solar_irr_prediction'] = 0
 future_with_features.drop(columns=['hour', 'dayofweek', 'quarter', 'month', 'year', 'dayofyear', 
                                    'dayofmonth', 'temperatuur', 'luchtvochtigheid', 'lag_1', 'ghi', 
                                    'dhi', 'bhi'], inplace=True)
-print(weather_forecast)
+
 # Combine time series forecast with weather forecast for most important parameters
+weather_forecast.index = weather_forecast.index - pd.Timedelta(minutes=120)
 prediction = future_with_features.join(weather_forecast)
 prediction['final_prediction'] = (prediction['solar_irr_prediction'] *
                                  (prediction['temperature_2m'].div(10)) /
-                                 (prediction['relative_humidity_2m'] / 100)) 
+                                 (prediction['relative_humidity_2m'] / 100)) * 1.2
 print(prediction.tail(60))
 
-# Visualize results 
-hourly_production_df.plot()
-prediction['final_prediction'].plot(figsize = (15,5), title='Solar irradiance prediction')
-irradiance_and_power_df[solar_irradiation].plot(figsize = (15,5), title='Solar irradiance prediction')
-plt.legend()
-plt.show()
+# # Visualize results 
+# hourly_production_df.plot()
+# prediction['final_prediction'].plot(figsize = (15,5), title='Solar irradiance prediction')
+# irradiance_and_power_df[solar_irradiation].plot(figsize = (15,5), title='Solar irradiance prediction')
+# plt.legend()
+# plt.show()

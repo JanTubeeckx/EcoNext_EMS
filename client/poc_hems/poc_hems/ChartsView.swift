@@ -14,6 +14,7 @@ struct ChartsView: View {
   
   var body: some View {
     Text("Elektriciteit (Watt)")
+      .font(.system(size: 20))
     Chart {
       ForEach(data, id: \.time) { e in
         LineMark(
@@ -83,12 +84,31 @@ struct ElectricityData: Codable {
 struct ElectricityDetailsView: View {
   var body: some View {
     VStack {
-      Text("Huidige consumptie:").frame(maxWidth: .infinity, alignment: .leading)
-      Text("Huidige productie:").frame(maxWidth: .infinity, alignment: .leading)
-      Text("Huidige injectie:").frame(maxWidth: .infinity, alignment: .leading)
-      Text("Huidige totale dagproductie:").frame(maxWidth: .infinity, alignment: .leading)
+      Text("Verbruiks- en productiegegevens")
+        .font(.system(size: 16))
+        .padding(.bottom, 10.0)
+      VStack {
+        Text("Huidige consumptie:").frame(maxWidth: .infinity, alignment: .leading)
+        Text("Huidige productie:").frame(maxWidth: .infinity, alignment: .leading)
+        Text("Huidige injectie:").frame(maxWidth: .infinity, alignment: .leading)
+        Text("Huidige totale dagproductie:").frame(maxWidth: .infinity, alignment: .leading)
+      }
+      .font(.system(size: 13.5))
+      .padding(.bottom, 10.0)
+      VStack {
+        Text("Huidig kwartiervermorgen:").frame(maxWidth: .infinity, alignment: .leading)
+        Text("Huidige maandpiek:").frame(maxWidth: .infinity, alignment: .leading)
+        Text("Voorlopig maandelijks capaciteitstarief:").frame(maxWidth: .infinity, alignment: .leading)
+      }
+      .font(.system(size: 13.5))
+      .padding(.bottom, 10.0)
+      VStack {
+        Text("Totale consumptie:").frame(maxWidth: .infinity, alignment: .leading)
+        Text("Totale productie:").frame(maxWidth: .infinity, alignment: .leading)
+        Text("Totale injectie:").frame(maxWidth: .infinity, alignment: .leading)
+      }
+      .font(.system(size: 13.5))
     }
-    
   }
 }
 

@@ -123,7 +123,6 @@ def get_electricity_consumption_and_production_details(period):
           # revenue_sold_electricity)
 
 current_production = get_electricity_consumption_and_production_details(1)
-print(current_production)
 
 # current_consumption_csv = dataframe_current_consumption.to_csv()
 # print(current_consumption_csv)

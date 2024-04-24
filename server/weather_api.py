@@ -1,4 +1,5 @@
 import openmeteo_requests
+from openmeteo_sdk.WeatherApiResponse import WeatherApiResponse
 
 import requests_cache
 import pandas as pd
