@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 from datetime import datetime, time, timedelta
 import os
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 
 # Loading variables from .env file
@@ -39,7 +40,7 @@ client2 = InfluxDBClient3(
 # Create function to filter period
 def period_filter(nr_of_days):
   if nr_of_days == 1:
-    result = current_time_in_decimals + 2
+    result = current_time_in_decimals - 6
   else:
     period = datetime.now() - timedelta(nr_of_days)
     start = datetime.combine(period, time.min)
@@ -60,6 +61,7 @@ def get_electricity_consumption_data(period):
   # Remove nanoseconds from timestamp
   consumption_df['time'] = consumption_df['time'].astype('datetime64[s]')
   consumption_df['current_consumption'] = consumption_df['current_consumption'] * 1000
+  consumption_df['current_production'] = consumption_df['current_production'] * 1000
   return consumption_df
 
 def get_electricity_production_data(period):
@@ -82,18 +84,19 @@ def get_electricity_production_data(period):
 
 def get_electricity_data(period):
   electricity_consumption = get_electricity_consumption_data(period)
-  electricity_consumption.drop(columns=['current_production', 'average_quarter_peak', 'quarter_peak'], inplace=True)
-  electricity_production = get_electricity_production_data(period)
-  consumption_and_production = electricity_consumption.merge(electricity_production[['time', 'current_power']]) 
-  consumption_and_production['time'] = consumption_and_production['time'].dt.strftime("%Y-%m-%d %H:%M:") 
-  return consumption_and_production
+  electricity_consumption.drop(columns=['average_quarter_peak', 'quarter_peak'], inplace=True)
+  # electricity_production = get_electricity_production_data(period)
+  electricity_consumption['current_consumption'] = -electricity_consumption['current_consumption']
+  # consumption_and_production = electricity_consumption.merge(electricity_production[['time', 'current_power']]) 
+  electricity_consumption['time'] = electricity_consumption['time'].dt.strftime("%Y-%m-%d %H:%M:") 
+  return electricity_consumption
 
 def get_electricity_consumption_and_production_details(period):
   # Current consumption and production data
   electricity_data = get_electricity_data(period)
   print(electricity_data)
   current_consumption = round(electricity_data.iloc[-1]['current_consumption'], 2)
-  current_production = round(electricity_data.iloc[-1]['current_power'], 2)
+  # current_production = round(electricity_data.iloc[-1]['current_power'], 2)
   # current_injection = round(electricity_data[0].tail(1).iloc[0]['current_production'], 2)
   # current_quarter_peak = electricity_data[0].iloc[-1]['quarter_peak']
   # current_month_peak = electricity_data[0].tail(1).iloc[0]['average_quarter_peak']
@@ -110,7 +113,7 @@ def get_electricity_consumption_and_production_details(period):
   # total_production = round(electricity_data[1]['day_total_power'].sum(), 2)
   # total_injection = round(electricity_data[0]['current_production'].sum()/3600, 2)
   # revenue_sold_electricity = round(total_injection * current_injection_price, 2)
-  return current_production, 
+  # return current_production, 
           # current_production, 
           # current_injection,
           # total_consumption,
@@ -129,12 +132,21 @@ print(current_production)
 # print(current_consumption_csv)
 
 # # dataframe_quarter_peak.plot.area(x='time', y='average_quarter_peak', color="orange")
-# # dataframe2.plot.area(x='time', y='current_power', color="green")
+df = get_electricity_consumption_data(1)
 
 # # Plot both consumption and prodution datafames
-# firstDataFrame = dataframe_current_consumption.plot(x='time', color='orange')
-# dataframe_current_production.plot(figsize=(10,5), x='time', ax=firstDataFrame, color='green')
-# plt.show()
+df['current_consumption'] = -df['current_consumption']
+df['current_production'] = df['current_production'] * 1000
+dfc = df[['time', 'current_consumption']]
+dfp = df[['time', 'current_production']]
+dfc = dfc.replace(0.0, np.nan)
+dfp = dfp.replace(0.0, np.nan)
+print(dfp.head(60))
+first = dfc.plot.area(figsize=(10,5), x='time', y='current_consumption', color="orange", linewidth=0)
+dfp.plot.area(figsize=(10,5), ylim=(-2500, 2000), ax=first, x='time', y='current_production', color="green",linewidth=0)
+plt.show()
+
+
 
 # # Get month peak of each month
 # dataframe_quarter_peak['time'] = dataframe_quarter_peak['time'].dt.strftime('%Y/%m')

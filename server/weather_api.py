@@ -15,7 +15,7 @@ orientation = -135
 
 # Determine coordinates of entered address
 loc = Nominatim(user_agent="Geopy Library")
-getLoc = loc.geocode(user_address)
+getLoc = loc.geocode(user_address, timeout=None)
 latitude = getLoc.latitude
 longitude = getLoc.longitude
 

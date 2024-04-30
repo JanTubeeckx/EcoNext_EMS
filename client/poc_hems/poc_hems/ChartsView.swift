@@ -26,10 +26,10 @@ struct ChartsView: View {
         
         LineMark(
           x: .value("Time", e.time),
-          y: .value("Current consumption", e.current_power),
+          y: .value("Current consumption", e.current_production),
           series: .value("Production", "Huidige productie (Watt)")
         )
-        .lineStyle(StrokeStyle(lineWidth: 2.5))
+        .lineStyle(StrokeStyle(lineWidth: 1))
         .foregroundStyle(by: .value("Production", "Huidige productie"))
       }
     }
@@ -66,7 +66,6 @@ struct ChartsView: View {
         DispatchQueue.main.async {
           self.data = decodedData
         }
-        
       }catch {
         print(error)
       }
@@ -77,18 +76,36 @@ struct ChartsView: View {
 struct ElectricityData: Codable {
   let time: Date
   let current_consumption: Float
-  let current_power: Float
+  let current_production: Float
 }
 
 struct ElectricityDetailsView: View {
+  
+  var body: some View {
+    HStack {
+      electricityDetail(label: "Huidige productie", value: 340)
+      electricityDetail(label: "Huidige injectie", value: 0)
+    }
+    HStack {
+      electricityDetail(label: "Totale dagproductie", value: 2500)
+      electricityDetail(label: "Huidige kwartierpiek", value: 5500)
+    }
+  }
+}
+
+struct electricityDetail: View {
+  let label: String
+  let value: Float
+  
   var body: some View {
     VStack {
-      Text("Huidige consumptie:").frame(maxWidth: .infinity, alignment: .leading)
-      Text("Huidige productie:").frame(maxWidth: .infinity, alignment: .leading)
-      Text("Huidige injectie:").frame(maxWidth: .infinity, alignment: .leading)
-      Text("Huidige totale dagproductie:").frame(maxWidth: .infinity, alignment: .leading)
+      Text(label)
+        .frame(maxWidth: .infinity, alignment: .center)
+        .padding(1)
+      Text("\(value, specifier: "%.0f") W")
+        .frame(maxWidth: .infinity, alignment: .center)
+        .font(.system(size: 30))
     }
-    
   }
 }
 

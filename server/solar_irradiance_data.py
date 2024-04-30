@@ -6,7 +6,7 @@
 import pandas as pd
 import pvlib
 from geopy.geocoders import Nominatim
-from datetime import datetime, timedelta
+from datetime import datetime
 
 # Get solar irradiance data for specified address
 # User input
@@ -14,7 +14,7 @@ user_address = 'Toekomststraat 67, 9040 Sint-Amandsberg'
 
 # Determine coordinates of entered address
 loc = Nominatim(user_agent="Geopy Library")
-getLoc = loc.geocode(user_address)
+getLoc = loc.geocode(user_address, timeout=None)
 latitude = getLoc.latitude
 longitude = getLoc.longitude
 
