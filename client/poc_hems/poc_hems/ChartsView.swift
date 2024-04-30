@@ -9,11 +9,20 @@ import SwiftUI
 import Foundation
 import Charts
 
+struct Product: Identifiable {
+  let id = UUID()
+  let title: String
+  let revenue: Double
+}
+
 struct ChartsView: View {
   @State private var data: [ElectricityData] = []
   
   var body: some View {
-    Text("Elektriciteit (Watt)")
+    Text("Vandaag")
+      .frame(maxWidth: 330, alignment: .leading)
+      .font(.system(size: 28))
+      .padding(.top)
     Chart {
       ForEach(data, id: \.time) { e in
         LineMark(
@@ -22,7 +31,7 @@ struct ChartsView: View {
           series: .value("Consumption", "Huidige consumptie (Watt)")
         )
         .lineStyle(StrokeStyle(lineWidth: 1))
-        .foregroundStyle(by: .value("Consumption", "Huidige consumptie"))
+        .foregroundStyle(by: .value("Consumption", "Consumptie"))
         
         LineMark(
           x: .value("Time", e.time),
@@ -30,7 +39,7 @@ struct ChartsView: View {
           series: .value("Production", "Huidige productie (Watt)")
         )
         .lineStyle(StrokeStyle(lineWidth: 1))
-        .foregroundStyle(by: .value("Production", "Huidige productie"))
+        .foregroundStyle(by: .value("Production", "Productie"))
       }
     }
     .chartXAxis {
@@ -46,10 +55,12 @@ struct ChartsView: View {
     .onAppear {
       fetchElectricityData()
     }
+    .chartLegend(alignment: .center)
     .frame(height: 200)
     .padding(30)
     
-    ElectricityDetailsView().padding(30)
+    SectorChartExample()
+    ElectricityDetailsView().padding(20)
   }
   
   func fetchElectricityData() {
@@ -70,6 +81,44 @@ struct ChartsView: View {
         print(error)
       }
     }.resume()
+  }
+}
+
+struct SectorChartExample: View {
+  @State private var products: [Product] = [
+    .init(title: "Huidige consumptie", revenue: 0.4),
+    .init(title: "Huidige productie", revenue: 0.6),
+//    .init(title: "Lifetime", revenue: 0.4)
+  ]
+  
+  var body: some View {
+    Chart(products) { product in
+      SectorMark(
+        angle: .value(
+          Text(verbatim: product.title),
+          product.revenue
+        ),
+        innerRadius: .ratio(0.6)
+      )
+      .foregroundStyle(
+        by: .value(
+          Text(verbatim: product.title),
+          product.title
+        )
+      )
+    }
+    .chartBackground { chartProxy in
+      GeometryReader { geometry in
+        let frame = geometry[chartProxy.plotAreaFrame]
+        VStack {
+          Text("2.5 kW")
+            .font(.title.bold())
+            .foregroundStyle(.green)
+        }
+        .position(x: frame.midX, y: frame.midY)
+      }
+    }
+    .chartLegend(alignment: .center)
   }
 }
 
@@ -104,7 +153,7 @@ struct electricityDetail: View {
         .padding(1)
       Text("\(value, specifier: "%.0f") W")
         .frame(maxWidth: .infinity, alignment: .center)
-        .font(.system(size: 30))
+        .font(.system(size: 26))
     }
   }
 }
