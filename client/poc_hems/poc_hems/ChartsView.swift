@@ -17,34 +17,63 @@ struct Product: Identifiable {
 
 struct ChartsView: View {
   @State private var data: [ElectricityData] = []
+  @State private var predictiondata: [PvPowerPrediction] = []
   
   var body: some View {
     Text("Vandaag")
       .frame(maxWidth: 330, alignment: .leading)
       .font(.system(size: 28))
       .padding(.top)
+//    Chart {
+//      ForEach(data, id: \.time) { e in
+//        LineMark(
+//          x: .value("Time", e.time),
+//          y: .value("Current consumption", e.current_consumption),
+//          series: .value("Consumption", "Huidige consumptie (Watt)")
+//        )
+//        .lineStyle(StrokeStyle(lineWidth: 1))
+//        .foregroundStyle(by: .value("Consumption", "Consumptie"))
+//        
+//        LineMark(
+//          x: .value("Time", e.time),
+//          y: .value("Current consumption", e.current_production),
+//          series: .value("Production", "Huidige productie (Watt)")
+//        )
+//        .lineStyle(StrokeStyle(lineWidth: 1))
+//        .foregroundStyle(by: .value("Production", "Productie"))
+//      }
+//    }
+//    .chartXAxis {
+//      AxisMarks(
+//        values: .automatic(desiredCount: 6)
+//      )
+//    }
+//    .chartYAxis {
+//      AxisMarks(
+//        values: .automatic(desiredCount: 6)
+//      )
+//    }
+//    .onAppear {
+//      fetchElectricityData()
+//    }
+//    .chartLegend(alignment: .center)
+//    .frame(height: 200)
+//    .padding(30)
+    
     Chart {
-      ForEach(data, id: \.time) { e in
+      ForEach(predictiondata, id: \.time) { e in
         LineMark(
           x: .value("Time", e.time),
-          y: .value("Current consumption", e.current_consumption),
-          series: .value("Consumption", "Huidige consumptie (Watt)")
+          y: .value("Prediction", e.final_prediction),
+          series: .value("Prediction", "Voorspelling")
         )
         .lineStyle(StrokeStyle(lineWidth: 1))
-        .foregroundStyle(by: .value("Consumption", "Consumptie"))
-        
-        LineMark(
-          x: .value("Time", e.time),
-          y: .value("Current consumption", e.current_production),
-          series: .value("Production", "Huidige productie (Watt)")
-        )
-        .lineStyle(StrokeStyle(lineWidth: 1))
-        .foregroundStyle(by: .value("Production", "Productie"))
+        .foregroundStyle(by: .value("Prediction", "Voorspelling"))
       }
     }
     .chartXAxis {
       AxisMarks(
-        values: .automatic(desiredCount: 6)
+        values: .automatic(desiredCount: 10)
       )
     }
     .chartYAxis {
@@ -54,6 +83,7 @@ struct ChartsView: View {
     }
     .onAppear {
       fetchElectricityData()
+      fetchPvPowerPrediction()
     }
     .chartLegend(alignment: .center)
     .frame(height: 200)
@@ -76,6 +106,28 @@ struct ChartsView: View {
         decoder.decode([ElectricityData].self, from: data)
         DispatchQueue.main.async {
           self.data = decodedData
+        }
+      }catch {
+        print(error)
+      }
+    }.resume()
+  }
+  
+  func fetchPvPowerPrediction() {
+    let url = URL(string: "http://127.0.0.1:5000/pvpower-prediction")!
+    URLSession.shared.dataTask(with: url) {data, response, error in
+      print(data)
+      guard let predictiondata = data else {return}
+      do {
+        let decoder = JSONDecoder()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:"
+        decoder.dateDecodingStrategy = .formatted(dateFormatter)
+        let decodedData = try
+        decoder.decode([PvPowerPrediction].self, from: predictiondata)
+        DispatchQueue.main.async {
+          self.predictiondata = decodedData
+          print(decodedData)
         }
       }catch {
         print(error)
@@ -126,6 +178,11 @@ struct ElectricityData: Codable {
   let time: Date
   let current_consumption: Float
   let current_production: Float
+}
+
+struct PvPowerPrediction: Codable {
+  let time: Date
+  let final_prediction: Float
 }
 
 struct ElectricityDetailsView: View {

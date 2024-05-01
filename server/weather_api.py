@@ -50,7 +50,7 @@ params = {
 	"hourly": ["temperature_2m", "relative_humidity_2m", "precipitation", "cloud_cover"],
 	"timezone": "auto",
   "past_days": 1,
-	"forecast_days": 2,
+	"forecast_days": 3,
 	"tilt": gradient,
 	"azimuth": orientation
 }

@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request, Response
 from electricity_consumption import *
+from xgboost_forecast import prediction
 
 app = Flask(__name__)
 
@@ -39,6 +40,12 @@ def return_electricity_consumption_production_details():
       "Revenue_sold_electricity": data[10],
     }
     return jsonify(response)
+  
+@app.route("/pvpower-prediction", methods = ['GET'])
+def return_pvpower_prediction():
+  if(request.method == 'GET'):
+    response = prediction.to_json(orient ='records')
+    return response
   
   # if __name__=='__main__': 
   #   app.run(debug=True)
