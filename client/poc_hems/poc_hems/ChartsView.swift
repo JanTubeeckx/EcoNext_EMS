@@ -20,7 +20,7 @@ struct ChartsView: View {
   @State private var predictiondata: [PvPowerPrediction] = []
   
   var body: some View {
-    Text("Vandaag")
+    Text("Morgen")
       .frame(maxWidth: 330, alignment: .leading)
       .font(.system(size: 28))
       .padding(.top)
@@ -65,15 +65,15 @@ struct ChartsView: View {
         LineMark(
           x: .value("Time", e.time),
           y: .value("Prediction", e.final_prediction),
-          series: .value("Prediction", "Voorspelling")
+          series: .value("Prediction", "Voorspelling PV productie")
         )
         .lineStyle(StrokeStyle(lineWidth: 1))
-        .foregroundStyle(by: .value("Prediction", "Voorspelling"))
+        .foregroundStyle(by: .value("Prediction", "Voorspelling PV productie"))
       }
     }
     .chartXAxis {
       AxisMarks(
-        values: .automatic(desiredCount: 10)
+        values: .automatic(desiredCount: 12)
       )
     }
     .chartYAxis {
@@ -127,7 +127,6 @@ struct ChartsView: View {
         decoder.decode([PvPowerPrediction].self, from: predictiondata)
         DispatchQueue.main.async {
           self.predictiondata = decodedData
-          print(decodedData)
         }
       }catch {
         print(error)

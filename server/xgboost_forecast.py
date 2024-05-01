@@ -195,7 +195,7 @@ prediction['final_prediction'] = (prediction['solar_irr_prediction'] *
 # Give prediction dataframe final format to display in IOS app
 prediction.drop(columns=['isFuture', 'solar_irr_prediction', 'temperature_2m', 'relative_humidity_2m', 
                          'precipitation', 'cloud_cover'], inplace=True)
-# prediction = prediction.loc[prediction.index.day == next_day]
+prediction = prediction.loc[prediction.index.day == next_day]
 prediction['time'] = prediction.index
 prediction['time'] = pd.to_datetime(prediction['time'])
 prediction['time'] = prediction['time'].dt.strftime("%Y-%m-%d %H:%M") 
