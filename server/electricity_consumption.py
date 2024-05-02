@@ -25,6 +25,10 @@ monthly_capacity_rate = yearly_capacity_rate/12
 current_time = datetime.now().time()
 current_time_in_decimals = current_time.hour + current_time.minute/60.0
 
+watt = " W"
+kiloWatt = " kW"
+kiloWattHour = " kWh"
+
 # Instantiate InfluxDB client for electricity consumption
 client1 = InfluxDBClient3(
     token=os.getenv("ACCESS_TOKEN"),
@@ -40,7 +44,7 @@ client2 = InfluxDBClient3(
 # Create function to filter period
 def period_filter(nr_of_days):
   if nr_of_days == 1:
-    result = current_time_in_decimals - 2
+    result = round(current_time_in_decimals, 2)
   else:
     period = datetime.now() - timedelta(nr_of_days)
     start = datetime.combine(period, time.min)
@@ -81,7 +85,7 @@ def get_electricity_production_data(period):
 # test['time'] = test['time'].dt.strftime("%Y-%m-%d %H:%M:%S") 
 # print(test.to_json(orient ='index'))
 
-def get_electricity_data(period):
+def get_electricity_consumption_and_injection_data(period):
   electricity_consumption = get_electricity_consumption_data(period)
   electricity_consumption.drop(columns=['average_quarter_peak', 'quarter_peak'], inplace=True)
   # electricity_production = get_electricity_production_data(period)
@@ -92,46 +96,53 @@ def get_electricity_data(period):
 
 def get_electricity_consumption_and_production_details(period):
   # Current consumption and production data
-  electricity_data = get_electricity_data(period)
-  print(electricity_data)
-  current_consumption = round(electricity_data.iloc[-1]['current_consumption'], 2)
-  # current_production = round(electricity_data.iloc[-1]['current_power'], 2)
-  # current_injection = round(electricity_data[0].tail(1).iloc[0]['current_production'], 2)
-  # current_quarter_peak = electricity_data[0].iloc[-1]['quarter_peak']
-  # current_month_peak = electricity_data[0].tail(1).iloc[0]['average_quarter_peak']
-  # if current_month_peak < 2.50:
-  #   amount_monthly_capacity_rate = round((2.5 * monthly_capacity_rate), 2)
-  # else:
-  #   amount_monthly_capacity_rate = round((current_month_peak * monthly_capacity_rate), 2)
-  # # Total consumption and production data
-  # total_consumption = round(electricity_data[0]['current_consumption'].sum()/3600, 2)
-  # total_daily_production = round(electricity_data[1].iloc[-1]['day_total_power'], 2)
-  # electricity_data[1]['time'] = electricity_data[1]['time'].dt.strftime('%Y/%m/%d')
-  # electricity_data[1].drop(electricity_data[1][electricity_data[1]['day_total_power']==0].index, inplace=True)
-  # electricity_data[1].drop_duplicates(subset=['time'], keep='last', inplace=True)
-  # total_production = round(electricity_data[1]['day_total_power'].sum(), 2)
-  # total_injection = round(electricity_data[0]['current_production'].sum()/3600, 2)
-  # revenue_sold_electricity = round(total_injection * current_injection_price, 2)
-  # return current_production, 
-          # current_production, 
-          # current_injection,
-          # total_consumption,
-          # current_quarter_peak, 
-          # current_month_peak,
-          # amount_monthly_capacity_rate,
-          # total_daily_production,
-          # total_production,
-          # total_injection,
-          # revenue_sold_electricity)
+  electricity_details = {}
+  electricity_consumption = get_electricity_consumption_data(period)
+  electricity_production = get_electricity_production_data(period)
+  print(electricity_production)
+  current_consumption =  str(round(electricity_consumption.iloc[-1]['current_consumption'], 2))
+  electricity_details["current_consumption"] = ["Huidig verbruik", current_consumption, watt]
+  current_production = str(round(electricity_production.iloc[-1]['current_power'], 2))
+  electricity_details["current_production"] = ["Huidige productie", current_production, watt]
+  current_injection = str(round(electricity_consumption.iloc[-1]['current_production'], 2))
+  electricity_details["current_injection"] = ["Huidige injectie", current_injection, watt]
+  current_quarter_peak = str(round(electricity_consumption.iloc[-1]['quarter_peak'], 2))
+  electricity_details["quarter_peak"] = ["Huidige kwartierpiek", current_quarter_peak, kiloWattHour]
+  current_month_peak = round(electricity_consumption.iloc[-1]['average_quarter_peak'], 2)
+  if current_month_peak < 2.50:
+    amount_monthly_capacity_rate = str(round((2.5 * monthly_capacity_rate), 2)) + " €"
+  else:
+    amount_monthly_capacity_rate = str(round((current_month_peak * monthly_capacity_rate), 2)) + " €"
+  electricity_details["monthly_capacity_rate"] = ["Voorlopig maandelijks capaciteitstarief", 
+                                                                    amount_monthly_capacity_rate]
+  # Total consumption and production data
+  total_consumption = str(round(electricity_consumption['current_consumption'].sum()/3600, 2)) + " kWh"
+  electricity_details["total_consumption"] = ["Totaal verbruik", total_consumption]
+  # total_daily_production = str(round(electricity_production['day_total_power']
+  #                                    [electricity_production['day_total_power'] > 0].iloc[-1], 2)) + " kWh"
+  # electricity_details["total_day_production"] = ["Totale dagproductie", total_daily_production]
+  electricity_production['time'] = electricity_production['time'].dt.strftime('%Y/%m/%d')
+  electricity_production.drop(electricity_production[electricity_production['day_total_power']==0].index, inplace=True)
+  electricity_production.drop_duplicates(subset=['time'], keep='last', inplace=True)
+  total_production = str(round(electricity_production['day_total_power'].sum(), 2))
+  electricity_details["total_production"] = ["Totale productie", total_production, kiloWattHour]
+  total_injection = round(electricity_consumption['current_production'].sum()/3600/1000, 2)
+  electricity_details["total_injection"] = ["Totale injectie", (str(total_injection) + " kWh")]
+  revenue_sold_electricity = str(round(total_injection * current_injection_price, 2)) + " €"
+  electricity_details["revenue_injection"] = ["Opbrengst injectie", revenue_sold_electricity]
+  return [electricity_details]
 
-current_production = get_electricity_data(1)
-print(current_production.tail(60))
+result = get_electricity_consumption_and_production_details(1)
+print(result)
 
-# current_consumption_csv = dataframe_current_consumption.to_csv()
-# print(current_consumption_csv)
+electricity_production = get_electricity_production_data(1)
+print(electricity_production.tail(60))
+
+# current_production = get_electricity_data(1)
+# print(current_production.tail(60))
 
 # # dataframe_quarter_peak.plot.area(x='time', y='average_quarter_peak', color="orange")
-df = get_electricity_data(1)
+df = get_electricity_consumption_and_injection_data(1)
 
 # # Plot both consumption and prodution datafames
 # df['current_consumption'] = -df['current_consumption']

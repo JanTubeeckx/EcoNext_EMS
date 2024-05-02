@@ -18,7 +18,7 @@ from datetime import timedelta, datetime
 
 # Define variables
 solar_irradiation = 'ghi'
-nr_of_days_to_predict = 3
+nr_of_days_to_predict = 4
 next_day = datetime.now().day + 1
 
 # Inner join solar irradiance dataframe with PV production dataframe
@@ -178,6 +178,9 @@ future_with_features = df_and_future.query('isFuture').copy()
 # Predict future ghi
 future_with_features[solar_irradiation] = xgb_model.predict(future_with_features[FEATURES])
 future_with_features['solar_irr_prediction'] = future_with_features[solar_irradiation]
+# Adjust prediction with hours in shade
+future_with_features.loc[future_with_features.index.hour > 13,
+                          'solar_irr_prediction'] = future_with_features['solar_irr_prediction'] / 2
 future_with_features.loc[future_with_features.index.hour < 7,'solar_irr_prediction'] = 0
 future_with_features.loc[future_with_features.index.hour > 20, 'solar_irr_prediction'] = 0
 future_with_features.loc[future_with_features['solar_irr_prediction'] < 0, 'solar_irr_prediction'] = 0
@@ -190,8 +193,8 @@ weather_forecast.index = weather_forecast.index - timedelta(hours=3)
 prediction = future_with_features.join(weather_forecast)
 prediction['final_prediction'] = (prediction['solar_irr_prediction'] *
                                  (prediction['temperature_2m'].div(10)) /
-                                 (prediction['relative_humidity_2m'] / 100)) * 0.7
-
+                                 (prediction['relative_humidity_2m'].div(100)))
+print(prediction.tail(60))
 # Give prediction dataframe final format to display in IOS app
 prediction.drop(columns=['isFuture', 'solar_irr_prediction', 'temperature_2m', 'relative_humidity_2m', 
                          'precipitation', 'cloud_cover'], inplace=True)
@@ -199,7 +202,6 @@ prediction = prediction.loc[prediction.index.day == next_day]
 prediction['time'] = prediction.index
 prediction['time'] = pd.to_datetime(prediction['time'])
 prediction['time'] = prediction['time'].dt.strftime("%Y-%m-%d %H:%M") 
-print(prediction.tail(60))
 
 # Visualize results 
 # hourly_production_df.plot()
