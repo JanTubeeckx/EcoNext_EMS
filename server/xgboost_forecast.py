@@ -18,7 +18,7 @@ from datetime import timedelta, datetime
 
 # Define variables
 solar_irradiation = 'ghi'
-nr_of_days_to_predict = 4
+nr_of_days_to_predict = 3
 next_day = datetime.now().day + 1
 
 # Inner join solar irradiance dataframe with PV production dataframe
@@ -156,7 +156,7 @@ xgb_model = xgb.XGBRegressor(device='gpu',
                              learning_rate=0.1,
                              n_estimators=1500,
                              objective='reg:squarederror',
-                             max_depth=4)
+                             max_depth=3)
 
 xgb_model.fit(X_all, y_all,
             eval_set=[(X_all, y_all)],
@@ -198,14 +198,14 @@ print(prediction.tail(60))
 # Give prediction dataframe final format to display in IOS app
 prediction.drop(columns=['isFuture', 'solar_irr_prediction', 'temperature_2m', 'relative_humidity_2m', 
                          'precipitation', 'cloud_cover'], inplace=True)
-prediction = prediction.loc[prediction.index.day == next_day]
+# prediction = prediction.loc[prediction.index.day == next_day]
 prediction['time'] = prediction.index
 prediction['time'] = pd.to_datetime(prediction['time'])
 prediction['time'] = prediction['time'].dt.strftime("%Y-%m-%d %H:%M") 
 
 # Visualize results 
-# hourly_production_df.plot()
-# prediction['final_prediction'].plot(figsize = (15,5), title='Solar irradiance prediction')
-# irradiance_and_power_df[solar_irradiation].plot(figsize = (15,5), title='Solar irradiance prediction')
-# plt.legend()
-# plt.show()
+hourly_production_df.plot()
+prediction['final_prediction'].plot(figsize = (15,5), title='Solar irradiance prediction')
+irradiance_and_power_df[solar_irradiation].plot(figsize = (15,5), title='Solar irradiance prediction')
+plt.legend()
+plt.show()

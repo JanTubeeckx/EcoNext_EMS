@@ -9,12 +9,6 @@ import SwiftUI
 import Foundation
 import Charts
 
-struct Product: Identifiable {
-  let id = UUID()
-  let title: String
-  let revenue: Double
-}
-
 struct ChartsView: View {
   @State private var data: [ElectricityData] = []
   @State private var predictiondata: [PvPowerPrediction] = []
@@ -123,6 +117,7 @@ struct ChartsView: View {
         let decoder = JSONDecoder()
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:"
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: 3600)
         decoder.dateDecodingStrategy = .formatted(dateFormatter)
         let decodedData = try
         decoder.decode([PvPowerPrediction].self, from: predictiondata)
@@ -212,7 +207,7 @@ struct ElectricityDetails: Codable {
   let current_production: [String]
   let revenue_injection: [String]
   let total_consumption: [String]
-  //  let total_day_production: [String]
+  let total_day_production: [String]
   let total_injection: [String]
   let total_production: [String]
   let monthly_capacity_rate: [String]
@@ -236,8 +231,8 @@ struct ElectricityDetailsView: View {
                           value: vm.electricityDetails.first?.current_injection[1] ?? "", unit: vm.electricityDetails.first?.current_injection[2] ?? "")
       }
       HStack {
-        electricityDetail(label: vm.electricityDetails.first?.total_production.first ?? "",
-                          value: vm.electricityDetails.first?.total_production[1] ?? "", unit: vm.electricityDetails.first?.total_production[2] ?? "")
+        electricityDetail(label: vm.electricityDetails.first?.total_day_production.first ?? "",
+                          value: vm.electricityDetails.first?.total_day_production[1] ?? "", unit: vm.electricityDetails.first?.total_production[2] ?? "")
         electricityDetail(label: vm.electricityDetails.first?.quarter_peak.first ?? "",
                           value: vm.electricityDetails.first?.quarter_peak[1] ?? "", unit: vm.electricityDetails.first?.quarter_peak[2] ?? "")
       }
@@ -263,7 +258,7 @@ struct ElectricityDetailsView: View {
           .padding(1)
         Text(value + unit)
           .frame(maxWidth: .infinity, alignment: .center)
-          .font(.system(size: 26))
+          .font(.system(size: 24))
       }
     }
   }

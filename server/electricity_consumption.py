@@ -116,18 +116,21 @@ def get_electricity_consumption_and_production_details(period):
   electricity_details["monthly_capacity_rate"] = ["Voorlopig maandelijks capaciteitstarief", 
                                                                     amount_monthly_capacity_rate]
   # Total consumption and production data
-  total_consumption = str(round(electricity_consumption['current_consumption'].sum()/3600, 2)) + " kWh"
-  electricity_details["total_consumption"] = ["Totaal verbruik", total_consumption]
-  # total_daily_production = str(round(electricity_production['day_total_power']
-  #                                    [electricity_production['day_total_power'] > 0].iloc[-1], 2)) + " kWh"
-  # electricity_details["total_day_production"] = ["Totale dagproductie", total_daily_production]
+  total_consumption = str(round(electricity_consumption['current_consumption'].sum()/3600, 2))
+  electricity_details["total_consumption"] = ["Totaal verbruik", total_consumption, kiloWattHour]
+  if (electricity_production['day_total_power'] == 0).all():
+    total_daily_production = str(round(electricity_production['day_total_power'].iloc[-1], 2))
+  else:
+    total_daily_production = str(round(electricity_production['day_total_power']
+                                       [electricity_production['day_total_power'] > 0].iloc[-1], 2))
+  electricity_details["total_day_production"] = ["Totale dagproductie", total_daily_production, kiloWattHour]
   electricity_production['time'] = electricity_production['time'].dt.strftime('%Y/%m/%d')
   electricity_production.drop(electricity_production[electricity_production['day_total_power']==0].index, inplace=True)
   electricity_production.drop_duplicates(subset=['time'], keep='last', inplace=True)
   total_production = str(round(electricity_production['day_total_power'].sum(), 2))
   electricity_details["total_production"] = ["Totale productie", total_production, kiloWattHour]
   total_injection = round(electricity_consumption['current_production'].sum()/3600/1000, 2)
-  electricity_details["total_injection"] = ["Totale injectie", (str(total_injection) + " kWh")]
+  electricity_details["total_injection"] = ["Totale injectie", (str(total_injection)), kiloWattHour]
   revenue_sold_electricity = str(round(total_injection * current_injection_price, 2)) + " €"
   electricity_details["revenue_injection"] = ["Opbrengst injectie", revenue_sold_electricity]
   return [electricity_details]
@@ -136,7 +139,7 @@ result = get_electricity_consumption_and_production_details(1)
 print(result)
 
 electricity_production = get_electricity_production_data(1)
-print(electricity_production.tail(60))
+# print(electricity_production.tail(60))
 
 # current_production = get_electricity_data(1)
 # print(current_production.tail(60))
