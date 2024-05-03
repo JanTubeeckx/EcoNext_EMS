@@ -13,62 +13,72 @@ struct ChartsView: View {
   @State private var data: [ElectricityData] = []
   @State private var predictiondata: [PvPowerPrediction] = []
   @State private var details: [ElectricityDetails] = []
+  @State private var isEditing = false
   
   var body: some View {
     Text("Morgen")
-      .frame(maxWidth: 330, alignment: .leading)
+      .frame(maxWidth: 345, alignment: .leading)
       .font(.system(size: 28).bold())
-      .padding(.top)
-    //    Chart {
-    //      ForEach(data, id: \.time) { e in
-    //        LineMark(
-    //          x: .value("Time", e.time),
-    //          y: .value("Current consumption", e.current_consumption),
-    //          series: .value("Consumption", "Huidige consumptie (Watt)")
-    //        )
-    //        .lineStyle(StrokeStyle(lineWidth: 1))
-    //        .foregroundStyle(by: .value("Consumption", "Consumptie"))
-    //
-    //        LineMark(
-    //          x: .value("Time", e.time),
-    //          y: .value("Current consumption", e.current_production),
-    //          series: .value("Production", "Huidige productie (Watt)")
-    //        )
-    //        .lineStyle(StrokeStyle(lineWidth: 1))
-    //        .foregroundStyle(by: .value("Production", "Productie"))
-    //      }
-    //    }
-    //    .chartXAxis {
-    //      AxisMarks(
-    //        values: .automatic(desiredCount: 6)
-    //      )
-    //    }
-    //    .chartYAxis {
-    //      AxisMarks(
-    //        values: .automatic(desiredCount: 6)
-    //      )
-    //    }
-    //    .onAppear {
-    //      fetchElectricityData()
-    //    }
-    //    .chartLegend(alignment: .center)
-    //    .frame(height: 200)
-    //    .padding(30)
+      .padding(.top, 10)
+      .padding(.bottom, 0.5)
+    Divider()
+      .frame(width: 350)
+      .overlay(.black)
+      .padding(.bottom, 5)
+    HStack{
+      Button(action: {fetchElectricityData(period: 1)}) {
+          Text("Dag")
+            .frame(maxWidth: 50)
+            .font(.system(size: 15).bold())
+      }
+      .buttonStyle(.borderedProminent)
+      .foregroundColor(.white)
+      Button(action: {fetchElectricityData(period: 6)}) {
+        Text("Week")
+          .frame(maxWidth: 60)
+          .font(.system(size: 15))
+      }
+      .background(isEditing ? Color.red : Color(.systemGray6))
+      .onTapGesture {
+        self.isEditing = true
+      }
+      Button(action: {}) {
+        Text("Maand")
+          .frame(maxWidth: 60)
+          .font(.system(size: 15))
+      }
+      Button(action: {}) {
+        Text("Morgen")
+          .frame(maxWidth: 60)
+          .font(.system(size: 15))
+      }
+    }
+    .foregroundColor(.gray)
+    .buttonStyle(.bordered)
+    .frame(width: 350)
     
     Chart {
-      ForEach(predictiondata, id: \.time) { e in
+      ForEach(data, id: \.time) { e in
         LineMark(
           x: .value("Time", e.time),
-          y: .value("Prediction", e.final_prediction),
-          series: .value("Prediction", "Voorspelling PV productie")
+          y: .value("Current consumption", e.current_consumption),
+          series: .value("Consumption", "Huidige consumptie (Watt)")
         )
-        .lineStyle(StrokeStyle(lineWidth: 1.5))
-        .foregroundStyle(by: .value("Prediction", "Voorspelling PV productie"))
+        .lineStyle(StrokeStyle(lineWidth: 1))
+        .foregroundStyle(by: .value("Consumption", "Consumptie"))
+
+        LineMark(
+          x: .value("Time", e.time),
+          y: .value("Current consumption", e.current_production),
+          series: .value("Production", "Huidige productie (Watt)")
+        )
+        .lineStyle(StrokeStyle(lineWidth: 1))
+        .foregroundStyle(by: .value("Production", "Productie"))
       }
     }
     .chartXAxis {
       AxisMarks(
-        values: .automatic(desiredCount: 12)
+        values: .automatic(desiredCount: 6)
       )
     }
     .chartYAxis {
@@ -77,20 +87,49 @@ struct ChartsView: View {
       )
     }
     .onAppear {
-      fetchElectricityData()
-      fetchPvPowerPrediction()
+      fetchElectricityData(period: 1)
     }
-    .chartForegroundStyleScale(["Voorspelling PV productie": Color.green])
     .chartLegend(alignment: .center)
     .frame(height: 200)
     .padding(30)
+    
+//    Chart {
+//      ForEach(predictiondata, id: \.time) { e in
+//        LineMark(
+//          x: .value("Time", e.time),
+//          y: .value("Prediction", e.final_prediction),
+//          series: .value("Prediction", "Voorspelling PV productie")
+//        )
+//        .lineStyle(StrokeStyle(lineWidth: 2))
+//        .foregroundStyle(by: .value("Prediction", "Voorspelling PV productie"))
+//      }
+//    }
+//    .chartXAxis {
+//      AxisMarks(
+//        values: .automatic(desiredCount: 12)
+//      )
+//    }
+//    .chartYAxis {
+//      AxisMarks(
+//        values: .automatic(desiredCount: 6)
+//      )
+//    }
+//    .onAppear {
+//      fetchElectricityData()
+//      fetchPvPowerPrediction()
+//    }
+//    .chartForegroundStyleScale(["Voorspelling PV productie": Color.green])
+//    .chartLegend(alignment: .center)
+//    .frame(height: 200)
+//    .padding(25)
     
     SectorChartExample()
     ElectricityDetailsView().padding(20)
   }
   
-  func fetchElectricityData() {
-    let url = URL(string: "http://127.0.0.1:5000/electricity-data?period=1")!
+  func fetchElectricityData(period: Int) {
+    print("test")
+    let url = URL(string: "http://127.0.0.1:5000/electricity-data?period=\(period)")!
     URLSession.shared.dataTask(with: url) {data, response, error in
       guard let data = data else {return}
       do {

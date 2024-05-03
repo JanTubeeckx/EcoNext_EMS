@@ -62,10 +62,10 @@ historical_data = create_features(historical_data)
 # Create lag features
 def add_lag_features(df):
     target_map = df[solar_irradiation].to_dict()
-    df['lag_1'] = (df.index - pd.Timedelta('24 hours')).map(target_map)
-    df['lag_2'] = (df.index - pd.Timedelta('48 hours')).map(target_map)
-    df['lag_3'] = (df.index - pd.Timedelta('72 hours')).map(target_map)
-    df['lag_4'] = (df.index - pd.Timedelta('96 hours')).map(target_map)
+    df['lag_1'] = (df.index - pd.Timedelta('72 hours')).map(target_map)
+    # df['lag_2'] = (df.index - pd.Timedelta('48 hours')).map(target_map)
+    # df['lag_3'] = (df.index - pd.Timedelta('7 days')).map(target_map)
+    # df['lag_4'] = (df.index - pd.Timedelta('14 days')).map(target_map)
     return df
 
 historical_data = add_lag_features(historical_data)
@@ -146,17 +146,23 @@ df = add_lag_features(historical_data)
 print(df)
 
 FEATURES = ['hour', 'dayofweek', 'quarter', 'month', 'year', 'dayofyear', 'dayofmonth',
-            'temperatuur', 'luchtvochtigheid', 'lag_1', 'lag_2', 'lag_3', 'lag_4']
+            'temperatuur', 'luchtvochtigheid', 'lag_1']
 TARGET = [solar_irradiation]
 
 X_all = df[FEATURES]
 y_all = df[TARGET]
 
-xgb_model = xgb.XGBRegressor(device='gpu',
-                             learning_rate=0.1,
-                             n_estimators=1500,
-                             objective='reg:squarederror',
-                             max_depth=3)
+xgb_model = xgb.XGBRegressor(learning_rate =0.1,
+ n_estimators=5000,
+ max_depth=5,
+ min_child_weight=1,
+ gamma=0,
+ subsample=0.8,
+ colsample_bytree=0.8,
+ reg_alpha=0.5,
+ nthread=4,
+ scale_pos_weight=1,
+ seed=27)
 
 xgb_model.fit(X_all, y_all,
             eval_set=[(X_all, y_all)],
@@ -185,8 +191,8 @@ future_with_features.loc[future_with_features.index.hour < 7,'solar_irr_predicti
 future_with_features.loc[future_with_features.index.hour > 20, 'solar_irr_prediction'] = 0
 future_with_features.loc[future_with_features['solar_irr_prediction'] < 0, 'solar_irr_prediction'] = 0
 future_with_features.drop(columns=['hour', 'dayofweek', 'quarter', 'month', 'year', 'dayofyear', 
-                                   'dayofmonth', 'temperatuur', 'luchtvochtigheid', 'lag_1', 'lag_2', 
-                                   'lag_3', 'lag_4', 'ghi', 'dhi', 'bhi'], inplace=True)
+                                   'dayofmonth', 'temperatuur', 'luchtvochtigheid', 'lag_1',
+                                    'ghi', 'dhi', 'bhi'], inplace=True)
 
 # Combine time series forecast with weather forecast for most important parameters
 weather_forecast.index = weather_forecast.index - timedelta(hours=3)
@@ -198,14 +204,14 @@ print(prediction.tail(60))
 # Give prediction dataframe final format to display in IOS app
 prediction.drop(columns=['isFuture', 'solar_irr_prediction', 'temperature_2m', 'relative_humidity_2m', 
                          'precipitation', 'cloud_cover'], inplace=True)
-# prediction = prediction.loc[prediction.index.day == next_day]
+prediction = prediction.loc[prediction.index.day == next_day]
 prediction['time'] = prediction.index
 prediction['time'] = pd.to_datetime(prediction['time'])
 prediction['time'] = prediction['time'].dt.strftime("%Y-%m-%d %H:%M") 
 
 # Visualize results 
-hourly_production_df.plot()
-prediction['final_prediction'].plot(figsize = (15,5), title='Solar irradiance prediction')
-irradiance_and_power_df[solar_irradiation].plot(figsize = (15,5), title='Solar irradiance prediction')
-plt.legend()
-plt.show()
+# hourly_production_df.plot()
+# prediction['final_prediction'].plot(figsize = (15,5), title='Solar irradiance prediction')
+# irradiance_and_power_df[solar_irradiation].plot(figsize = (15,5), title='Solar irradiance prediction')
+# plt.legend()
+# plt.show()
