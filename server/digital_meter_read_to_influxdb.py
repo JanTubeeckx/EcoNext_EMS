@@ -164,7 +164,7 @@ def main():
             if debug:
                 print(traceback.format_exc())
             # print(traceback.format_exc())
-            print ("Something went wrong...")
+                print ("Something went wrong...")
             ser.close()
         # flush the buffer
         ser.flush()

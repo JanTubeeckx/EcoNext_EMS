@@ -102,10 +102,12 @@ def get_electricity_consumption_and_production_details(period):
   print(electricity_production)
   current_consumption =  str(round(electricity_consumption.iloc[-1]['current_consumption'], 2))
   electricity_details["current_consumption"] = ["Huidig verbruik", current_consumption, watt]
-  current_production = str(round(electricity_production.iloc[-1]['current_power'], 2))
-  electricity_details["current_production"] = ["Huidige productie", current_production, watt]
-  current_injection = str(round(electricity_consumption.iloc[-1]['current_production'], 2))
-  electricity_details["current_injection"] = ["Huidige injectie", current_injection, watt]
+  current_production = electricity_production.iloc[-1]['current_power']
+  electricity_details["current_production"] = ["Huidige productie", str(round(current_production, 2)), watt]
+  current_injection = electricity_consumption.iloc[-1]['current_production']
+  electricity_details["current_injection"] = ["Huidige injectie", str(round(current_injection, 2)), watt]
+  production_minus_injection = str(round(current_production - current_injection, 2))
+  electricity_details["production_minus_injection"] = ["Huidige productie", production_minus_injection, watt]
   current_quarter_peak = str(round(electricity_consumption.iloc[-1]['quarter_peak'], 2))
   electricity_details["quarter_peak"] = ["Huidige kwartierpiek", current_quarter_peak, kiloWattHour]
   current_month_peak = round(electricity_consumption.iloc[-1]['average_quarter_peak'], 2)
@@ -158,22 +160,3 @@ print(dfp.tail(60))
 first = dfc.plot.area(figsize=(10,5), x='time', y='current_consumption', color="orange", linewidth=0)
 dfp.plot.area(figsize=(10,5), ylim=(-3000, 2000), ax=first, x='time', y='current_production', color="green",linewidth=0)
 plt.show()
-
-# # Get month peak of each month
-# dataframe_quarter_peak['time'] = dataframe_quarter_peak['time'].dt.strftime('%Y/%m')
-# dataframe_yearly_capacity_rate = dataframe_quarter_peak.drop_duplicates(subset=['time'], keep='first')
-
-# print('Huidige consumptie: ' + str(current_consumption) + ' kW')
-# print('Huidige productie: ' + str(current_production) + ' kW')
-# print('Huidige injectie: ' + str(current_injection) + ' kW')
-# print('Huidige totale dagproductie: ' + str(total_daily_production) + ' kWh')
-# print('\n')
-# print('Huidig kwartiervermorgen: ' + str(current_quarter_peak) + ' kW')
-# print('Huidige maandpiek: ' + str(current_month_peak) + ' kW')
-# print('Voorlopig maandelijks capaciteitstarief: ' + str(amount_monthly_capacity_rate) + ' €')
-# print('\n')
-# print('Totale consumptie: ' + str(round(total_consumption, 2)) + ' kWh')
-# print('Totale productie: ' + str(round(total_production, 2)) + ' kWh')
-# print('Totale injectie: ' + str(round(total_injection, 2)) + ' kWh')
-# print('\n')
-# print('Opbrengst injectie: ' + str(round(revenue_sold_electricity, 2)) + ' €')

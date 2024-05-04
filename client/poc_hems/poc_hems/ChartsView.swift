@@ -16,9 +16,9 @@ struct ChartsView: View {
   @State private var isEditing = false
   
   var body: some View {
-    Text("Morgen")
+    Text("Vandaag")
       .frame(maxWidth: 345, alignment: .leading)
-      .font(.system(size: 28).bold())
+      .font(.system(size: 30).bold())
       .padding(.top, 10)
       .padding(.bottom, 0.5)
     Divider()
@@ -28,14 +28,14 @@ struct ChartsView: View {
     HStack{
       Button(action: {fetchElectricityData(period: 1)}) {
           Text("Dag")
-            .frame(maxWidth: 50)
+            .frame(maxWidth: 55)
             .font(.system(size: 15).bold())
       }
       .buttonStyle(.borderedProminent)
       .foregroundColor(.white)
       Button(action: {fetchElectricityData(period: 6)}) {
         Text("Week")
-          .frame(maxWidth: 60)
+          .frame(maxWidth: 55)
           .font(.system(size: 15))
       }
       .background(isEditing ? Color.red : Color(.systemGray6))
@@ -44,12 +44,12 @@ struct ChartsView: View {
       }
       Button(action: {}) {
         Text("Maand")
-          .frame(maxWidth: 60)
+          .frame(maxWidth: 55)
           .font(.system(size: 15))
       }
       Button(action: {}) {
         Text("Morgen")
-          .frame(maxWidth: 60)
+          .frame(maxWidth: 55)
           .font(.system(size: 15))
       }
     }
@@ -73,7 +73,7 @@ struct ChartsView: View {
           series: .value("Production", "Huidige productie (Watt)")
         )
         .lineStyle(StrokeStyle(lineWidth: 1))
-        .foregroundStyle(by: .value("Production", "Productie"))
+        .foregroundStyle(by: .value("Production", "Productieoverschot"))
       }
     }
     .chartXAxis {
@@ -83,7 +83,7 @@ struct ChartsView: View {
     }
     .chartYAxis {
       AxisMarks(
-        values: .automatic(desiredCount: 6)
+        values: .automatic(desiredCount: 10)
       )
     }
     .onAppear {
@@ -91,7 +91,8 @@ struct ChartsView: View {
     }
     .chartLegend(alignment: .center)
     .frame(height: 200)
-    .padding(30)
+    .padding(.horizontal, 30)
+    .padding(.vertical, 20)
     
 //    Chart {
 //      ForEach(predictiondata, id: \.time) { e in
@@ -168,26 +169,6 @@ struct ChartsView: View {
       }
     }.resume()
   }
-  
-//  func fetchConsumptionAndProductionDetails() {
-//    let url = URL(string: "http://127.0.0.1:5000/consumption-production-details?period=1")!
-//    URLSession.shared.dataTask(with: url) {data, response, error in
-//      guard let electricityDetails = data else {return}
-//      do {
-//        let decoder = JSONDecoder()
-//        //        let dateFormatter = DateFormatter()
-//        //        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:"
-//        //        decoder.dateDecodingStrategy = .formatted(dateFormatter)
-//        let decodedData = try
-//        decoder.decode([ElectricityDetails].self, from: electricityDetails)
-//        DispatchQueue.main.async {
-//          self.details = decodedData
-//        }
-//      }catch {
-//        print(error)
-//      }
-//    }.resume()
-//  }
 }
 
 struct SectorChartExample: View {
@@ -207,11 +188,19 @@ struct SectorChartExample: View {
       GeometryReader { geometry in
         let frame = geometry[chartProxy.plotAreaFrame]
         VStack {
-          Text(vm.consumptionAndProduction.first?[1] ?? "")
-            .font(.system(size: 30)).bold()
-            .foregroundStyle(vm.consumption > vm.production ? .blue : .green)
+          if(vm.consumption > vm.production){
+            Text("\(vm.consumption, specifier: "%.1f")")
+              .font(.system(size: 28)).bold()
+              .foregroundStyle(.blue)
+              .padding(.top, 10)
+          } else{
+            Text("\(vm.production, specifier: "%.1f")")
+              .font(.system(size: 28)).bold()
+              .foregroundStyle(.green)
+              .padding(.top, 10)
+          }
           Text("W")
-            .font(.system(size: 26)).bold()
+            .font(.system(size: 24)).bold()
             .foregroundStyle(vm.consumption > vm.production ? .blue : .green)
         }
         .position(x: frame.midX, y: frame.midY)
@@ -244,6 +233,7 @@ struct ElectricityDetails: Codable {
   let current_injection: [String]
   let quarter_peak: [String]
   let current_production: [String]
+  let production_minus_injection: [String]
   let revenue_injection: [String]
   let total_consumption: [String]
   let total_day_production: [String]
@@ -348,8 +338,9 @@ class WebService {
     guard let downloadedDetails: [ElectricityDetails] = await WebService().downloadData(fromURL: "http://127.0.0.1:5000/consumption-production-details?period=1") else {return}
     electricityDetails = downloadedDetails
     let cons = electricityDetails[0].current_consumption
-    let prod = electricityDetails[0].current_production
-    consumptionAndProduction = [cons, prod]
+    let inj = electricityDetails[0].current_injection
+    let prod_minus_inj = electricityDetails[0].production_minus_injection
+    consumptionAndProduction = [cons, prod_minus_inj, inj]
     consumption = Float(electricityDetails[0].current_consumption[1])!
     production = Float(electricityDetails[0].current_production[1])!
   }
