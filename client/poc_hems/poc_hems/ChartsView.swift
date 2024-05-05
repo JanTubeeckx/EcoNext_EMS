@@ -13,7 +13,6 @@ struct ChartsView: View {
   @State private var data: [ElectricityData] = []
   @State private var predictiondata: [PvPowerPrediction] = []
   @State private var details: [ElectricityDetails] = []
-  @State private var isEditing = false
   @State private var isPrediction = false
   
   var body: some View {
@@ -38,10 +37,6 @@ struct ChartsView: View {
         Text("Week")
           .frame(maxWidth: 55)
           .font(.system(size: 15))
-      }
-      .background(isEditing ? Color.red : Color(.systemGray6))
-      .onTapGesture {
-        self.isEditing = true
       }
       Button(action: {}) {
         Text("Maand")
