@@ -14,9 +14,10 @@ struct ChartsView: View {
   @State private var predictiondata: [PvPowerPrediction] = []
   @State private var details: [ElectricityDetails] = []
   @State private var isEditing = false
+  @State private var isPrediction = false
   
   var body: some View {
-    Text("Vandaag")
+    Text(isPrediction ? "Morgen" : "Vandaag")
       .frame(maxWidth: 345, alignment: .leading)
       .font(.system(size: 30).bold())
       .padding(.top, 10)
@@ -26,10 +27,10 @@ struct ChartsView: View {
       .overlay(.black)
       .padding(.bottom, 5)
     HStack{
-      Button(action: {fetchElectricityData(period: 1)}) {
-          Text("Dag")
-            .frame(maxWidth: 55)
-            .font(.system(size: 15).bold())
+      Button(action: {fetchElectricityData(period: 1); isPrediction = false}) {
+        Text("Dag")
+          .frame(maxWidth: 55)
+          .font(.system(size: 15).bold())
       }
       .buttonStyle(.borderedProminent)
       .foregroundColor(.white)
@@ -47,7 +48,7 @@ struct ChartsView: View {
           .frame(maxWidth: 55)
           .font(.system(size: 15))
       }
-      Button(action: {}) {
+      Button(action: {isPrediction = true}) {
         Text("Morgen")
           .frame(maxWidth: 55)
           .font(.system(size: 15))
@@ -57,72 +58,74 @@ struct ChartsView: View {
     .buttonStyle(.bordered)
     .frame(width: 350)
     
-    Chart {
-      ForEach(data, id: \.time) { e in
-        LineMark(
-          x: .value("Time", e.time),
-          y: .value("Current consumption", e.current_consumption),
-          series: .value("Consumption", "Huidige consumptie (Watt)")
-        )
-        .lineStyle(StrokeStyle(lineWidth: 1))
-        .foregroundStyle(by: .value("Consumption", "Consumptie"))
-
-        LineMark(
-          x: .value("Time", e.time),
-          y: .value("Current consumption", e.current_production),
-          series: .value("Production", "Huidige productie (Watt)")
-        )
-        .lineStyle(StrokeStyle(lineWidth: 1))
-        .foregroundStyle(by: .value("Production", "Productieoverschot"))
+    if (isPrediction) {
+      Chart {
+        ForEach(predictiondata, id: \.time) { e in
+          LineMark(
+            x: .value("Time", e.time),
+            y: .value("Prediction", e.final_prediction),
+            series: .value("Prediction", "Voorspelling PV productie")
+          )
+          .lineStyle(StrokeStyle(lineWidth: 2))
+          .foregroundStyle(by: .value("Prediction", "Voorspelling PV productie"))
+        }
       }
+      .chartXAxis {
+        AxisMarks(
+          values: .automatic(desiredCount: 12)
+        )
+      }
+      .chartYAxis {
+        AxisMarks(
+          values: .automatic(desiredCount: 6)
+        )
+      }
+      .onAppear {
+//        fetchElectricityData()
+        fetchPvPowerPrediction()
+      }
+      .chartForegroundStyleScale(["Voorspelling PV productie": Color.green])
+      .chartLegend(alignment: .center)
+      .frame(height: 200)
+      .padding(25)
+    } else {
+      Chart {
+        ForEach(data, id: \.time) { e in
+          LineMark(
+            x: .value("Time", e.time),
+            y: .value("Current consumption", e.current_consumption),
+            series: .value("Consumption", "Huidige consumptie (Watt)")
+          )
+          .lineStyle(StrokeStyle(lineWidth: 1))
+          .foregroundStyle(by: .value("Consumption", "Consumptie"))
+          
+          LineMark(
+            x: .value("Time", e.time),
+            y: .value("Current consumption", e.current_production),
+            series: .value("Production", "Huidige productie (Watt)")
+          )
+          .lineStyle(StrokeStyle(lineWidth: 1))
+          .foregroundStyle(by: .value("Production", "Productieoverschot"))
+        }
+      }
+      .chartXAxis {
+        AxisMarks(
+          values: .automatic(desiredCount: 6)
+        )
+      }
+      .chartYAxis {
+        AxisMarks(
+          values: .automatic(desiredCount: 10)
+        )
+      }
+      .onAppear {
+        fetchElectricityData(period: 1)
+      }
+      .chartLegend(alignment: .center)
+      .frame(height: 200)
+      .padding(.horizontal, 30)
+      .padding(.vertical, 20)
     }
-    .chartXAxis {
-      AxisMarks(
-        values: .automatic(desiredCount: 6)
-      )
-    }
-    .chartYAxis {
-      AxisMarks(
-        values: .automatic(desiredCount: 10)
-      )
-    }
-    .onAppear {
-      fetchElectricityData(period: 1)
-    }
-    .chartLegend(alignment: .center)
-    .frame(height: 200)
-    .padding(.horizontal, 30)
-    .padding(.vertical, 20)
-    
-//    Chart {
-//      ForEach(predictiondata, id: \.time) { e in
-//        LineMark(
-//          x: .value("Time", e.time),
-//          y: .value("Prediction", e.final_prediction),
-//          series: .value("Prediction", "Voorspelling PV productie")
-//        )
-//        .lineStyle(StrokeStyle(lineWidth: 2))
-//        .foregroundStyle(by: .value("Prediction", "Voorspelling PV productie"))
-//      }
-//    }
-//    .chartXAxis {
-//      AxisMarks(
-//        values: .automatic(desiredCount: 12)
-//      )
-//    }
-//    .chartYAxis {
-//      AxisMarks(
-//        values: .automatic(desiredCount: 6)
-//      )
-//    }
-//    .onAppear {
-//      fetchElectricityData()
-//      fetchPvPowerPrediction()
-//    }
-//    .chartForegroundStyleScale(["Voorspelling PV productie": Color.green])
-//    .chartLegend(alignment: .center)
-//    .frame(height: 200)
-//    .padding(25)
     
     SectorChartExample()
     ElectricityDetailsView().padding(20)
@@ -194,14 +197,21 @@ struct SectorChartExample: View {
               .foregroundStyle(.blue)
               .padding(.top, 10)
           } else{
-            Text("\(vm.production, specifier: "%.1f")")
-              .font(.system(size: 28)).bold()
-              .foregroundStyle(.green)
-              .padding(.top, 10)
+            if (vm.injection > 0) {
+              Text("\(vm.injection, specifier: "%.1f")")
+                .font(.system(size: 28)).bold()
+                .foregroundStyle(.orange)
+                .padding(.top, 10)
+            } else {
+              Text("\(vm.production, specifier: "%.1f")")
+                .font(.system(size: 28)).bold()
+                .foregroundStyle(.green)
+                .padding(.top, 10)
+            }
           }
           Text("W")
             .font(.system(size: 24)).bold()
-            .foregroundStyle(vm.consumption > vm.production ? .blue : .green)
+            .foregroundStyle(vm.consumption > vm.production ? .blue : vm.injection > 0 ? .orange : .green)
         }
         .position(x: frame.midX, y: frame.midY)
       }
@@ -332,6 +342,7 @@ class WebService {
   @Published var electricityDetails = [ElectricityDetails]()
   @Published var consumption = Float()
   @Published var production = Float()
+  @Published var injection = Float()
   @Published var consumptionAndProduction = [[String]]()
   
   func fetchData() async {
@@ -343,6 +354,7 @@ class WebService {
     consumptionAndProduction = [cons, prod_minus_inj, inj]
     consumption = Float(electricityDetails[0].current_consumption[1])!
     production = Float(electricityDetails[0].current_production[1])!
+    injection = Float(electricityDetails[0].current_injection[1])!
   }
 }
 

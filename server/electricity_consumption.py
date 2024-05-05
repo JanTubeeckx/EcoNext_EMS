@@ -107,7 +107,7 @@ def get_electricity_consumption_and_production_details(period):
   current_injection = electricity_consumption.iloc[-1]['current_production']
   electricity_details["current_injection"] = ["Huidige injectie", str(round(current_injection, 2)), watt]
   production_minus_injection = str(round(current_production - current_injection, 2))
-  electricity_details["production_minus_injection"] = ["Huidige productie", production_minus_injection, watt]
+  electricity_details["production_minus_injection"] = ["Huidig zelfverbruik", production_minus_injection, watt]
   current_quarter_peak = str(round(electricity_consumption.iloc[-1]['quarter_peak'], 2))
   electricity_details["quarter_peak"] = ["Huidige kwartierpiek", current_quarter_peak, kiloWattHour]
   current_month_peak = round(electricity_consumption.iloc[-1]['average_quarter_peak'], 2)
