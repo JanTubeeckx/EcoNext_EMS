@@ -1,12 +1,11 @@
-import openmeteo_requests
-
 import requests_cache
+import matplotlib.pyplot as plt
 import pandas as pd
+import openmeteo_requests
+from datetime import datetime
 from retry_requests import retry
 from geopy.geocoders import Nominatim
-import matplotlib.pyplot as plt
 from meteostat import Point, Hourly
-from datetime import datetime
 
 # User input
 user_address = "Toekomststraat 67, 9040 Sint-Amandsberg"
@@ -20,8 +19,12 @@ latitude = getLoc.latitude
 longitude = getLoc.longitude
 
 # Set time period
+current_date  = datetime.now().date()
+year = current_date.year
+month = current_date.month
+day = current_date.day
 start = datetime(2019, 1, 1)
-end = datetime(2024, 4, 18)
+end = datetime(year, month, day)
 
 location = Point(latitude, longitude)
 
@@ -29,12 +32,9 @@ location = Point(latitude, longitude)
 data = Hourly(location, start, end)
 weather_data = data.fetch()
 weather_data.drop(columns=['snow', 'wdir', 'wspd', 'wpgt', 'tsun', 'coco'], inplace=True)
-weather_data.rename(columns={'temp':'temperatuur', 'dwpt':'dauwpunt', 'rhum':'luchtvochtigheid', 'prcp':'neerslag', 'pres':'luchtdruk'}, inplace=True)
+weather_data.rename(columns={'temp':'temperatuur', 'dwpt':'dauwpunt', 'rhum':'luchtvochtigheid',
+                              'prcp':'neerslag', 'pres':'luchtdruk'}, inplace=True)
 weather_data.index = pd.to_datetime(weather_data.index)
-
-# # Plot line chart including average, minimum and maximum temperature
-# data.plot(y=['tavg', 'tmin', 'tmax'])
-# plt.show()
 
 # Setup the Open-Meteo API client with cache and retry on error
 cache_session = requests_cache.CachedSession('.cache', expire_after = 3600)
@@ -84,45 +84,3 @@ hourly_data["cloud_cover"] = hourly_cloud_cover
 hourly_dataframe = pd.DataFrame(data = hourly_data)
 weather_forecast = hourly_dataframe.set_index('date', drop=True)
 weather_forecast.index = pd.to_datetime(weather_forecast.index).tz_convert(None)
-
-# hourly_dataframe.plot(y='temperature_2m', color='red', figsize=(15,5))
-# hourly_dataframe.plot(y='relative_humidity_2m', color='red', figsize=(15,5))
-# hourly_dataframe.plot(y='precipitation', color='red', figsize=(15,5))
-# hourly_dataframe.plot(y='cloud_cover', color='red', figsize=(15,5))
-
-# # Process minutely_15 data. The order of variables needs to be the same as requested.
-# minutely_15 = response.Minutely15()
-# minutely_15_temperature_2m = minutely_15.Variables(0).ValuesAsNumpy()
-# minutely_15_relative_humidity_2m = minutely_15.Variables(1).ValuesAsNumpy()
-# minutely_15_dew_point_2m = minutely_15.Variables(2).ValuesAsNumpy()
-# minutely_15_shortwave_radiation = minutely_15.Variables(3).ValuesAsNumpy()
-# minutely_15_direct_radiation = minutely_15.Variables(4).ValuesAsNumpy()
-# minutely_15_diffuse_radiation = minutely_15.Variables(5).ValuesAsNumpy()
-# minutely_15_direct_normal_irradiance = minutely_15.Variables(6).ValuesAsNumpy()
-# minutely_15_global_tilted_irradiance = minutely_15.Variables(7).ValuesAsNumpy()
-# minutely_15_terrestrial_radiation = minutely_15.Variables(8).ValuesAsNumpy()
-
-# minutely_15_data = {"date": pd.date_range(
-# 	start = pd.to_datetime(minutely_15.Time(), unit = "s", utc = True),
-# 	end = pd.to_datetime(minutely_15.TimeEnd(), unit = "s", utc = True),
-# 	freq = pd.Timedelta(seconds = minutely_15.Interval()),
-# 	inclusive = "left"
-# )}
-# minutely_15_data["temperature_2m"] = minutely_15_temperature_2m
-# minutely_15_data["relative_humidity_2m"] = minutely_15_relative_humidity_2m
-# minutely_15_data["dew_point_2m"] = minutely_15_dew_point_2m
-# minutely_15_data["shortwave_radiation"] = minutely_15_shortwave_radiation
-# minutely_15_data["direct_radiation"] = minutely_15_direct_radiation
-# minutely_15_data["diffuse_radiation"] = minutely_15_diffuse_radiation
-# minutely_15_data["direct_normal_irradiance"] = minutely_15_direct_normal_irradiance
-# minutely_15_data["global_tilted_irradiance"] = minutely_15_global_tilted_irradiance
-# minutely_15_data["terrestrial_radiation"] = minutely_15_terrestrial_radiation
-
-# minutely_15_dataframe = pd.DataFrame(data = minutely_15_data)
-# minutely_15_dataframe = minutely_15_dataframe.set_index('date', drop=True)
-
-# # minutely_15_dataframe.plot(x='date', y='dew_point_2m', color='red', figsize=(15,5))
-# minutely_15_dataframe.plot(y='temperature_2m', color='green', figsize=(15,5))
-# # minutely_15_dataframe.plot(x='date', y='relative_humidity_2m', color='green', figsize=(15,5))
-# # minutely_15_dataframe.plot(x='date', y='shortwave_radiation', color='green', figsize=(15,5))
-# # minutely_15_dataframe.plot(x='date', y='terrestrial_radiation', color='green', figsize=(15,5))

@@ -153,16 +153,16 @@ X_all = df[FEATURES]
 y_all = df[TARGET]
 
 xgb_model = xgb.XGBRegressor(learning_rate =0.1,
- n_estimators=5000,
- max_depth=5,
- min_child_weight=1,
- gamma=0,
- subsample=0.8,
- colsample_bytree=0.8,
- reg_alpha=0.5,
- nthread=4,
- scale_pos_weight=1,
- seed=27)
+                             n_estimators=5000,
+                             max_depth=5,
+                             min_child_weight=1,
+                             gamma=0,
+                             subsample=0.8,
+                             colsample_bytree=0.8,
+                             reg_alpha=0.5,
+                             nthread=4,
+                             scale_pos_weight=1,
+                             seed=27)
 
 xgb_model.fit(X_all, y_all,
             eval_set=[(X_all, y_all)],
@@ -185,7 +185,7 @@ future_with_features = df_and_future.query('isFuture').copy()
 future_with_features[solar_irradiation] = xgb_model.predict(future_with_features[FEATURES])
 future_with_features['solar_irr_prediction'] = future_with_features[solar_irradiation]
 # Adjust prediction with hours in shade
-future_with_features.loc[future_with_features.index.hour > 13,
+future_with_features.loc[future_with_features.index.hour > 14,
                           'solar_irr_prediction'] = future_with_features['solar_irr_prediction'] / 2
 future_with_features.loc[future_with_features.index.hour < 7,'solar_irr_prediction'] = 0
 future_with_features.loc[future_with_features.index.hour > 20, 'solar_irr_prediction'] = 0

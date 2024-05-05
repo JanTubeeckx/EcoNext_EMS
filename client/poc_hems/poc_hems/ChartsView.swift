@@ -81,7 +81,6 @@ struct ChartsView: View {
         )
       }
       .onAppear {
-//        fetchElectricityData()
         fetchPvPowerPrediction()
       }
       .chartForegroundStyleScale(["Voorspelling PV productie": Color.green])
@@ -127,12 +126,11 @@ struct ChartsView: View {
       .padding(.vertical, 20)
     }
     
-    SectorChartExample()
+    ConsumptionProductionInjectionChart()
     ElectricityDetailsView().padding(20)
   }
   
   func fetchElectricityData(period: Int) {
-    print("test")
     let url = URL(string: "http://127.0.0.1:5000/electricity-data?period=\(period)")!
     URLSession.shared.dataTask(with: url) {data, response, error in
       guard let data = data else {return}
@@ -174,7 +172,7 @@ struct ChartsView: View {
   }
 }
 
-struct SectorChartExample: View {
+struct ConsumptionProductionInjectionChart: View {
   @StateObject var vm = ElectricityDetailViewModel()
   
   var body: some View {
@@ -272,8 +270,8 @@ struct ElectricityDetailsView: View {
       HStack {
         electricityDetail(label: vm.electricityDetails.first?.total_day_production.first ?? "",
                           value: vm.electricityDetails.first?.total_day_production[1] ?? "", unit: vm.electricityDetails.first?.total_production[2] ?? "")
-        electricityDetail(label: vm.electricityDetails.first?.quarter_peak.first ?? "",
-                          value: vm.electricityDetails.first?.quarter_peak[1] ?? "", unit: vm.electricityDetails.first?.quarter_peak[2] ?? "")
+        electricityDetail(label: vm.electricityDetails.first?.revenue_injection.first ?? "",
+                          value: vm.electricityDetails.first?.revenue_injection[1] ?? "", unit: "")
       }
     }
     .onAppear {
