@@ -26,10 +26,19 @@ struct CardView: View {
           }
         }
       }
+      HStack {
+        Image(systemName: "checkmark.circle.fill")
+          .font(.system(size: 24.0))
+          .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
+        Text("Morgen ingeschakeld van 13u tot 17u")
+      }
+      .padding(.leading, 5.0)
+      .padding(.top, 0.5)
     }
-    .padding(20)
-    .padding(.trailing, 60)
+    .padding(15)
+    .padding(.trailing, 20.0)
     .foregroundColor(device.theme.accentColor)
+    
   }
 }
 
