@@ -14,6 +14,7 @@ struct CardView: View {
       HStack(alignment: .center) {
         Image(systemName: "washer")
           .font(.system(size: 48.0))
+          .padding(.trailing, 10)
         VStack(alignment: .leading) {
           Text(device.description)
             .font(.system(size: 22.0).bold())
@@ -26,6 +27,9 @@ struct CardView: View {
         }
       }
     }
+    .padding(20)
+    .padding(.trailing, 60)
+    .foregroundColor(device.theme.accentColor)
   }
 }
 
@@ -35,5 +39,6 @@ struct CardView_Previews: PreviewProvider {
     CardView(device: device)
       .background(device.theme.mainColor)
       .previewLayout(.fixed(width: 400, height: 60))
+      .padding(10)
   }
 }
