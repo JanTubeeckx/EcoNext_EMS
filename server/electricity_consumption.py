@@ -99,15 +99,14 @@ def get_electricity_consumption_and_production_details(period):
   electricity_details = {}
   electricity_consumption = get_electricity_consumption_data(period)
   electricity_production = get_electricity_production_data(period)
-  print(electricity_production)
   current_consumption =  str(round(electricity_consumption.iloc[-1]['current_consumption'], 2))
-  electricity_details["current_consumption"] = ["Huidig verbruik", current_consumption, watt]
+  electricity_details["current_consumption"] = ["Verbruik", current_consumption, watt]
   current_production = electricity_production.iloc[-1]['current_power']
   electricity_details["current_production"] = ["Huidige productie", str(round(current_production, 2)), watt]
   current_injection = electricity_consumption.iloc[-1]['current_production']
-  electricity_details["current_injection"] = ["Huidige injectie", str(round(current_injection, 2)), watt]
+  electricity_details["current_injection"] = ["Injectie", str(round(current_injection, 2)), watt]
   production_minus_injection = str(round(current_production - current_injection, 2))
-  electricity_details["production_minus_injection"] = ["Huidig zelfverbruik", production_minus_injection, watt]
+  electricity_details["production_minus_injection"] = ["Zelfverbruik", production_minus_injection, watt]
   current_quarter_peak = str(round(electricity_consumption.iloc[-1]['quarter_peak'], 2))
   electricity_details["quarter_peak"] = ["Huidige kwartierpiek", current_quarter_peak, kiloWattHour]
   current_month_peak = round(electricity_consumption.iloc[-1]['average_quarter_peak'], 2)
@@ -156,7 +155,6 @@ dfc = df[['time', 'current_consumption']]
 dfp = df[['time', 'current_production']]
 dfc = dfc.replace(0.0, np.nan)
 dfp = dfp.replace(0.0, np.nan)
-print(dfp.tail(60))
 first = dfc.plot.area(figsize=(10,5), x='time', y='current_consumption', color="orange", linewidth=0)
 dfp.plot.area(figsize=(10,5), ylim=(-3000, 2000), ax=first, x='time', y='current_production', color="green",linewidth=0)
 plt.show()

@@ -41,7 +41,8 @@ current_solar_production = client2.query(
 # Construct dataframe PV production
 dataframe_current_production = current_solar_production.to_pandas()
 # Convert 5 seconds data to hourly data
-hourly_production_df = dataframe_current_production.resample('h', on='time').mean().reset_index()
+hourly_production_df = dataframe_current_production.resample('15min', on='time').mean().reset_index()
 # Add 2 hours because UTC timestamp InfluxDB in UTC
 hourly_production_df['time'] = hourly_production_df['time'] + pd.Timedelta(minutes=120)
 hourly_production_df = hourly_production_df.set_index('time', drop=True)
+print(hourly_production_df.tail(60))

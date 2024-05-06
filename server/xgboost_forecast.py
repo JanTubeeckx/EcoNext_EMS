@@ -28,6 +28,8 @@ hourly_production_df['temperature'] = hourly_production_df['temperature'].multip
 # Add historical weatherdata to historical irradiance data
 historical_data = solar_irradiance_df.join(weather_data, how='left')
 historical_data.index = pd.to_datetime(historical_data.index)
+historical_data = historical_data.ffill()
+print(historical_data.tail(60))
 
 # Add measured power output PV system
 irradiance_and_power_df = historical_data.join(hourly_production_df, how='right')
@@ -62,10 +64,11 @@ historical_data = create_features(historical_data)
 # Create lag features
 def add_lag_features(df):
     target_map = df[solar_irradiation].to_dict()
-    df['lag_1'] = (df.index - pd.Timedelta('72 hours')).map(target_map)
-    # df['lag_2'] = (df.index - pd.Timedelta('48 hours')).map(target_map)
-    # df['lag_3'] = (df.index - pd.Timedelta('7 days')).map(target_map)
-    # df['lag_4'] = (df.index - pd.Timedelta('14 days')).map(target_map)
+    df['lag_1'] = (df.index - pd.Timedelta('1 day')).map(target_map)
+    df['lag_2'] = (df.index - pd.Timedelta('7 days')).map(target_map)
+    df['lag_3'] = (df.index - pd.Timedelta('14 days')).map(target_map)
+    df['lag_4'] = (df.index - pd.Timedelta('364 days')).map(target_map)
+    df['lag_'] = (df.index - pd.Timedelta('1820 days')).map(target_map)
     return df
 
 historical_data = add_lag_features(historical_data)
@@ -143,10 +146,10 @@ X = pd.DataFrame(scaler.fit_transform(X), columns = X.columns)
 df = create_features(historical_data)
 df = add_lag_features(historical_data)
 
-print(df)
+print(df.tail(60))
 
 FEATURES = ['hour', 'dayofweek', 'quarter', 'month', 'year', 'dayofyear', 'dayofmonth',
-            'temperatuur', 'luchtvochtigheid', 'lag_1']
+            'temperatuur', 'luchtvochtigheid', 'lag_1', 'lag_2', 'lag_3', 'lag_4']
 TARGET = [solar_irradiation]
 
 X_all = df[FEATURES]
@@ -172,7 +175,7 @@ xgb.plot_importance(xgb_model)
 
 current_date = solar_irradiance_df.index.max().date()
 future_date = current_date+timedelta(nr_of_days_to_predict)
-future = pd.date_range(str(current_date), str(future_date), freq='1h')
+future = pd.date_range(str(current_date), str(future_date), freq='15min')
 future_df = pd.DataFrame(index=future)
 future_df['isFuture'] = True
 df['isFuture'] = False
@@ -185,25 +188,25 @@ future_with_features = df_and_future.query('isFuture').copy()
 future_with_features[solar_irradiation] = xgb_model.predict(future_with_features[FEATURES])
 future_with_features['solar_irr_prediction'] = future_with_features[solar_irradiation]
 # Adjust prediction with hours in shade
-future_with_features.loc[future_with_features.index.hour > 14,
-                          'solar_irr_prediction'] = future_with_features['solar_irr_prediction'] / 2
+future_with_features.loc[future_with_features.index.hour > 12,
+                          'solar_irr_prediction'] = future_with_features['solar_irr_prediction'] / 1.5
 future_with_features.loc[future_with_features.index.hour < 7,'solar_irr_prediction'] = 0
 future_with_features.loc[future_with_features.index.hour > 20, 'solar_irr_prediction'] = 0
 future_with_features.loc[future_with_features['solar_irr_prediction'] < 0, 'solar_irr_prediction'] = 0
 future_with_features.drop(columns=['hour', 'dayofweek', 'quarter', 'month', 'year', 'dayofyear', 
-                                   'dayofmonth', 'temperatuur', 'luchtvochtigheid', 'lag_1',
+                                   'dayofmonth', 'temperatuur', 'luchtvochtigheid', 'lag_1', 'lag_2', 'lag_3', 'lag_4',
                                     'ghi', 'dhi', 'bhi'], inplace=True)
 
 # Combine time series forecast with weather forecast for most important parameters
-weather_forecast.index = weather_forecast.index - timedelta(hours=3)
 prediction = future_with_features.join(weather_forecast)
+prediction.index = prediction.index - timedelta(hours=1)
 prediction['final_prediction'] = (prediction['solar_irr_prediction'] *
                                  (prediction['temperature_2m'].div(10)) /
                                  (prediction['relative_humidity_2m'].div(100)))
 print(prediction.tail(60))
 # Give prediction dataframe final format to display in IOS app
 prediction.drop(columns=['isFuture', 'solar_irr_prediction', 'temperature_2m', 'relative_humidity_2m', 
-                         'precipitation', 'cloud_cover'], inplace=True)
+                         'dew_point_2m', 'rain'], inplace=True)
 prediction = prediction.loc[prediction.index.day == next_day]
 prediction['time'] = prediction.index
 prediction['time'] = pd.to_datetime(prediction['time'])

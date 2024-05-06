@@ -62,7 +62,7 @@ struct ChartsView: View {
             series: .value("Prediction", "Voorspelling PV productie")
           )
           .lineStyle(StrokeStyle(lineWidth: 2))
-          .foregroundStyle(by: .value("Prediction", "Voorspelling PV productie"))
+          .foregroundStyle(by: .value("Prediction", "Voorspelling PV productie (Watt)"))
         }
       }
       .chartXAxis {
@@ -78,7 +78,7 @@ struct ChartsView: View {
       .onAppear {
         fetchPvPowerPrediction()
       }
-      .chartForegroundStyleScale(["Voorspelling PV productie": Color.green])
+      .chartForegroundStyleScale(["Voorspelling PV productie (Watt)": Color.green])
       .chartLegend(alignment: .center)
       .frame(height: 200)
       .padding(25)
@@ -91,15 +91,16 @@ struct ChartsView: View {
             series: .value("Consumption", "Huidige consumptie (Watt)")
           )
           .lineStyle(StrokeStyle(lineWidth: 1))
-          .foregroundStyle(by: .value("Consumption", "Consumptie"))
+          .foregroundStyle(by: .value("Consumption", "Verbruik (Watt)"))
           
           LineMark(
             x: .value("Time", e.time),
-            y: .value("Current consumption", e.current_production),
+            y: .value("Current production", e.current_production),
             series: .value("Production", "Huidige productie (Watt)")
           )
           .lineStyle(StrokeStyle(lineWidth: 1))
-          .foregroundStyle(by: .value("Production", "Productieoverschot"))
+          .foregroundStyle(.orange)
+          .foregroundStyle(by: .value("Production", "Productieoverschot/injectie (Watt)"))
         }
       }
       .chartXAxis {
@@ -115,6 +116,10 @@ struct ChartsView: View {
       .onAppear {
         fetchElectricityData(period: 1)
       }
+      .chartForegroundStyleScale([
+        "Verbruik (Watt)" : Color.blue,
+        "Productieoverschot/injectie (Watt)": Color.orange
+      ])
       .chartLegend(alignment: .center)
       .frame(height: 200)
       .padding(.horizontal, 30)
@@ -259,15 +264,22 @@ struct ElectricityDetailsView: View {
       HStack {
         electricityDetail(label: vm.electricityDetails.first?.current_consumption.first ?? "",
                           value: vm.electricityDetails.first?.current_consumption[1] ?? "", unit: vm.electricityDetails.first?.current_consumption[2] ?? "")
+        electricityDetail(label: vm.electricityDetails.first?.production_minus_injection.first ?? "",
+                          value: vm.electricityDetails.first?.production_minus_injection[1] ?? "", unit: vm.electricityDetails.first?.production_minus_injection[2] ?? "")
         electricityDetail(label: (vm.electricityDetails.first?.current_injection.first ?? ""),
-                          value: vm.electricityDetails.first?.current_injection[1] ?? "", unit: vm.electricityDetails.first?.current_injection[2] ?? "")
+                          value: vm.electricityDetails.first?.current_injection[1] ?? "", unit:
+                            vm.electricityDetails.first?.current_injection[2] ?? "")
       }
+      .padding(.bottom, 15)
+      .padding(.horizontal, 10)
       HStack {
-        electricityDetail(label: vm.electricityDetails.first?.total_day_production.first ?? "",
-                          value: vm.electricityDetails.first?.total_day_production[1] ?? "", unit: vm.electricityDetails.first?.total_production[2] ?? "")
+        electricityDetail(label: vm.electricityDetails.first?.current_production.first ?? "",
+                          value: vm.electricityDetails.first?.current_production[1] ?? "", unit:
+                            vm.electricityDetails.first?.current_production[2] ?? "")
         electricityDetail(label: vm.electricityDetails.first?.revenue_injection.first ?? "",
                           value: vm.electricityDetails.first?.revenue_injection[1] ?? "", unit: "")
       }
+      .padding(.horizontal, 30)
     }
     .onAppear {
       if vm.electricityDetails.isEmpty {
@@ -336,6 +348,7 @@ class WebService {
   @Published var consumption = Float()
   @Published var production = Float()
   @Published var injection = Float()
+  @Published var selfConsumption = Float()
   @Published var consumptionAndProduction = [[String]]()
   
   func fetchData() async {
@@ -348,6 +361,7 @@ class WebService {
     consumption = Float(electricityDetails[0].current_consumption[1])!
     production = Float(electricityDetails[0].current_production[1])!
     injection = Float(electricityDetails[0].current_injection[1])!
+    selfConsumption = production - injection
   }
 }
 
