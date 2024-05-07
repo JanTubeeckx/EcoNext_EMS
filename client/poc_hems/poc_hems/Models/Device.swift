@@ -8,6 +8,7 @@
 import Foundation
 
 struct Device {
+  var icon: String
   var description: String
   var durationInMinutes: Int
   var powerConsumptionInKwh: Float
@@ -17,11 +18,18 @@ struct Device {
 extension Device {
   static let sampleData: [Device] =
   [
-    Device(description: "Wasmachine",
-           durationInMinutes: 240, 
+    Device(icon: "washer",
+           description: "Wasmachine",
+           durationInMinutes: 240,
            powerConsumptionInKwh: 1.0,
            theme: .yellow),
-    Device(description: "Vaatwasser",
+    Device(icon: "powercord",
+           description: "Slimme stekker",
+           durationInMinutes: 0,
+           powerConsumptionInKwh: 0.0,
+           theme: .yellow),
+    Device(icon: "dishwasher",
+           description: "Vaatwasser",
            durationInMinutes: 180,
            powerConsumptionInKwh: 1.0,
            theme: .sky)

@@ -250,11 +250,11 @@ struct ElectricityDetails: Codable {
   let monthly_capacity_rate: [String]
 }
 
-struct ElectricityDetail: Identifiable {
-  let id = UUID()
-  let label: String
-  let value: Float
-}
+//struct ElectricityDetail: Identifiable {
+//  let id = UUID()
+//  let label: String
+//  let value: Float
+//}
 
 struct ElectricityDetailsView: View {
   @StateObject var vm = ElectricityDetailViewModel()
@@ -262,21 +262,21 @@ struct ElectricityDetailsView: View {
   var body: some View {
     VStack {
       HStack {
-        electricityDetail(label: vm.electricityDetails.first?.current_consumption.first ?? "",
+        ElectricityDetail(label: vm.electricityDetails.first?.current_consumption.first ?? "",
                           value: vm.electricityDetails.first?.current_consumption[1] ?? "", unit: vm.electricityDetails.first?.current_consumption[2] ?? "")
-        electricityDetail(label: vm.electricityDetails.first?.production_minus_injection.first ?? "",
+        ElectricityDetail(label: vm.electricityDetails.first?.production_minus_injection.first ?? "",
                           value: vm.electricityDetails.first?.production_minus_injection[1] ?? "", unit: vm.electricityDetails.first?.production_minus_injection[2] ?? "")
-        electricityDetail(label: (vm.electricityDetails.first?.current_injection.first ?? ""),
+        ElectricityDetail(label: (vm.electricityDetails.first?.current_injection.first ?? ""),
                           value: vm.electricityDetails.first?.current_injection[1] ?? "", unit:
                             vm.electricityDetails.first?.current_injection[2] ?? "")
       }
       .padding(.bottom, 15)
       .padding(.horizontal, 10)
       HStack {
-        electricityDetail(label: vm.electricityDetails.first?.current_production.first ?? "",
+        ElectricityDetail(label: vm.electricityDetails.first?.current_production.first ?? "",
                           value: vm.electricityDetails.first?.current_production[1] ?? "", unit:
                             vm.electricityDetails.first?.current_production[2] ?? "")
-        electricityDetail(label: vm.electricityDetails.first?.revenue_injection.first ?? "",
+        ElectricityDetail(label: vm.electricityDetails.first?.revenue_injection.first ?? "",
                           value: vm.electricityDetails.first?.revenue_injection[1] ?? "", unit: "")
       }
       .padding(.horizontal, 30)
@@ -290,7 +290,7 @@ struct ElectricityDetailsView: View {
     }
   }
   
-  struct electricityDetail: View {
+  struct ElectricityDetail: View {
     let label: String
     let value: String
     let unit: String

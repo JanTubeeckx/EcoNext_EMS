@@ -13,10 +13,11 @@
 		C93716D72BC322D6009CA28E /* poc_hemsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93716D62BC322D6009CA28E /* poc_hemsTests.swift */; };
 		C93716E12BC322D6009CA28E /* poc_hemsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93716E02BC322D6009CA28E /* poc_hemsUITests.swift */; };
 		C93716E32BC322D6009CA28E /* poc_hemsUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93716E22BC322D6009CA28E /* poc_hemsUITestsLaunchTests.swift */; };
+		C95CA3C52BEA0B35008488B4 /* DeviceListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95CA3C42BEA0B35008488B4 /* DeviceListView.swift */; };
 		C98899082BD4F6FE0034D4A1 /* ChartsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98899072BD4F6FE0034D4A1 /* ChartsView.swift */; };
 		C9E356352BE953C5009202B8 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E356342BE953C5009202B8 /* Theme.swift */; };
 		C9E356372BE955B2009202B8 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E356362BE955B2009202B8 /* Device.swift */; };
-		C9E356392BE95CAD009202B8 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E356382BE95CAD009202B8 /* CardView.swift */; };
+		C9E356392BE95CAD009202B8 /* DeviceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E356382BE95CAD009202B8 /* DeviceView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,10 +47,11 @@
 		C93716DC2BC322D6009CA28E /* poc_hemsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = poc_hemsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C93716E02BC322D6009CA28E /* poc_hemsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = poc_hemsUITests.swift; sourceTree = "<group>"; };
 		C93716E22BC322D6009CA28E /* poc_hemsUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = poc_hemsUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		C95CA3C42BEA0B35008488B4 /* DeviceListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceListView.swift; sourceTree = "<group>"; };
 		C98899072BD4F6FE0034D4A1 /* ChartsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsView.swift; sourceTree = "<group>"; };
 		C9E356342BE953C5009202B8 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		C9E356362BE955B2009202B8 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
-		C9E356382BE95CAD009202B8 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
+		C9E356382BE95CAD009202B8 /* DeviceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,7 +103,7 @@
 			isa = PBXGroup;
 			children = (
 				C93716C52BC322D5009CA28E /* poc_hemsApp.swift */,
-				C98899072BD4F6FE0034D4A1 /* ChartsView.swift */,
+				C95CA3C32BEA0A4E008488B4 /* Views */,
 				C9E356332BE9531B009202B8 /* Models */,
 				C93716C92BC322D6009CA28E /* Assets.xcassets */,
 				C93716CB2BC322D6009CA28E /* Preview Content */,
@@ -134,12 +136,21 @@
 			path = poc_hemsUITests;
 			sourceTree = "<group>";
 		};
+		C95CA3C32BEA0A4E008488B4 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				C9E356382BE95CAD009202B8 /* DeviceView.swift */,
+				C98899072BD4F6FE0034D4A1 /* ChartsView.swift */,
+				C95CA3C42BEA0B35008488B4 /* DeviceListView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		C9E356332BE9531B009202B8 /* Models */ = {
 			isa = PBXGroup;
 			children = (
 				C9E356342BE953C5009202B8 /* Theme.swift */,
 				C9E356362BE955B2009202B8 /* Device.swift */,
-				C9E356382BE95CAD009202B8 /* CardView.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -274,11 +285,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C95CA3C52BEA0B35008488B4 /* DeviceListView.swift in Sources */,
 				C9E356352BE953C5009202B8 /* Theme.swift in Sources */,
 				C93716C62BC322D5009CA28E /* poc_hemsApp.swift in Sources */,
 				C98899082BD4F6FE0034D4A1 /* ChartsView.swift in Sources */,
 				C9E356372BE955B2009202B8 /* Device.swift in Sources */,
-				C9E356392BE95CAD009202B8 /* CardView.swift in Sources */,
+				C9E356392BE95CAD009202B8 /* DeviceView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
