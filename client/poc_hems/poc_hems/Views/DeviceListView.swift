@@ -10,9 +10,20 @@ import SwiftUI
 struct DeviceListView: View {
   let devices: [Device]
   var body: some View {
+    Text("Apparaten")
+      .frame(maxWidth: 345, alignment: .leading)
+      .font(.system(size: 30).bold())
+      .padding(.top, 10)
+      .padding(.bottom, 0.5)
+    Divider()
+      .frame(width: 350)
+      .overlay(.black)
     List(devices, id: \.description) { device in
       DeviceView(device: device)
+        .listRowBackground(device.theme.mainColor)
     }
+    .background(Color.white)
+    .scrollContentBackground(.hidden)
     .listRowSpacing(10.0)
   }
 }

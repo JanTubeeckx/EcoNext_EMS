@@ -22,16 +22,16 @@ extension Device {
            description: "Wasmachine",
            durationInMinutes: 240,
            powerConsumptionInKwh: 1.0,
-           theme: .yellow),
+           theme: .systemgray6),
     Device(icon: "powercord",
            description: "Slimme stekker",
            durationInMinutes: 0,
            powerConsumptionInKwh: 0.0,
-           theme: .yellow),
+           theme: .systemgray6),
     Device(icon: "dishwasher",
            description: "Vaatwasser",
            durationInMinutes: 180,
            powerConsumptionInKwh: 1.0,
-           theme: .sky)
+           theme: .systemgray6)
   ]
 }

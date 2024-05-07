@@ -24,11 +24,12 @@ enum Theme: String {
   case tan
   case teal
   case yellow
+  case systemgray6
   
   var accentColor: Color {
     switch self {
-    case .bubblegum, .buttercup, .lavender, .orange, .periwinkle, .poppy, .seafoam, .sky, .tan, .teal, .yellow: return .black
-    case .indigo, .magenta, .navy, .oxblood, .purple: return .gray
+    case .bubblegum, .buttercup, .lavender, .orange, .periwinkle, .poppy, .seafoam, .sky, .tan, .teal, .yellow, .systemgray6: return .black
+    case .indigo, .magenta, .navy, .oxblood, .purple: return .white
     }
   }
   var mainColor: Color {
