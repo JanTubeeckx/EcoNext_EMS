@@ -31,11 +31,12 @@ struct DeviceView: View {
           HStack {
             Label("\(device.durationInMinutes) min", systemImage: "clock")
               .font(.system(size: 13.0))
+              .labelStyle(.titleAndIcon)
             Label("\(device.powerConsumptionInKwh, specifier: "%.1f") kWh", systemImage: "bolt.fill")
               .font(.system(size: 13.0))
+              .labelStyle(.titleAndIcon)
           }
         }
-        .padding(.trailing, 20)
       }
     }
   }

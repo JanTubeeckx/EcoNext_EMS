@@ -28,7 +28,7 @@ end = datetime(year, month, day)
 
 location = Point(latitude, longitude)
 
-# Get daily data for 2018
+# Get hourly historical weatherdata since the 1st january 2019
 data = Hourly(location, start, end)
 weather_data = data.fetch()
 weather_data.drop(columns=['snow', 'wdir', 'wspd', 'wpgt', 'tsun', 'coco'], inplace=True)

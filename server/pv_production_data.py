@@ -45,4 +45,3 @@ hourly_production_df = dataframe_current_production.resample('15min', on='time')
 # Add 2 hours because UTC timestamp InfluxDB in UTC
 hourly_production_df['time'] = hourly_production_df['time'] + pd.Timedelta(minutes=120)
 hourly_production_df = hourly_production_df.set_index('time', drop=True)
-print(hourly_production_df.tail(60))

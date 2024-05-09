@@ -29,7 +29,6 @@ hourly_production_df['temperature'] = hourly_production_df['temperature'].multip
 historical_data = solar_irradiance_df.join(weather_data, how='left')
 historical_data.index = pd.to_datetime(historical_data.index)
 historical_data = historical_data.ffill()
-print(historical_data.tail(60))
 
 # Add measured power output PV system
 irradiance_and_power_df = historical_data.join(hourly_production_df, how='right')
@@ -64,12 +63,12 @@ historical_data = create_features(historical_data)
 # Create lag features
 def add_lag_features(df):
     target_map = df[solar_irradiation].to_dict()
-    df['lag_1'] = (df.index - pd.Timedelta('1 day')).map(target_map)
-    df['lag_2'] = (df.index - pd.Timedelta('7 days')).map(target_map)
-    df['lag_3'] = (df.index - pd.Timedelta('14 days')).map(target_map)
-    df['lag_4'] = (df.index - pd.Timedelta('30 days')).map(target_map)
-    df['lag_5'] = (df.index - pd.Timedelta('364 days')).map(target_map)
-    df['lag_6'] = (df.index - pd.Timedelta('1820 days')).map(target_map)
+    df['lag_1'] = (df.index - pd.Timedelta('2 days')).map(target_map)
+    df['lag_2'] = (df.index - pd.Timedelta('3 days')).map(target_map)
+    df['lag_3'] = (df.index - pd.Timedelta('7 days')).map(target_map)
+    df['lag_4'] = (df.index - pd.Timedelta('14 days')).map(target_map)
+    df['lag_5'] = (df.index - pd.Timedelta('30 days')).map(target_map)
+    df['lag_6'] = (df.index - pd.Timedelta('364 days')).map(target_map)
     return df
 
 historical_data = add_lag_features(historical_data)
@@ -81,7 +80,7 @@ scaler = StandardScaler()
 X = pd.DataFrame(scaler.fit_transform(X), columns = X.columns)
 
 # # Create train model
-# tss = TimeSeriesSplit(n_splits=5, test_size=24*30, gap=0)
+# tss = TimeSeriesSplit(n_splits=5, test_size=24*365*1, gap=24)
 # df = historical_data.sort_index()
 
 # # fig, axs = plt.subplots(5, 1, figsize = (15,15), sharex=True)
@@ -94,7 +93,7 @@ X = pd.DataFrame(scaler.fit_transform(X), columns = X.columns)
 # for train_index, val_index in tss.split(df):
 #     train = df.iloc[train_index]
 #     test = df.iloc[val_index]
-#     # Visualize training and test split
+#     # # Visualize training and test split
 #     # train['ghi'].plot(ax = axs[fold],
 #     #                     label = 'Training Set',
 #     #                     title = f'Data Train/Test split Fold {fold}')
@@ -105,7 +104,7 @@ X = pd.DataFrame(scaler.fit_transform(X), columns = X.columns)
 #     test = create_features(test)
 
 #     FEATURES = ['hour', 'dayofweek', 'quarter', 'month', 'year', 'dayofyear', 
-#                 'dayofmonth', 'dhi', 'bhi', 'temperatuur', 'luchtvochtigheid', 'lag_1', 'lag_2', 'lag_3', 'lag_4']
+#                 'dayofmonth', 'dhi', 'bhi', 'temperatuur', 'luchtvochtigheid', 'lag_1', 'lag_2', 'lag_3', 'lag_4', 'lag_5', 'lag_6']
 #     TARGET = [solar_irradiation]
 
 #     X_train = train[FEATURES]
@@ -134,7 +133,7 @@ X = pd.DataFrame(scaler.fit_transform(X), columns = X.columns)
 #     scores_rmse.append(rmse)
 
 #     fold += 1
-# # plt.show()
+# plt.show()
 # print(f'Mae score across folds {np.mean(mae):0.4f}')
 # print(mae)
 # print(f'Mse score across folds {np.mean(mse):0.4f}')
@@ -146,8 +145,6 @@ X = pd.DataFrame(scaler.fit_transform(X), columns = X.columns)
 # Retrain data
 df = create_features(historical_data)
 df = add_lag_features(historical_data)
-
-print(df.tail(60))
 
 FEATURES = ['hour', 'dayofweek', 'quarter', 'month', 'year', 'dayofyear', 'dayofmonth',
             'temperatuur', 'luchtvochtigheid', 'lag_1', 'lag_2', 'lag_3', 'lag_4', 'lag_5', 'lag_6']
@@ -162,11 +159,7 @@ xgb_model = xgb.XGBRegressor(learning_rate =0.1,
                              min_child_weight=1,
                              gamma=0,
                              subsample=0.8,
-                             colsample_bytree=0.8,
-                             reg_alpha=0.5,
-                             nthread=4,
-                             scale_pos_weight=1,
-                             seed=27)
+                             colsample_bytree=0.8)
 
 xgb_model.fit(X_all, y_all,
             eval_set=[(X_all, y_all)],
@@ -188,34 +181,36 @@ future_with_features = df_and_future.query('isFuture').copy()
 # Predict future ghi
 future_with_features[solar_irradiation] = xgb_model.predict(future_with_features[FEATURES])
 future_with_features['solar_irr_prediction'] = future_with_features[solar_irradiation]
+
 # Adjust prediction with hours in shade
-future_with_features.loc[future_with_features.index.hour > 12,
-                          'solar_irr_prediction'] = future_with_features['solar_irr_prediction'] / 2
+future_with_features.loc[future_with_features.index.hour > 13,
+                          'solar_irr_prediction'] = future_with_features['solar_irr_prediction'] * 0.7
 future_with_features.loc[future_with_features.index.hour < 7,'solar_irr_prediction'] = 0
 future_with_features.loc[future_with_features.index.hour > 20, 'solar_irr_prediction'] = 0
 future_with_features.loc[future_with_features['solar_irr_prediction'] < 0, 'solar_irr_prediction'] = 0
 future_with_features.drop(columns=['hour', 'dayofweek', 'quarter', 'month', 'year', 'dayofyear', 
-                                   'dayofmonth', 'temperatuur', 'luchtvochtigheid', 'lag_1', 'lag_2', 'lag_3', 'lag_4',
-                                   'lag_5', 'lag_6', 'ghi', 'dhi', 'bhi'], inplace=True)
+                                   'dayofmonth', 'temperatuur', 'luchtvochtigheid', 'lag_1', 'lag_2',
+                                   'lag_3', 'lag_4', 'lag_5', 'lag_6', 'ghi', 'dhi', 'bhi'], inplace=True)
 
 # Combine time series forecast with weather forecast for most important parameters
 prediction = future_with_features.join(weather_forecast)
-prediction.index = prediction.index - timedelta(hours=1)
+# prediction.index = prediction.index - timedelta(hours=1)
 prediction['final_prediction'] = (prediction['solar_irr_prediction'] *
                                  (prediction['temperature_2m'].div(10)) /
-                                 (prediction['relative_humidity_2m'].div(100))) * 0.8
-print(prediction.tail(60))
+                                 (prediction['relative_humidity_2m'].div(100))) * 0.5
+
 # Give prediction dataframe final format to display in IOS app
 prediction.drop(columns=['isFuture', 'solar_irr_prediction', 'temperature_2m', 'relative_humidity_2m', 
                          'dew_point_2m', 'rain'], inplace=True)
-# prediction = prediction.loc[prediction.index.day == next_day]
+prediction = prediction.loc[prediction.index.day == next_day]
 prediction['time'] = prediction.index
 prediction['time'] = pd.to_datetime(prediction['time'])
 prediction['time'] = prediction['time'].dt.strftime("%Y-%m-%d %H:%M") 
+print(prediction.tail(60))
 
 # Visualize results 
-hourly_production_df.plot()
-prediction['final_prediction'].plot(figsize = (15,5), title='Solar irradiance prediction')
-irradiance_and_power_df[solar_irradiation].plot(figsize = (15,5), title='Solar irradiance prediction')
-plt.legend()
-plt.show()
+# hourly_production_df.plot()
+# prediction['final_prediction'].plot(figsize = (15,5), title='Solar irradiance prediction')
+# irradiance_and_power_df[solar_irradiation].plot(figsize = (15,5), title='Solar irradiance prediction')
+# plt.legend()
+# plt.show()

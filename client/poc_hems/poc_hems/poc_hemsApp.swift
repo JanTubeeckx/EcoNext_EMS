@@ -11,7 +11,7 @@ import SwiftUI
 struct poc_hemsApp: App {
   var body: some Scene {
     WindowGroup {
-      ChartsView()
+      DeviceListView(devices: Device.sampleData)
     }
   }
 }

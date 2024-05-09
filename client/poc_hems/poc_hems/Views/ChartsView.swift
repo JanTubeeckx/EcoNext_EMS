@@ -14,6 +14,10 @@ struct ChartsView: View {
   @State private var predictiondata: [PvPowerPrediction] = []
   @State private var details: [ElectricityDetails] = []
   @State private var isPrediction = false
+  @State private var daySelected = true
+  @State private var weekSelected = false
+  @State private var monthSelected = false
+  @State private var tommorrowSelected = false
   
   var body: some View {
     Text(isPrediction ? "Morgen" : "Vandaag")
@@ -26,28 +30,37 @@ struct ChartsView: View {
       .overlay(.black)
       .padding(.bottom, 5)
     HStack{
-      Button(action: {fetchElectricityData(period: 1); isPrediction = false}) {
+      Button(action: {daySelected = true; tommorrowSelected = false; fetchElectricityData(period: 1);
+        isPrediction = false
+      }) {
         Text("Dag")
+          .frame(maxWidth: 55)
+          .font(.system(size: 15))
+      }
+      .buttonStyle(.borderedProminent)
+      .tint(daySelected ? .blue : Color(.systemGray5))
+      .foregroundColor(daySelected ? .white : .gray)
+      Button(action: {weekSelected = true; daySelected = false; fetchElectricityData(period: 6)}) {
+        Text("Week")
           .frame(maxWidth: 55)
           .font(.system(size: 15).bold())
       }
       .buttonStyle(.borderedProminent)
-      .foregroundColor(.white)
-      Button(action: {fetchElectricityData(period: 6)}) {
-        Text("Week")
-          .frame(maxWidth: 55)
-          .font(.system(size: 15))
-      }
+      .tint(weekSelected ? .blue : Color(.systemGray5))
+      .foregroundColor(weekSelected ? .white : .gray)
       Button(action: {}) {
         Text("Maand")
           .frame(maxWidth: 55)
           .font(.system(size: 15))
       }
-      Button(action: {isPrediction = true}) {
+      Button(action: {isPrediction = true; daySelected = false; tommorrowSelected = true}) {
         Text("Morgen")
           .frame(maxWidth: 55)
           .font(.system(size: 15))
       }
+      .buttonStyle(.borderedProminent)
+      .tint(tommorrowSelected ? .blue : Color(.systemGray5))
+      .foregroundColor(tommorrowSelected ? .white : .gray)
     }
     .foregroundColor(.gray)
     .buttonStyle(.bordered)
@@ -195,13 +208,13 @@ struct ConsumptionProductionInjectionChart: View {
               .foregroundStyle(.blue)
               .padding(.top, 10)
           } else{
-            if (vm.injection > 0) {
+            if (vm.injection > 0 && vm.injection > vm.selfConsumption) {
               Text("\(vm.injection, specifier: "%.1f")")
                 .font(.system(size: 28)).bold()
                 .foregroundStyle(.orange)
                 .padding(.top, 10)
             } else {
-              Text("\(vm.production, specifier: "%.1f")")
+              Text("\(vm.selfConsumption, specifier: "%.1f")")
                 .font(.system(size: 28)).bold()
                 .foregroundStyle(.green)
                 .padding(.top, 10)
@@ -209,7 +222,8 @@ struct ConsumptionProductionInjectionChart: View {
           }
           Text("W")
             .font(.system(size: 24)).bold()
-            .foregroundStyle(vm.consumption > vm.production ? .blue : vm.injection > 0 ? .orange : .green)
+            .foregroundStyle(vm.consumption > vm.production ? .blue :
+                              (vm.injection > 0 && vm.injection > vm.selfConsumption) ? .orange : .green)
         }
         .position(x: frame.midX, y: frame.midY)
       }
@@ -362,6 +376,7 @@ class WebService {
     production = Float(electricityDetails[0].current_production[1])!
     injection = Float(electricityDetails[0].current_injection[1])!
     selfConsumption = production - injection
+    print(selfConsumption)
   }
 }
 

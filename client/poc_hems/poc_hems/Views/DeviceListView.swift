@@ -13,7 +13,7 @@ struct DeviceListView: View {
     Text("Apparaten")
       .frame(maxWidth: 345, alignment: .leading)
       .font(.system(size: 30).bold())
-      .padding(.top, 10)
+      .padding(.top, 20)
       .padding(.bottom, 0.5)
     Divider()
       .frame(width: 350)
@@ -24,7 +24,7 @@ struct DeviceListView: View {
     }
     .background(Color.white)
     .scrollContentBackground(.hidden)
-    .listRowSpacing(10.0)
+    .listRowSpacing(15.0)
   }
 }
 

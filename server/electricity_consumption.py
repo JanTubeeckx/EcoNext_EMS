@@ -81,10 +81,6 @@ def get_electricity_production_data(period):
   production_df['current_power'] = production_df['current_power'] * 1000
   return production_df
 
-# test = get_electricity_consumption_data(1)
-# test['time'] = test['time'].dt.strftime("%Y-%m-%d %H:%M:%S") 
-# print(test.to_json(orient ='index'))
-
 def get_electricity_consumption_and_injection_data(period):
   electricity_consumption = get_electricity_consumption_data(period)
   electricity_consumption.drop(columns=['average_quarter_peak', 'quarter_peak'], inplace=True)
@@ -135,26 +131,3 @@ def get_electricity_consumption_and_production_details(period):
   revenue_sold_electricity = str(round(total_injection * current_injection_price, 2)) + " €"
   electricity_details["revenue_injection"] = ["Opbrengst injectie", revenue_sold_electricity]
   return [electricity_details]
-
-result = get_electricity_consumption_and_production_details(1)
-print(result)
-
-electricity_production = get_electricity_production_data(1)
-# print(electricity_production.tail(60))
-
-# current_production = get_electricity_data(1)
-# print(current_production.tail(60))
-
-# # dataframe_quarter_peak.plot.area(x='time', y='average_quarter_peak', color="orange")
-df = get_electricity_consumption_and_injection_data(1)
-
-# # Plot both consumption and prodution datafames
-# df['current_consumption'] = -df['current_consumption']
-# df['current_production'] = df['current_production'] * 1000
-dfc = df[['time', 'current_consumption']]
-dfp = df[['time', 'current_production']]
-dfc = dfc.replace(0.0, np.nan)
-dfp = dfp.replace(0.0, np.nan)
-first = dfc.plot.area(figsize=(10,5), x='time', y='current_consumption', color="orange", linewidth=0)
-dfp.plot.area(figsize=(10,5), ylim=(-3000, 2000), ax=first, x='time', y='current_production', color="green",linewidth=0)
-plt.show()
