@@ -4,6 +4,8 @@ import xgboost_forecast
 
 app = Flask(__name__)
 
+prediction = xgboost_forecast.main()
+
 @app.route("/electricity-data", methods = ['GET'])
 def return_electricity_data():
   if(request.method == 'GET'):
@@ -31,7 +33,6 @@ def return_electricity_consumption_production_details():
 @app.route("/pvpower-prediction", methods = ['GET'])
 def return_pvpower_prediction():
   if(request.method == 'GET'):
-    prediction = xgboost_forecast.main()
     response = prediction.to_json(orient ='records')
     return response
   
