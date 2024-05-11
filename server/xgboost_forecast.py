@@ -208,6 +208,7 @@ def predictpvpower():
     prediction['time'] = prediction.index
     prediction['time'] = pd.to_datetime(prediction['time'])
     prediction['time'] = prediction['time'].dt.strftime("%Y-%m-%d %H:%M") 
+    print(prediction.head(60))
     return prediction
 
 # Visualize results 
