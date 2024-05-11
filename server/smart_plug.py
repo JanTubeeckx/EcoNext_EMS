@@ -8,10 +8,13 @@ import os
 # Loading variables from .env file
 load_dotenv()
 
-# Define moments of time
-current_hour = datetime.now().hour
-tommorrow = (datetime.now() + timedelta(days=1)).day
+# Switch to Raspberry Pi version
+isRPi = False
 
+# Define moments of time
+current_hour = (datetime.now() + timedelta(hours=1)).hour if isRPi else datetime.now().hour
+tommorrow = (datetime.now() + timedelta(days=1)).day
+print(tommorrow)
 # Connect to smart plug 1
 smart_plug_1 = PyP100.P100(os.getenv("SMART_PLUG_1_IP_ADDRESS"), 
                            os.getenv("SMART_PLUG_USERNAME"), 
@@ -26,13 +29,14 @@ delay = start_time * 3600
 duration = 3 * 3600
 
 while True:
-  if (current_hour == (start_time + 3)):
+  if (current_hour == (start_time + 4)):
       try:
         time.sleep(10)
         smart_plug_1.turnOn()
         time.sleep(20)
         smart_plug_1.turnOff()
+        os.system('clear||cls')
         quit()
       except:
-         quit()
+        quit()
     
