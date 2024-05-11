@@ -224,7 +224,10 @@ def main():
     if visualize:
         visualizeprediction()
     else:
-        return predictpvpower()
+        while True:
+            time.sleep(14400)
+            prediction = predictpvpower()
+            prediction.to_pickle("./prediction.pkl")
        
 if __name__ == '__main__':
     main()
