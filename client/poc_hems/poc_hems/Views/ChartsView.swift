@@ -144,7 +144,7 @@ struct ChartsView: View {
   }
   
   func fetchElectricityData(period: Int) {
-    let url = URL(string: "http://127.0.0.1:5000/electricity-data?period=\(period)")!
+    let url = URL(string: "http://192.168.1.44:5000/electricity-data?period=\(period)")!
     URLSession.shared.dataTask(with: url) {data, response, error in
       guard let data = data else {return}
       do {
@@ -164,7 +164,7 @@ struct ChartsView: View {
   }
   
   func fetchPvPowerPrediction() {
-    let url = URL(string: "http://127.0.0.1:5000/pvpower-prediction")!
+    let url = URL(string: "http://192.168.1.44:5000/pvpower-prediction")!
     URLSession.shared.dataTask(with: url) {data, response, error in
       guard let predictiondata = data else {return}
       do {
@@ -366,7 +366,7 @@ class WebService {
   @Published var consumptionAndProduction = [[String]]()
   
   func fetchData() async {
-    guard let downloadedDetails: [ElectricityDetails] = await WebService().downloadData(fromURL: "http://127.0.0.1:5000/consumption-production-details?period=1") else {return}
+    guard let downloadedDetails: [ElectricityDetails] = await WebService().downloadData(fromURL: "http://192.168.1.44:5000/consumption-production-details?period=1") else {return}
     electricityDetails = downloadedDetails
     let cons = electricityDetails[0].current_consumption
     let inj = electricityDetails[0].current_injection
