@@ -3,6 +3,7 @@
 # Created by Jan Tubeeckx
 # https://github.com/JanTubeeckx
 
+import time
 import pandas as pd
 import numpy as np
 import xgboost as xgb
@@ -223,7 +224,7 @@ def main():
     if visualize:
         visualizeprediction()
     else:
-        predictpvpower()
+        return predictpvpower()
     
 if __name__ == '__main__':
     main()
