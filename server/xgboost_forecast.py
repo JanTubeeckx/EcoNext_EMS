@@ -225,6 +225,6 @@ def main():
         visualizeprediction()
     else:
         return predictpvpower()
-    
+       
 if __name__ == '__main__':
     main()
