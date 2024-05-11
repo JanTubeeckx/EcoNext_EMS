@@ -59,28 +59,10 @@ responses = openmeteo.weather_api(url, params=params)
 
 # Process first location. Add a for-loop for multiple locations or weather models
 response = responses[0]
-print(f"Coordinates {response.Latitude()}°N {response.Longitude()}°E")
-print(f"Elevation {response.Elevation()} m asl")
-print(f"Timezone {response.Timezone()} {response.TimezoneAbbreviation()}")
-print(f"Timezone difference to GMT+0 {response.UtcOffsetSeconds()} s")
-
-# # Process hourly data. The order of variables needs to be the same as requested.
-# hourly = response.Hourly()
-# hourly_temperature_2m = hourly.Variables(0).ValuesAsNumpy()
-# hourly_relative_humidity_2m = hourly.Variables(1).ValuesAsNumpy()
-# hourly_precipitation = hourly.Variables(2).ValuesAsNumpy()
-# hourly_cloud_cover = hourly.Variables(3).ValuesAsNumpy()
-
-# hourly_data = {"date": pd.date_range(
-# 	start = pd.to_datetime(hourly.Time(), unit = "s", utc = True),
-# 	end = pd.to_datetime(hourly.TimeEnd(), unit = "s", utc = True),
-# 	freq = pd.Timedelta(seconds = hourly.Interval()),
-# 	inclusive = "left"
-# )}
-# hourly_data["temperature_2m"] = hourly_temperature_2m
-# hourly_data["relative_humidity_2m"] = hourly_relative_humidity_2m
-# hourly_data["precipitation"] = hourly_precipitation
-# hourly_data["cloud_cover"] = hourly_cloud_cover
+# print(f"Coordinates {response.Latitude()}°N {response.Longitude()}°E")
+# print(f"Elevation {response.Elevation()} m asl")
+# print(f"Timezone {response.Timezone()} {response.TimezoneAbbreviation()}")
+# print(f"Timezone difference to GMT+0 {response.UtcOffsetSeconds()} s")
 
 # Process minutely_15 data. The order of variables needs to be the same as requested.
 minutely_15 = response.Minutely15()
@@ -99,10 +81,6 @@ minutely_15_data["temperature_2m"] = minutely_15_temperature_2m
 minutely_15_data["relative_humidity_2m"] = minutely_15_relative_humidity_2m
 minutely_15_data["dew_point_2m"] = minutely_15_dew_point_2m
 minutely_15_data["rain"] = minutely_15_rain
-
-# hourly_dataframe = pd.DataFrame(data = hourly_data)
-# weather_forecast = hourly_dataframe.set_index('date', drop=True)
-# weather_forecast.index = pd.to_datetime(weather_forecast.index).tz_convert(None)
 
 minutely_15_dataframe = pd.DataFrame(data = minutely_15_data)
 weather_forecast = minutely_15_dataframe.set_index('date', drop=True)
