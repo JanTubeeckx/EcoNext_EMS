@@ -14,7 +14,7 @@ isRPi = False
 # Define moments of time
 current_hour = (datetime.now() + timedelta(hours=1)).hour if isRPi else datetime.now().hour
 tommorrow = (datetime.now() + timedelta(days=1)).day
-print(tommorrow)
+
 # Connect to smart plug 1
 smart_plug_1 = PyP100.P100(os.getenv("SMART_PLUG_1_IP_ADDRESS"), 
                            os.getenv("SMART_PLUG_USERNAME"), 
@@ -25,15 +25,15 @@ prediction = predictpvpower()
 start_time = prediction.loc[(prediction['final_prediction'] > 800) & 
                             (prediction.index.day == tommorrow)].head(1).index.hour[0]
 print(start_time)
-delay = start_time * 3600
+delay = (start_time + timedelta(hours=1)) * 3600
 duration = 3 * 3600
 
 while True:
   if (current_hour == (start_time + 4)):
       try:
-        time.sleep(10)
+        time.sleep(delay)
         smart_plug_1.turnOn()
-        time.sleep(20)
+        time.sleep(30)
         smart_plug_1.turnOff()
         os.system('clear||cls')
         quit()
