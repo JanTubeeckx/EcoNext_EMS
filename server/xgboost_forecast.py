@@ -226,6 +226,7 @@ def main():
     else:
         while True:
             time.sleep(14400)
+            open("./prediction.pkl").close()
             prediction = predictpvpower()
             prediction.to_pickle("./prediction.pkl")
        

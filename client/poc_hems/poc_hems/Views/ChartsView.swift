@@ -10,6 +10,9 @@ import Foundation
 import Charts
 
 struct ChartsView: View {
+  @EnvironmentObject var consumptioAndProductionFetcher: ConsumptionAndProductionFetcher
+  @ObservedObject var consumptionProductionViewModel = ConsumptionAndInjectionViewModel()
+  
   @State private var data: [ElectricityData] = []
   @State private var predictiondata: [PvPowerPrediction] = []
   @State private var details: [ElectricityDetails] = []
@@ -30,8 +33,8 @@ struct ChartsView: View {
       .overlay(.black)
       .padding(.bottom, 5)
     HStack{
-      Button(action: {daySelected = true; tommorrowSelected = false; fetchElectricityData(period: 1);
-        isPrediction = false
+      Button(action: {daySelected = true; tommorrowSelected = false; consumptionProductionViewModel.fetchElectricityData(period: 1);
+        isPrediction = false;
       }) {
         Text("Dag")
           .frame(maxWidth: 55)
@@ -40,7 +43,7 @@ struct ChartsView: View {
       .buttonStyle(.borderedProminent)
       .tint(daySelected ? .blue : Color(.systemGray5))
       .foregroundColor(daySelected ? .white : .gray)
-      Button(action: {weekSelected = true; daySelected = false; fetchElectricityData(period: 6)}) {
+      Button(action: {weekSelected = true; daySelected = false; consumptionProductionViewModel.fetchElectricityData(period: 6)}) {
         Text("Week")
           .frame(maxWidth: 55)
           .font(.system(size: 15).bold())
@@ -97,7 +100,7 @@ struct ChartsView: View {
       .padding(25)
     } else {
       Chart {
-        ForEach(data, id: \.time) { e in
+        ForEach(consumptionProductionViewModel.consumptionAndProductionData, id: \.time) { e in
           LineMark(
             x: .value("Time", e.time),
             y: .value("Current consumption", e.current_consumption),
@@ -127,7 +130,7 @@ struct ChartsView: View {
         )
       }
       .onAppear {
-        fetchElectricityData(period: 1)
+        consumptionProductionViewModel.fetchElectricityData(period: 1)
       }
       .chartForegroundStyleScale([
         "Verbruik (Watt)" : Color.blue,
@@ -138,33 +141,33 @@ struct ChartsView: View {
       .padding(.horizontal, 30)
       .padding(.vertical, 20)
     }
-    
     ConsumptionProductionInjectionChart()
     ElectricityDetailsView().padding(20)
   }
-  
-  func fetchElectricityData(period: Int) {
-    let url = URL(string: "http://127.0.0.1:5000/electricity-data?period=\(period)")!
-    URLSession.shared.dataTask(with: url) {data, response, error in
-      guard let data = data else {return}
-      do {
-        let decoder = JSONDecoder()
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:"
-        decoder.dateDecodingStrategy = .formatted(dateFormatter)
-        let decodedData = try
-        decoder.decode([ElectricityData].self, from: data)
-        DispatchQueue.main.async {
-          self.data = decodedData
-        }
-      }catch {
-        print(error)
-      }
-    }.resume()
-  }
+  //
+  //
+  //  func fetchElectricityData(period: Int) {
+  //    let url = URL(string: "http://192.168.1.44:5000/electricity-data?period=\(period)")!
+  //    URLSession.shared.dataTask(with: url) {data, response, error in
+  //      guard let data = data else {return}
+  //      do {
+  //        let decoder = JSONDecoder()
+  //        let dateFormatter = DateFormatter()
+  //        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:"
+  //        decoder.dateDecodingStrategy = .formatted(dateFormatter)
+  //        let decodedData = try
+  //        decoder.decode([ElectricityData].self, from: data)
+  //        DispatchQueue.main.async {
+  //          self.data = decodedData
+  //        }
+  //      }catch {
+  //        print(error)
+  //      }
+  //    }.resume()
+  //  }
   
   func fetchPvPowerPrediction() {
-    let url = URL(string: "http://127.0.0.1:5000/pvpower-prediction")!
+    let url = URL(string: "https://flask-server-hemsproject.azurewebsites.net/pvpower-prediction")!
     URLSession.shared.dataTask(with: url) {data, response, error in
       guard let predictiondata = data else {return}
       do {
@@ -264,12 +267,6 @@ struct ElectricityDetails: Codable {
   let monthly_capacity_rate: [String]
 }
 
-//struct ElectricityDetail: Identifiable {
-//  let id = UUID()
-//  let label: String
-//  let value: Float
-//}
-
 struct ElectricityDetailsView: View {
   @StateObject var vm = ElectricityDetailViewModel()
   
@@ -366,7 +363,7 @@ class WebService {
   @Published var consumptionAndProduction = [[String]]()
   
   func fetchData() async {
-    guard let downloadedDetails: [ElectricityDetails] = await WebService().downloadData(fromURL: "http://127.0.0.1:5000/consumption-production-details?period=1") else {return}
+    guard let downloadedDetails: [ElectricityDetails] = await WebService().downloadData(fromURL: "https://flask-server-hemsproject.azurewebsites.net/consumption-production-details?period=1") else {return}
     electricityDetails = downloadedDetails
     let cons = electricityDetails[0].current_consumption
     let inj = electricityDetails[0].current_injection
@@ -376,7 +373,6 @@ class WebService {
     production = Float(electricityDetails[0].current_production[1])!
     injection = Float(electricityDetails[0].current_injection[1])!
     selfConsumption = production - injection
-    print(selfConsumption)
   }
 }
 
