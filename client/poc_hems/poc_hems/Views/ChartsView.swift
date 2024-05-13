@@ -167,7 +167,7 @@ struct ChartsView: View {
   //  }
   
   func fetchPvPowerPrediction() {
-    let url = URL(string: "https://flask-server-hemsproject.azurewebsites.net/pvpower-prediction")!
+    let url = URL(string: "https://flask-server-hems.azurewebsites.net/pvpower-prediction")!
     URLSession.shared.dataTask(with: url) {data, response, error in
       guard let predictiondata = data else {return}
       do {
@@ -363,7 +363,7 @@ class WebService {
   @Published var consumptionAndProduction = [[String]]()
   
   func fetchData() async {
-    guard let downloadedDetails: [ElectricityDetails] = await WebService().downloadData(fromURL: "https://flask-server-hemsproject.azurewebsites.net/consumption-production-details?period=1") else {return}
+    guard let downloadedDetails: [ElectricityDetails] = await WebService().downloadData(fromURL: "https://flask-server-hems.azurewebsites.net/consumption-production-details?period=1") else {return}
     electricityDetails = downloadedDetails
     let cons = electricityDetails[0].current_consumption
     let inj = electricityDetails[0].current_injection

@@ -3,7 +3,6 @@
 # Created by Jan Tubeeckx
 # https://github.com/JanTubeeckx
 
-import time
 import pandas as pd
 import numpy as np
 import xgboost as xgb
@@ -225,7 +224,6 @@ def main():
         visualizeprediction()
     else:
         while True:
-            time.sleep(14400)
             open("./prediction.pkl").close()
             prediction = predictpvpower()
             prediction.to_pickle("./prediction.pkl")

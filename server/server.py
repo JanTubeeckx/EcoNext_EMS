@@ -1,7 +1,14 @@
 from flask import Flask, jsonify, request, Response
+from flask_apscheduler import APScheduler
 from electricity_consumption import *
+import xgboost_forecast
 
 app = Flask(__name__)
+scheduler = APScheduler()
+
+@scheduler.task('interval', id='pvpower_forecast', hours=4)
+def predict_pvpower():
+  xgboost_forecast.main()
 
 @app.route("/electricity-data", methods = ['GET'])
 def return_electricity_data():
@@ -35,4 +42,6 @@ def return_pvpower_prediction():
     return response
   
 if __name__=='__main__': 
+  scheduler.init_app(app)
+  scheduler.start()
   app.run(debug=True, host='0.0.0.0')
