@@ -7,12 +7,13 @@ import pandas as pd
 import numpy as np
 import xgboost as xgb
 import seaborn as sns
+from importlib import reload
 import matplotlib.pyplot as plt
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 from sklearn.model_selection import TimeSeriesSplit
-from solar_irradiance_data import solar_irradiance_df
+from solar_irradiance_data import create_irradiance_dataframe
 from pv_production_data import hourly_production_df
-from weather_api import weather_data, weather_forecast
+from weather_api import get_historical_weather_data, get_weather_forecast
 from datetime import timedelta, datetime
 
 # Define variables
@@ -24,11 +25,13 @@ next_day = datetime.now().day + 1
 visualize = False
 
 def preparedata():
+    solar_irradiance_df = create_irradiance_dataframe()
+    historical_weather_data = get_historical_weather_data()
     # Inner join solar irradiance dataframe with PV production dataframe
     hourly_production_df['current_power'] = hourly_production_df['current_power'].multiply(1000).round(2)
     hourly_production_df['temperature'] = hourly_production_df['temperature'].multiply(10)
     # Add historical weatherdata to historical irradiance data
-    historical_data = solar_irradiance_df.join(weather_data, how='left')
+    historical_data = solar_irradiance_df.join(historical_weather_data, how='left')
     historical_data.index = pd.to_datetime(historical_data.index)
     historical_data = historical_data.ffill()
     # Add measured power output PV system
@@ -137,6 +140,7 @@ def createtrainmodel():
 ## Make predictions
 def predictpvpower():
     # Get data
+    weather_forecast = get_weather_forecast()
     historical_data = preparedata()
     historical_data = create_features(historical_data)
     historical_data = add_lag_features(historical_data)
@@ -172,6 +176,7 @@ def predictpvpower():
     if visualize:
         xgb.plot_importance(xgb_model)
     # Create dataframe to write future values of solar irradiation
+    solar_irradiance_df = create_irradiance_dataframe()
     current_date = solar_irradiance_df.index.max().date()
     future_date = current_date+timedelta(nr_of_days_to_predict)
     future = pd.date_range(str(current_date), str(future_date), freq='15min')
@@ -223,10 +228,8 @@ def main():
     if visualize:
         visualizeprediction()
     else:
-        while True:
-            open("./prediction.pkl").close()
-            prediction = predictpvpower()
-            prediction.to_pickle("./prediction.pkl")
+        prediction = predictpvpower()
+        prediction.to_feather("./prediction.feather")
        
 if __name__ == '__main__':
     main()

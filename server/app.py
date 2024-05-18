@@ -6,9 +6,12 @@ import xgboost_forecast
 app = Flask(__name__)
 scheduler = APScheduler()
 
-@scheduler.task('interval', id='pvpower_forecast', hours=4)
+@scheduler.task('interval', id='pvpower_forecast', minutes=240)
 def predict_pvpower():
   xgboost_forecast.main()
+
+scheduler.init_app(app)
+scheduler.start()
 
 @app.route("/electricity-data", methods = ['GET'])
 def return_electricity_data():
@@ -37,11 +40,9 @@ def return_electricity_consumption_production_details():
 @app.route("/pvpower-prediction", methods = ['GET'])
 def return_pvpower_prediction():
   if(request.method == 'GET'):
-    prediction = pd.read_pickle("./prediction.pkl")
+    prediction = pd.read_feather("./prediction.feather")
     response = prediction.to_json(orient ='records')
     return response
   
-if __name__=='__main__': 
-  scheduler.init_app(app)
-  scheduler.start()
-  app.run(debug=True, host='0.0.0.0')
+if __name__=='_main_': 
+  app.run()
