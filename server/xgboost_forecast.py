@@ -3,11 +3,11 @@
 # Created by Jan Tubeeckx
 # https://github.com/JanTubeeckx
 
+import time
 import pandas as pd
 import numpy as np
 import xgboost as xgb
 import seaborn as sns
-from importlib import reload
 import matplotlib.pyplot as plt
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 from sklearn.model_selection import TimeSeriesSplit
@@ -23,6 +23,9 @@ next_day = datetime.now().day + 1
 
 # Enable visualizing
 visualize = False
+
+# Run on Raspberry Pi instead of Azure server
+RPi = False
 
 def preparedata():
     solar_irradiance_df = create_irradiance_dataframe()
@@ -159,17 +162,17 @@ def predictpvpower():
     X_all = df[FEATURES]
     y_all = df[TARGET]
     xgb_model = xgb.XGBRegressor(booster="gbtree", 
-                                learning_rate=0.1,
-                                n_estimators=5000,
-                                max_depth=5,
-                                min_child_weight=1,
-                                gamma=0,
-                                subsample=0.8,
-                                colsample_bytree=0.8,
-                                reg_alpha=0.005,
-                                nthread=4,
-                                scale_pos_weight=1,
-                                seed=27)
+                                 learning_rate=0.1,
+                                 n_estimators=5000,
+                                 max_depth=5,
+                                 min_child_weight=1,
+                                 gamma=0,
+                                 subsample=0.8,
+                                 colsample_bytree=0.8,
+                                 reg_alpha=0.005,
+                                 nthread=4,
+                                 scale_pos_weight=1,
+                                 seed=27)
     xgb_model.fit(X_all, y_all,
                 eval_set=[(X_all, y_all)],
                 verbose=0)
@@ -227,6 +230,11 @@ def visualizeprediction():
 def main():
     if visualize:
         visualizeprediction()
+    if RPi:
+        while True:
+            time.sleep(14400)
+            prediction = predictpvpower()
+            prediction.to_feather("./prediction.feather")
     else:
         prediction = predictpvpower()
         prediction.to_feather("./prediction.feather")
