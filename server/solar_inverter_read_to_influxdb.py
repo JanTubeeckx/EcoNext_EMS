@@ -14,7 +14,7 @@ from influxdb_client_3 import InfluxDBClient3
 load_dotenv()
 
 # Enable debug if needed:
-debug = False
+debug = True
 
 # Define url to server to get inverter data
 url = os.getenv("SERVER_URL")

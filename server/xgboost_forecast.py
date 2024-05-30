@@ -18,17 +18,16 @@ from datetime import timedelta, datetime
 
 # Define variables
 solar_irradiation = 'ghi'
-nr_of_days_to_predict = 3
-next_day = datetime.now().day + 1
 
 # Enable visualizing
-visualize = False
+visualize = True
 
 # Run on Raspberry Pi instead of Azure server
 RPi = False
 
-def preparedata():
-    solar_irradiance_df = create_irradiance_dataframe()
+def preparedata(solar_irradiance_df):
+    solar_irradiation = 'ghi'
+    # print(solar_irradiance_df.tail(60))
     historical_weather_data = get_historical_weather_data()
     # Inner join solar irradiance dataframe with PV production dataframe
     hourly_production_df['current_power'] = hourly_production_df['current_power'].multiply(1000).round(2)
@@ -66,6 +65,7 @@ def create_features(df):
 
 # Create lag features
 def add_lag_features(df):
+    solar_irradiation = 'ghi'
     target_map = df[solar_irradiation].to_dict()
     df['lag_1'] = (df.index - pd.Timedelta('1 day')).map(target_map)
     df['lag_2'] = (df.index - pd.Timedelta('2 days')).map(target_map)
@@ -141,10 +141,15 @@ def createtrainmodel():
     print(rmse)
 
 ## Make predictions
-def predictpvpower():
+def predictpvpower(solar_irradiance_df):
+    # Define variables
+    solar_irradiation = 'ghi'
+    nr_of_days_to_predict = 3
+    next_day = datetime.now().day + 1
     # Get data
     weather_forecast = get_weather_forecast()
-    historical_data = preparedata()
+    historical_data = preparedata(solar_irradiance_df)
+    #print("collected")
     historical_data = create_features(historical_data)
     historical_data = add_lag_features(historical_data)
     # Visualize correlations between features of the dataset
@@ -179,7 +184,6 @@ def predictpvpower():
     if visualize:
         xgb.plot_importance(xgb_model)
     # Create dataframe to write future values of solar irradiation
-    solar_irradiance_df = create_irradiance_dataframe()
     current_date = solar_irradiance_df.index.max().date()
     future_date = current_date+timedelta(nr_of_days_to_predict)
     future = pd.date_range(str(current_date), str(future_date), freq='15min')
@@ -195,10 +199,10 @@ def predictpvpower():
     future_with_features[solar_irradiation] = xgb_model.predict(future_with_features[FEATURES])
     future_with_features['solar_irr_prediction'] = future_with_features[solar_irradiation]
     # Adjust prediction with hours in shade
-    future_with_features.loc[future_with_features.index.hour > 14,
-                            'solar_irr_prediction'] = future_with_features['solar_irr_prediction'] * 0.7
+    # future_with_features.loc[future_with_features.index.hour > 14,
+    #                         'solar_irr_prediction'] = future_with_features['solar_irr_prediction'] * 0.9
     future_with_features.loc[future_with_features.index.hour < 7,'solar_irr_prediction'] = 0
-    future_with_features.loc[future_with_features.index.hour > 20, 'solar_irr_prediction'] = 0
+    future_with_features.loc[future_with_features.index.hour > 21, 'solar_irr_prediction'] = 0
     future_with_features.loc[future_with_features['solar_irr_prediction'] < 0, 'solar_irr_prediction'] = 0
     future_with_features.drop(columns=['hour', 'dayofweek', 'quarter', 'month', 'year', 'dayofyear', 
                                     'dayofmonth', 'temperatuur', 'luchtvochtigheid', 'lag_1', 'lag_2',
@@ -208,8 +212,8 @@ def predictpvpower():
     prediction.index = prediction.index - timedelta(hours=1)
     prediction['final_prediction'] = (prediction['solar_irr_prediction'] *
                                     (prediction['temperature_2m'].div(10)) /
-                                    (prediction['relative_humidity_2m'].div(100)))
-    # Give prediction dataframe final format to display in IOS app
+                                    (prediction['relative_humidity_2m'].div(100))) * 0.7
+    # Give prediction dataframe final format to display in iOS app
     prediction.drop(columns=['isFuture', 'solar_irr_prediction', 'temperature_2m', 'relative_humidity_2m', 
                             'dew_point_2m', 'rain'], inplace=True)
     prediction = prediction.loc[prediction.index.day == next_day]
@@ -218,25 +222,16 @@ def predictpvpower():
     prediction['time'] = prediction['time'].dt.strftime("%Y-%m-%d %H:%M") 
     return prediction
 
-# Visualize results 
-def visualizeprediction():
-    prediction = predictpvpower()
-    hourly_production_df.plot()
-    prediction['final_prediction'].plot(figsize = (15,5), title='Solar irradiance prediction')
-    # irradiance_and_power_df[solar_irradiation].plot(figsize = (15,5), title='Solar irradiance prediction')
-    plt.legend()
-    plt.show()
-
 def main():
-    if visualize:
-        visualizeprediction()
     if RPi:
         while True:
             time.sleep(14400)
             prediction = predictpvpower()
             prediction.to_feather("./prediction.feather")
     else:
-        prediction = predictpvpower()
+        solar_irradiance_df = create_irradiance_dataframe()
+        prediction = predictpvpower(solar_irradiance_df)
+        print("test")
         prediction.to_feather("./prediction.feather")
        
 if __name__ == '__main__':

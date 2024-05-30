@@ -18,11 +18,11 @@ getLoc = loc.geocode(user_address, timeout=None)
 latitude = getLoc.latitude
 longitude = getLoc.longitude
 
-# past_date = (datetime.now()-timedelta(365*5)).date()
-past_date = '2019-1-1'
-current_date  = datetime.now().date()
-
 def get_irradiance_data():
+  # past_date = (datetime.now()-timedelta(365*5)).date()
+  past_date = '2019-1-1'
+  current_date  = datetime.now().date()
+  print("start")
   # Get solar irradiance data from Copernicus Atmosphere Monitoring Service (CAMS)
   data = pvlib.iotools.get_cams(latitude, 
                                 longitude, 
@@ -38,6 +38,7 @@ def get_irradiance_data():
                                 map_variables=True, 
                                 server='api.soda-solardata.com', 
                                 timeout=60)
+  print("solardata")
   return data
 
 def create_irradiance_dataframe():

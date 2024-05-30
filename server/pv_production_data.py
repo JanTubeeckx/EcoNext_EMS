@@ -32,7 +32,7 @@ def period_filter(nr_of_days):
   return result
 
 # Execute query to retrieve time series 
-time_interval = period_filter(3)
+time_interval = period_filter(2)
 current_solar_production = client2.query(
   "SELECT time, current_power, temperature FROM inverter_reading WHERE time >= now() - INTERVAL '" 
   + str(time_interval) + " hours' ORDER BY time"
