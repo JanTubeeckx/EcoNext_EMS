@@ -144,27 +144,6 @@ struct ChartsView: View {
     ConsumptionProductionInjectionChart()
     ElectricityDetailsView().padding(20)
   }
-  //
-  //
-  //  func fetchElectricityData(period: Int) {
-  //    let url = URL(string: "http://192.168.1.44:5000/electricity-data?period=\(period)")!
-  //    URLSession.shared.dataTask(with: url) {data, response, error in
-  //      guard let data = data else {return}
-  //      do {
-  //        let decoder = JSONDecoder()
-  //        let dateFormatter = DateFormatter()
-  //        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:"
-  //        decoder.dateDecodingStrategy = .formatted(dateFormatter)
-  //        let decodedData = try
-  //        decoder.decode([ElectricityData].self, from: data)
-  //        DispatchQueue.main.async {
-  //          self.data = decodedData
-  //        }
-  //      }catch {
-  //        print(error)
-  //      }
-  //    }.resume()
-  //  }
   
   func fetchPvPowerPrediction() {
     let url = URL(string: "https://flask-server-hems.azurewebsites.net/pvpower-prediction")!
