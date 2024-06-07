@@ -74,7 +74,7 @@ struct ChartsView: View {
         ForEach(predictiondata, id: \.time) { e in
           LineMark(
             x: .value("Time", e.time),
-            y: .value("Prediction", e.final_prediction),
+            y: .value("Prediction", e.pv_power_prediction),
             series: .value("Prediction", "Voorspelling PV productie")
           )
           .lineStyle(StrokeStyle(lineWidth: 2))
@@ -229,7 +229,7 @@ struct ElectricityData: Codable {
 
 struct PvPowerPrediction: Codable {
   let time: Date
-  let final_prediction: Float
+  let pv_power_prediction: Float
 }
 
 struct ElectricityDetails: Codable {
