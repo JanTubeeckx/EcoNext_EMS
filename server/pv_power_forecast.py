@@ -72,7 +72,7 @@ def investigate_correlations(historical_data):
     corr_heatmap.set_title('Correlatie heatmap', fontdict={'fontsize': 12}, pad=12)
 
 def convert_predicted_solar_radiation_to_pv_power(prediction):
-    # User input for pv installation
+    # User input for PV installation
     number_of_pv_panels = 10
     peak_power_pv_panel = 215
     surrounding_factor = 0.76
@@ -84,7 +84,7 @@ def convert_predicted_solar_radiation_to_pv_power(prediction):
     prediction['solar_cell_temperature'] = ((standard_temperature/800) * 
                                             prediction['solar_irr_prediction'] 
                                             + prediction['temperature_2m']) 
-    # Calculate power production of pv installation
+    # Calculate power production of PV installation
     prediction['pv_power_prediction'] = ((total_pv_peak_power * 
                                         (prediction['solar_irr_prediction']/standard_solar_radiation)) - 
                                         (0.35 * (prediction['solar_cell_temperature'] - standard_temperature)))
@@ -150,11 +150,11 @@ def predict_pv_power(solar_irradiance_df):
     # Combine time series forecast with weather forecast for most important parameters
     prediction = future_with_features.join(weather_forecast)
     prediction.index = prediction.index - timedelta(hours=1)
-    # Convert predicted solar irradiance to pv power
+    # Convert predicted solar irradiance to PV power
     convert_predicted_solar_radiation_to_pv_power(prediction)
     # Give prediction dataframe final format to display in iOS app
     prediction.drop(columns=['isFuture', 'solar_irr_prediction', 'temperature_2m', 'relative_humidity_2m', 
-                            'dew_point_2m', 'rain'], inplace=True)
+                            'dew_point_2m', 'rain', 'solar_cell_temperature'], inplace=True)
     prediction = prediction.loc[prediction.index.day == next_day]
     prediction['time'] = prediction.index
     prediction['time'] = pd.to_datetime(prediction['time'])
