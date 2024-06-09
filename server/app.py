@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from flask_apscheduler import APScheduler
 from electricity_consumption import *
 import pv_power_forecast
+import pandas as pd
 
 app = Flask(__name__)
 scheduler = APScheduler()

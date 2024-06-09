@@ -16,6 +16,7 @@ day = 1
 week = 6
 month = 1
 current_injection_price = 0.075
+current_electricity_price = 0.35
 yearly_capacity_rate = 39.4069 + (39.4069*0.06)
 monthly_capacity_rate = yearly_capacity_rate/12
 
@@ -94,16 +95,16 @@ def get_electricity_consumption_and_production_details(period):
   electricity_production = get_electricity_production_data(period)
   ## Current electricity data
   # Current electricity consumption
-  current_consumption =  str(round(electricity_consumption.iloc[-1]['current_consumption'], 2))
+  current_consumption =  str(round(electricity_consumption.iloc[-1]['current_consumption']))
   electricity_details["current_consumption"] = ["Verbruik", current_consumption, watt]
   # Current PV power production
   current_production = electricity_production.iloc[-1]['current_power']
-  electricity_details["current_production"] = ["Huidige productie", str(round(current_production, 2)), watt]
+  electricity_details["current_production"] = ["Huidige productie", str(round(current_production)), watt]
   # Current injected production (made negative to show under zero in chart with current consumption)
   current_injection = electricity_consumption.iloc[-1]['current_production']
-  electricity_details["current_injection"] = ["Injectie", str(round(current_injection, 2)), watt]
+  electricity_details["current_injection"] = ["Injectie", str(round(current_injection)), watt]
   # Current self consumption of PV power
-  production_minus_injection = str(round(current_production - current_injection, 2))
+  production_minus_injection = str(round(current_production - current_injection))
   electricity_details["production_minus_injection"] = ["Zelfverbruik", production_minus_injection, watt]
   # Current quarter peak
   current_quarter_peak = str(round(electricity_consumption.iloc[-1]['quarter_peak'], 2))
@@ -131,12 +132,22 @@ def get_electricity_consumption_and_production_details(period):
   electricity_production['time'] = electricity_production['time'].dt.strftime('%Y/%m/%d')
   electricity_production.drop(electricity_production[electricity_production['day_total_power']==0].index, inplace=True)
   electricity_production.drop_duplicates(subset=['time'], keep='last', inplace=True)
-  total_production = str(round(electricity_production['day_total_power'].sum(), 2))
-  electricity_details["total_production"] = ["Totale productie", total_production, kiloWattHour]
+  total_production = round(electricity_production['day_total_power'].sum(), 2)
+  electricity_details["total_production"] = ["Totale productie", str(total_production), kiloWattHour]
   # Total injection of selected period
   total_injection = round(electricity_consumption['current_production'].sum()/3600/1000, 2)
   electricity_details["total_injection"] = ["Totale injectie", (str(total_injection)), kiloWattHour]
   # Total revenue of PV power injection
   revenue_sold_electricity = str(round(total_injection * current_injection_price, 2)) + " €"
   electricity_details["revenue_injection"] = ["Opbrengst injectie", revenue_sold_electricity]
+  # Total revenue of PV power self consumption
+  revenue_selfconsumption = str(round(total_production * current_electricity_price, 2)) + " €"
+  electricity_details["revenue_selfconsumption"] = ["Uitgespaard verbruik", revenue_selfconsumption]
+  print(electricity_details)
   return [electricity_details]
+
+def main():
+    get_electricity_consumption_and_production_details(6)
+
+if __name__ == '__main__':
+    main()

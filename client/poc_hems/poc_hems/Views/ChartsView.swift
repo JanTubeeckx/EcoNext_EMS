@@ -142,7 +142,7 @@ struct ChartsView: View {
       .padding(.vertical, 20)
     }
     ConsumptionProductionInjectionChart()
-    ElectricityDetailsView().padding(20)
+    ElectricityDetailsView()
   }
   
   func fetchPvPowerPrediction() {
@@ -167,135 +167,10 @@ struct ChartsView: View {
   }
 }
 
-struct ConsumptionProductionInjectionChart: View {
-  @StateObject var vm = ElectricityDetailViewModel()
-  
-  var body: some View {
-    Chart(vm.consumptionAndProduction, id: \.self) { cp in
-      SectorMark(
-        angle: .value(cp.first!, Float(cp[1]) ?? 0.0),
-        innerRadius: .ratio(0.6)
-      )
-      .foregroundStyle(
-        by: .value(cp.first!, cp.first!)
-      )
-    }
-    .chartBackground { chartProxy in
-      GeometryReader { geometry in
-        let frame = geometry[chartProxy.plotAreaFrame]
-        VStack {
-          if(vm.consumption > vm.production){
-            Text("\(vm.consumption, specifier: "%.1f")")
-              .font(.system(size: 28)).bold()
-              .foregroundStyle(.blue)
-              .padding(.top, 10)
-          } else{
-            if (vm.injection > 0 && vm.injection > vm.selfConsumption) {
-              Text("\(vm.injection, specifier: "%.1f")")
-                .font(.system(size: 28)).bold()
-                .foregroundStyle(.orange)
-                .padding(.top, 10)
-            } else {
-              Text("\(vm.selfConsumption, specifier: "%.1f")")
-                .font(.system(size: 28)).bold()
-                .foregroundStyle(.green)
-                .padding(.top, 10)
-            }
-          }
-          Text("W")
-            .font(.system(size: 24)).bold()
-            .foregroundStyle(vm.consumption > vm.production ? .blue :
-                              (vm.injection > 0 && vm.injection > vm.selfConsumption) ? .orange : .green)
-        }
-        .position(x: frame.midX, y: frame.midY)
-      }
-    }
-    .chartLegend(alignment: .center)
-    .onAppear {
-      if vm.electricityDetails.isEmpty {
-        Task {
-          await vm.fetchData()
-        }
-      }
-    }
-  }
-}
-
 struct ElectricityData: Codable {
   let time: Date
   let current_consumption: Float
   let current_production: Float
-}
-
-struct PvPowerPrediction: Codable {
-  let time: Date
-  let pv_power_prediction: Float
-}
-
-struct ElectricityDetails: Codable {
-  let current_consumption: [String]
-  let current_injection: [String]
-  let quarter_peak: [String]
-  let current_production: [String]
-  let production_minus_injection: [String]
-  let revenue_injection: [String]
-  let total_consumption: [String]
-  let total_day_production: [String]
-  let total_injection: [String]
-  let total_production: [String]
-  let monthly_capacity_rate: [String]
-}
-
-struct ElectricityDetailsView: View {
-  @StateObject var vm = ElectricityDetailViewModel()
-  
-  var body: some View {
-    VStack {
-      HStack {
-        ElectricityDetail(label: vm.electricityDetails.first?.current_consumption.first ?? "",
-                          value: vm.electricityDetails.first?.current_consumption[1] ?? "", unit: vm.electricityDetails.first?.current_consumption[2] ?? "")
-        ElectricityDetail(label: vm.electricityDetails.first?.production_minus_injection.first ?? "",
-                          value: vm.electricityDetails.first?.production_minus_injection[1] ?? "", unit: vm.electricityDetails.first?.production_minus_injection[2] ?? "")
-        ElectricityDetail(label: (vm.electricityDetails.first?.current_injection.first ?? ""),
-                          value: vm.electricityDetails.first?.current_injection[1] ?? "", unit:
-                            vm.electricityDetails.first?.current_injection[2] ?? "")
-      }
-      .padding(.bottom, 15)
-      .padding(.horizontal, 10)
-      HStack {
-        ElectricityDetail(label: vm.electricityDetails.first?.current_production.first ?? "",
-                          value: vm.electricityDetails.first?.current_production[1] ?? "", unit:
-                            vm.electricityDetails.first?.current_production[2] ?? "")
-        ElectricityDetail(label: vm.electricityDetails.first?.revenue_injection.first ?? "",
-                          value: vm.electricityDetails.first?.revenue_injection[1] ?? "", unit: "")
-      }
-      .padding(.horizontal, 30)
-    }
-    .onAppear {
-      if vm.electricityDetails.isEmpty {
-        Task {
-          await vm.fetchData()
-        }
-      }
-    }
-  }
-  
-  struct ElectricityDetail: View {
-    let label: String
-    let value: String
-    let unit: String
-    
-    var body: some View {
-      VStack {
-        Text(label)
-          .frame(maxWidth: .infinity, alignment: .center)
-          .padding(1)
-        Text(value + unit)
-          .frame(maxWidth: .infinity, alignment: .center)
-          .font(.system(size: 24))
-      }
-    }
-  }
 }
 
 enum NetworkError: Error {
@@ -314,7 +189,6 @@ class WebService {
       guard let response = response as? HTTPURLResponse else { throw NetworkError.badResponse }
       guard response.statusCode >= 200 && response.statusCode < 300 else { throw NetworkError.badStatus }
       guard let decodedResponse = try? JSONDecoder().decode(T.self, from: data) else { throw NetworkError.failedToDecodeResponse }
-      
       return decodedResponse
     } catch NetworkError.badUrl {
       print("There was an error creating the URL")
@@ -329,29 +203,6 @@ class WebService {
     }
     
     return nil
-  }
-}
-
-
-@MainActor class ElectricityDetailViewModel: ObservableObject {
-  @Published var electricityDetails = [ElectricityDetails]()
-  @Published var consumption = Float()
-  @Published var production = Float()
-  @Published var injection = Float()
-  @Published var selfConsumption = Float()
-  @Published var consumptionAndProduction = [[String]]()
-  
-  func fetchData() async {
-    guard let downloadedDetails: [ElectricityDetails] = await WebService().downloadData(fromURL: "https://flask-server-hems.azurewebsites.net/consumption-production-details?period=1") else {return}
-    electricityDetails = downloadedDetails
-    let cons = electricityDetails[0].current_consumption
-    let inj = electricityDetails[0].current_injection
-    let prod_minus_inj = electricityDetails[0].production_minus_injection
-    consumptionAndProduction = [cons, prod_minus_inj, inj]
-    consumption = Float(electricityDetails[0].current_consumption[1])!
-    production = Float(electricityDetails[0].current_production[1])!
-    injection = Float(electricityDetails[0].current_injection[1])!
-    selfConsumption = production - injection
   }
 }
 

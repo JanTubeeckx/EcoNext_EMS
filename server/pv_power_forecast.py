@@ -76,7 +76,7 @@ def convert_predicted_solar_radiation_to_pv_power(prediction):
     number_of_pv_panels = 10
     peak_power_pv_panel = 215
     surrounding_factor = 0.76
-    total_pv_peak_power = number_of_pv_panels * peak_power_pv_panel
+    total_pv_peak_power = number_of_pv_panels * peak_power_pv_panel * surrounding_factor
     # Standard test conditions manufacturer
     standard_solar_radiation = 1000
     standard_temperature = 25
@@ -145,7 +145,7 @@ def predict_pv_power(solar_irradiance_df):
                                     'dayofmonth', 'temperatuur', 'luchtvochtigheid', 'lag_1', 'lag_2',
                                     'lag_3', 'lag_4', 'ghi', 'dhi', 'bhi'], inplace=True)
     # Adjust prediction with hours in shade
-    future_with_features.loc[future_with_features.index.hour > 14,
+    future_with_features.loc[future_with_features.index.hour > 13,
                             'solar_irr_prediction'] = future_with_features['solar_irr_prediction'] * 0.6
     # Combine time series forecast with weather forecast for most important parameters
     prediction = future_with_features.join(weather_forecast)
@@ -155,7 +155,7 @@ def predict_pv_power(solar_irradiance_df):
     # Give prediction dataframe final format to display in iOS app
     prediction.drop(columns=['isFuture', 'solar_irr_prediction', 'temperature_2m', 'relative_humidity_2m', 
                             'dew_point_2m', 'rain', 'solar_cell_temperature'], inplace=True)
-    prediction = prediction.loc[prediction.index.day == next_day]
+    # prediction = prediction.loc[prediction.index.day == next_day]
     prediction['time'] = prediction.index
     prediction['time'] = pd.to_datetime(prediction['time'])
     prediction['time'] = prediction['time'].dt.strftime("%Y-%m-%d %H:%M") 
