@@ -26,7 +26,7 @@ prediction.index = pd.to_datetime(prediction['time'])
 # Determine start time and add 1 hour because this script runs at 11pm every day
 start_time = prediction.loc[(prediction['pv_power_prediction'] > 30) & 
                             (prediction.index.day == tommorrow)].head(1).index.hour[0] + 1
-print(start_time)
+# Define delay and duration of device 1
 delay = start_time * 3600
 duration = 3 * 3600
 
