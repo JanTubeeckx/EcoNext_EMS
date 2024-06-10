@@ -21,9 +21,6 @@ solar_irradiation = 'ghi'
 # Enable visualizing
 visualize = False
 
-# Run on Raspberry Pi instead of Azure server
-RPi = False
-
 def prepare_data(solar_irradiance_df):
     solar_irradiation = 'ghi'
     historical_weather_data = get_historical_weather_data()
@@ -163,14 +160,8 @@ def predict_pv_power(solar_irradiance_df):
 
 def main():
     solar_irradiance_df = create_irradiance_dataframe()
-    if RPi:
-        while True:
-            time.sleep(14400)
-            prediction = predict_pv_power(solar_irradiance_df)
-            prediction.to_feather("./prediction.feather")
-    else:
-        prediction = predict_pv_power(solar_irradiance_df)
-        prediction.to_feather("./prediction.feather")
+    prediction = predict_pv_power(solar_irradiance_df)
+    prediction.to_feather("./prediction.feather")
        
 if __name__ == '__main__':
     main()
