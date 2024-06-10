@@ -142,7 +142,7 @@ def get_electricity_consumption_and_production_details(period):
   electricity_details["revenue_injection"] = ["Opbrengst injectie", revenue_sold_electricity]
   # Total revenue of PV power self consumption
   revenue_selfconsumption = str(round(total_production * current_electricity_price, 2)) + " €"
-  electricity_details["revenue_selfconsumption"] = ["Uitgespaard verbruik", revenue_selfconsumption]
+  electricity_details["revenue_selfconsumption"] = ["Winst zelfverbruik", revenue_selfconsumption]
   print(electricity_details)
   return [electricity_details]
 

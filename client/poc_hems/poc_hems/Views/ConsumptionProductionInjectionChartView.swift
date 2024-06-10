@@ -23,7 +23,7 @@ struct ConsumptionProductionInjectionChart: View {
     }
     .chartBackground { chartProxy in
       GeometryReader { geometry in
-        let frame = geometry[chartProxy.plotAreaFrame]
+        let frame = geometry[chartProxy.plotFrame!]
         VStack {
           VStack {
             if(vm.consumption > vm.production){

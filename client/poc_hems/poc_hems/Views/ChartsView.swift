@@ -37,7 +37,7 @@ struct ChartsView: View {
         isPrediction = false;
       }) {
         Text("Dag")
-          .frame(maxWidth: 55)
+          .frame(maxWidth: 60)
           .font(.system(size: 15))
       }
       .buttonStyle(.borderedProminent)
@@ -45,7 +45,7 @@ struct ChartsView: View {
       .foregroundColor(daySelected ? .white : .gray)
       Button(action: {weekSelected = true; daySelected = false; consumptionProductionViewModel.fetchElectricityData(period: 6)}) {
         Text("Week")
-          .frame(maxWidth: 55)
+          .frame(maxWidth: 60)
           .font(.system(size: 15).bold())
       }
       .buttonStyle(.borderedProminent)
@@ -53,12 +53,12 @@ struct ChartsView: View {
       .foregroundColor(weekSelected ? .white : .gray)
       Button(action: {}) {
         Text("Maand")
-          .frame(maxWidth: 55)
+          .frame(maxWidth: 60)
           .font(.system(size: 15))
       }
       Button(action: {isPrediction = true; daySelected = false; tommorrowSelected = true}) {
         Text("Morgen")
-          .frame(maxWidth: 55)
+          .frame(maxWidth: 60)
           .font(.system(size: 15))
       }
       .buttonStyle(.borderedProminent)
