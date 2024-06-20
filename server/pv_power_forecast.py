@@ -87,7 +87,7 @@ def convert_predicted_solar_radiation_to_pv_power(prediction):
     return prediction
 
 ## Make predictions
-def predict_pv_power(solar_irradiance_df):
+def predict_pv_power(solar_irradiance_df, isProduction):
     # Define variables
     solar_irradiation = 'ghi'
     nr_of_days_to_predict = 3
@@ -153,7 +153,8 @@ def predict_pv_power(solar_irradiance_df):
     # Give prediction dataframe final format to display in iOS app
     prediction.drop(columns=['isFuture', 'solar_irr_prediction', 'temperature_2m', 'relative_humidity_2m', 
                             'dew_point_2m', 'rain', 'solar_cell_temperature'], inplace=True)
-    # prediction = prediction.loc[prediction.index.day == next_day]
+    if isProduction:
+        prediction = prediction.loc[prediction.index.day == next_day]
     prediction['time'] = prediction.index
     prediction['time'] = pd.to_datetime(prediction['time'])
     prediction['time'] = prediction['time'].dt.strftime("%Y-%m-%d %H:%M") 
@@ -161,7 +162,7 @@ def predict_pv_power(solar_irradiance_df):
 
 def main():
     solar_irradiance_df = create_irradiance_dataframe()
-    prediction = predict_pv_power(solar_irradiance_df)
+    prediction = predict_pv_power(solar_irradiance_df, True)
     prediction.to_feather("./prediction.feather")
        
 if __name__ == '__main__':
