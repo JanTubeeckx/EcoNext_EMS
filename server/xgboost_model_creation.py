@@ -118,7 +118,7 @@ def create_and_train_model():
     print(f'Rmse score across folds {np.mean(rmse):0.4f}')
     print(rmse)
 
-    modelfile = open('./xgboost_model', 'ab')
+    modelfile = open('./xgboost_model.pkl', 'ab')
     pickle.dump(xgb_model, modelfile)
     modelfile.close()
 

@@ -3,7 +3,6 @@
 # Created by Jan Tubeeckx
 # https://github.com/JanTubeeckx
 
-import time
 import pickle
 import pandas as pd
 import numpy as np
@@ -94,7 +93,7 @@ def predict_pv_power(solar_irradiance_df):
     nr_of_days_to_predict = 3
     next_day = datetime.now().day + 1
     # Get saved xgboost model
-    modelfile = open('./xgboost_model', 'rb')
+    modelfile = open('./xgboost_model.pkl', 'rb')
     xgb_model = pickle.load(modelfile)
     modelfile.close()
     # Get data
@@ -134,6 +133,7 @@ def predict_pv_power(solar_irradiance_df):
     # Predict future global solar irradiance (GHI)
     future_with_features[solar_irradiation] = xgb_model.predict(future_with_features[FEATURES])
     future_with_features['solar_irr_prediction'] = future_with_features[solar_irradiation]
+
     # Add correct zero values (night hours and negative values) and remove unnecessary columns
     future_with_features.loc[future_with_features.index.hour < 7,'solar_irr_prediction'] = 0
     future_with_features.loc[future_with_features.index.hour > 21, 'solar_irr_prediction'] = 0
@@ -144,9 +144,10 @@ def predict_pv_power(solar_irradiance_df):
     # Adjust prediction with hours in shade
     future_with_features.loc[future_with_features.index.hour > 13,
                             'solar_irr_prediction'] = future_with_features['solar_irr_prediction'] * 0.6
+    # future_with_features['solar_irr_prediction'].plot(figsize=(15,5))
     # Combine time series forecast with weather forecast for most important parameters
     prediction = future_with_features.join(weather_forecast)
-    prediction.index = prediction.index - timedelta(hours=1)
+    prediction.index = prediction.index + timedelta(hours=1)
     # Convert predicted solar irradiance to PV power
     convert_predicted_solar_radiation_to_pv_power(prediction)
     # Give prediction dataframe final format to display in iOS app

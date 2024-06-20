@@ -10,6 +10,7 @@ import Charts
 
 struct ConsumptionProductionInjectionChart: View {
   @StateObject var vm = ElectricityDetailsViewModel()
+  @Binding var period: Int
   
   var body: some View {
     Chart(vm.consumptionAndProduction, id: \.self) { cp in
@@ -54,13 +55,14 @@ struct ConsumptionProductionInjectionChart: View {
         .position(x: frame.midX, y: frame.midY)
       }
     }
-    .chartLegend(alignment: .center)
     .onAppear {
       if vm.electricityDetails.isEmpty {
         Task {
-          await vm.fetchData()
+          await vm.fetchElectricityDetails(period: period)
         }
       }
     }
+    .chartLegend(alignment: .center)
+    
   }
 }

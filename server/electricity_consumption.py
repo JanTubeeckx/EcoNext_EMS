@@ -146,6 +146,12 @@ def get_electricity_consumption_and_production_details(period):
   print(electricity_details)
   return [electricity_details]
 
+def get_current_production():
+  electricity_production = get_electricity_production_data(1)
+  current_production = electricity_production.iloc[-1]['current_power']
+  return current_production
+
+
 def main():
     get_electricity_consumption_and_production_details(6)
 

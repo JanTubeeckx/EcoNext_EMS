@@ -18,9 +18,9 @@ import Foundation
   @Published var totalSelfConsumption = Float()
   @Published var consumptionAndProduction = [[String]]()
   
-  func fetchData() async {
+  func fetchElectricityDetails(period: Int) async {
     guard let downloadedDetails: [ElectricityDetails] = await WebService()
-      .downloadData(fromURL: "https://flask-server-hems.azurewebsites.net/consumption-production-details?period=1")
+      .downloadData(fromURL: "https://flask-server-hems.azurewebsites.net/consumption-production-details?period=\(period)")
     else {return}
     electricityDetails = downloadedDetails
     let cons = electricityDetails[0].current_consumption
@@ -30,9 +30,9 @@ import Foundation
     consumption = Float(electricityDetails[0].current_consumption[1])!
     production = Float(electricityDetails[0].current_production[1])!
     injection = Float(electricityDetails[0].current_injection[1])!
-//    totalProduction = Float(electricityDetails[0].total_production[1])!
-//    totalInjection = Float(electricityDetails[0].total_injection[1])!
-//    selfConsumption = production - injection
-//    totalSelfConsumption = totalProduction - totalInjection
+    //    totalProduction = Float(electricityDetails[0].total_production[1])!
+    //    totalInjection = Float(electricityDetails[0].total_injection[1])!
+    //    selfConsumption = production - injection
+    //    totalSelfConsumption = totalProduction - totalInjection
   }
 }

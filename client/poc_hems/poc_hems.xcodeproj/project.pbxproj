@@ -21,7 +21,7 @@
 		C9E356352BE953C5009202B8 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E356342BE953C5009202B8 /* Theme.swift */; };
 		C9E356372BE955B2009202B8 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E356362BE955B2009202B8 /* Device.swift */; };
 		C9E356392BE95CAD009202B8 /* DeviceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E356382BE95CAD009202B8 /* DeviceView.swift */; };
-		C9FAAFAB2C15DC530084D220 /* ElectricityDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FAAFAA2C15DC530084D220 /* ElectricityDetailView.swift */; };
+		C9FAAFAB2C15DC530084D220 /* ElectricityDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FAAFAA2C15DC530084D220 /* ElectricityDetailsView.swift */; };
 		C9FAAFAD2C15DDC80084D220 /* ElectricityDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FAAFAC2C15DDC80084D220 /* ElectricityDetails.swift */; };
 		C9FAAFAF2C15E00F0084D220 /* ElectricityDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FAAFAE2C15E00F0084D220 /* ElectricityDetailsViewModel.swift */; };
 		C9FAAFB12C15E0CB0084D220 /* ConsumptionProductionInjectionChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FAAFB02C15E0CB0084D220 /* ConsumptionProductionInjectionChartView.swift */; };
@@ -63,7 +63,7 @@
 		C9E356342BE953C5009202B8 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		C9E356362BE955B2009202B8 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
 		C9E356382BE95CAD009202B8 /* DeviceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceView.swift; sourceTree = "<group>"; };
-		C9FAAFAA2C15DC530084D220 /* ElectricityDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElectricityDetailView.swift; sourceTree = "<group>"; };
+		C9FAAFAA2C15DC530084D220 /* ElectricityDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElectricityDetailsView.swift; sourceTree = "<group>"; };
 		C9FAAFAC2C15DDC80084D220 /* ElectricityDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElectricityDetails.swift; sourceTree = "<group>"; };
 		C9FAAFAE2C15E00F0084D220 /* ElectricityDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElectricityDetailsViewModel.swift; sourceTree = "<group>"; };
 		C9FAAFB02C15E0CB0084D220 /* ConsumptionProductionInjectionChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsumptionProductionInjectionChartView.swift; sourceTree = "<group>"; };
@@ -159,7 +159,7 @@
 				C9E356382BE95CAD009202B8 /* DeviceView.swift */,
 				C98899072BD4F6FE0034D4A1 /* ChartsView.swift */,
 				C95CA3C42BEA0B35008488B4 /* DeviceListView.swift */,
-				C9FAAFAA2C15DC530084D220 /* ElectricityDetailView.swift */,
+				C9FAAFAA2C15DC530084D220 /* ElectricityDetailsView.swift */,
 				C9FAAFB02C15E0CB0084D220 /* ConsumptionProductionInjectionChartView.swift */,
 			);
 			path = Views;
@@ -335,7 +335,7 @@
 				C98899082BD4F6FE0034D4A1 /* ChartsView.swift in Sources */,
 				C9E356372BE955B2009202B8 /* Device.swift in Sources */,
 				C9FAAFB12C15E0CB0084D220 /* ConsumptionProductionInjectionChartView.swift in Sources */,
-				C9FAAFAB2C15DC530084D220 /* ElectricityDetailView.swift in Sources */,
+				C9FAAFAB2C15DC530084D220 /* ElectricityDetailsView.swift in Sources */,
 				C9D585A42BF12889002AD9EF /* ConsumptionAndInjectionViewModel.swift in Sources */,
 				C9D5859D2BF11749002AD9EF /* ElectricityConsumptionAndProduction.swift in Sources */,
 				C9E356392BE95CAD009202B8 /* DeviceView.swift in Sources */,

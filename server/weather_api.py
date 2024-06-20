@@ -32,10 +32,10 @@ def get_historical_weather_data():
 	# Get hourly historical weatherdata since the 1st january 2019
 	data = Hourly(location, start, end)
 	weather_data = data.fetch()
-	weather_data.drop(columns=['snow', 'wdir', 'wspd', 'wpgt', 'tsun', 'coco'], inplace=True)
+	weather_data.drop(columns=['snow', 'wdir', 'wpgt', 'tsun', 'coco'], inplace=True)
 	weather_data.rename(columns={'temp':'temperatuur', 'dwpt':'dauwpunt', 'rhum':'luchtvochtigheid',
-																'prcp':'neerslag', 'pres':'luchtdruk'}, inplace=True)
-	weather_data.index = pd.to_datetime(weather_data.index)
+																'prcp':'neerslag', 'pres':'luchtdruk', 'wspd':'windsnelheid'}, inplace=True)
+	# weather_data.index = pd.to_datetime(weather_data.index)
 	return weather_data
 
 def get_weather_forecast():
