@@ -35,7 +35,6 @@ def get_historical_weather_data():
 	weather_data.drop(columns=['snow', 'wdir', 'wpgt', 'tsun', 'coco'], inplace=True)
 	weather_data.rename(columns={'temp':'temperatuur', 'dwpt':'dauwpunt', 'rhum':'luchtvochtigheid',
 																'prcp':'neerslag', 'pres':'luchtdruk', 'wspd':'windsnelheid'}, inplace=True)
-	# weather_data.index = pd.to_datetime(weather_data.index)
 	return weather_data
 
 def get_weather_forecast():
