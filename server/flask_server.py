@@ -45,5 +45,5 @@ def return_pvpower_prediction():
     response = prediction.to_json(orient ='records')
     return response
   
-if __name__=='flask_server': 
+if __name__=='_main_': 
   app.run()
