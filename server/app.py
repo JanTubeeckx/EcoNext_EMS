@@ -41,7 +41,7 @@ def return_electricity_consumption_production_details():
 @app.route("/pvpower-prediction", methods = ['GET'])
 def return_pvpower_prediction():
   if(request.method == 'GET'):
-    prediction = pd.read_feather("./prediction.feather")
+    prediction = pd.read_feather("../server/prediction.feather")
     response = prediction.to_json(orient ='records')
     return response
   
