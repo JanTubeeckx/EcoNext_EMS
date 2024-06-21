@@ -77,7 +77,6 @@ jobs:
         with:
           name: python-app
           path: .
-          include: './server/requirements.txt'
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
