@@ -50,7 +50,7 @@ jobs:
           source venv/bin/activate
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r ./server/requirements.txt
 
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
 
@@ -59,7 +59,7 @@ jobs:
         with:
           name: python-app
           path: |
-            ./server
+            ./server/*
             !venv/
 
   deploy:
@@ -76,7 +76,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: python-app
-          path: ./server
+          path: ./server/*
           include: './server/requirements.txt'
 
       - name: 'Deploy to Azure Web App'
