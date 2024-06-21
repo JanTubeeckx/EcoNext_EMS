@@ -59,7 +59,7 @@ jobs:
         with:
           name: python-app
           path: |
-            .
+            ./server
             !venv/
 
   deploy:
@@ -76,7 +76,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: python-app
-          path: .
+          path: ./server
           include: './server/requirements.txt'
 
       - name: 'Deploy to Azure Web App'
@@ -85,4 +85,3 @@ jobs:
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          include: './server/requirements.txt'
