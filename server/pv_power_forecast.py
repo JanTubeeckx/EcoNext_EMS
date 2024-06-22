@@ -135,7 +135,7 @@ def predict_pv_power(solar_irradiance_df, isProduction):
     future_with_features['solar_irr_prediction'] = future_with_features[solar_irradiation]
 
     # Add correct zero values (night hours and negative values) and remove unnecessary columns
-    future_with_features.loc[future_with_features.index.hour < 7,'solar_irr_prediction'] = 0
+    future_with_features.loc[future_with_features.index.hour < 6,'solar_irr_prediction'] = 0
     future_with_features.loc[future_with_features.index.hour > 21, 'solar_irr_prediction'] = 0
     future_with_features.loc[future_with_features['solar_irr_prediction'] < 0, 'solar_irr_prediction'] = 0
     future_with_features.drop(columns=['hour', 'dayofweek', 'quarter', 'month', 'year', 'dayofyear', 
