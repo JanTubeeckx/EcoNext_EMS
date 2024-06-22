@@ -60,6 +60,7 @@ jobs:
           name: python-app
           path: |
             .
+            !./client
             !venv/
 
   deploy:
