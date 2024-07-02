@@ -71,7 +71,7 @@ def convert_predicted_solar_radiation_to_pv_power(prediction):
     # User input for PV installation
     number_of_pv_panels = 10
     peak_power_pv_panel = 215
-    surrounding_factor = 0.76
+    surrounding_factor = 0.85
     total_pv_peak_power = number_of_pv_panels * peak_power_pv_panel * surrounding_factor
     # Standard test conditions manufacturer
     standard_solar_radiation = 1000
@@ -94,6 +94,8 @@ def predict_pv_power(solar_irradiance_df, isProduction):
     next_day = datetime.now().day + 1
     # Get saved xgboost model
     modelfile = open('./xgboost_model.pkl', 'rb')
+    # xgb_model = xgb.XGBRegressor()
+    # xgb_model.load_model("model.json")
     xgb_model = pickle.load(modelfile)
     modelfile.close()
     # Get data
@@ -135,7 +137,7 @@ def predict_pv_power(solar_irradiance_df, isProduction):
     future_with_features['solar_irr_prediction'] = future_with_features[solar_irradiation]
 
     # Add correct zero values (night hours and negative values) and remove unnecessary columns
-    future_with_features.loc[future_with_features.index.hour < 6,'solar_irr_prediction'] = 0
+    future_with_features.loc[future_with_features.index.hour < 7,'solar_irr_prediction'] = 0
     future_with_features.loc[future_with_features.index.hour > 21, 'solar_irr_prediction'] = 0
     future_with_features.loc[future_with_features['solar_irr_prediction'] < 0, 'solar_irr_prediction'] = 0
     future_with_features.drop(columns=['hour', 'dayofweek', 'quarter', 'month', 'year', 'dayofyear', 
@@ -147,7 +149,7 @@ def predict_pv_power(solar_irradiance_df, isProduction):
     # future_with_features['solar_irr_prediction'].plot(figsize=(15,5))
     # Combine time series forecast with weather forecast for most important parameters
     prediction = future_with_features.join(weather_forecast)
-    prediction.index = prediction.index + timedelta(hours=1)
+    prediction.index = prediction.index - timedelta(hours=1)
     # Convert predicted solar irradiance to PV power
     convert_predicted_solar_radiation_to_pv_power(prediction)
     # Give prediction dataframe final format to display in iOS app

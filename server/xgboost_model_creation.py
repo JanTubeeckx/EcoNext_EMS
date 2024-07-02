@@ -119,6 +119,7 @@ def create_and_train_model():
     print(rmse)
 
     modelfile = open('./xgboost_model.pkl', 'ab')
+    # xgb_model.save_model("model.json")
     pickle.dump(xgb_model, modelfile)
     modelfile.close()
 

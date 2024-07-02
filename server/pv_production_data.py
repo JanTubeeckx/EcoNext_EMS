@@ -14,15 +14,15 @@ from datetime import datetime, time, timedelta
 load_dotenv()
 
 # Instantiate InfluxDB client for PV production
-# client2 = InfluxDBClient3(
-#     token=os.getenv("ACCESS_TOKEN"),
-#     host=os.getenv("DB_HOST"),
-#     database=os.getenv("DB_NAME_PROD"))
-
 client2 = InfluxDBClient3(
-    token=environ.get("ACCESS_TOKEN"),
-    host=environ.get("DB_HOST"),
-    database=environ.get("DB_NAME_PROD"))
+    token=os.getenv("ACCESS_TOKEN"),
+    host=os.getenv("DB_HOST"),
+    database=os.getenv("DB_NAME_PROD"))
+
+# client2 = InfluxDBClient3(
+#     token=environ.get("ACCESS_TOKEN"),
+#     host=environ.get("DB_HOST"),
+#     database=environ.get("DB_NAME_PROD"))
 
 # Create function to filter period
 current_time = datetime.now().time()
