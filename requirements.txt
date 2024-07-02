@@ -59,7 +59,7 @@ pvlib==0.10.4
 pyarrow==15.0.2
 pycryptodome==3.20.0
 Pygments==2.17.2
-PyP100 @ https://github.com/almottier/TapoP100.git@main
+PyP100 @ git+https://github.com/almottier/TapoP100.git@04c452fd8af9d8505e4177ba3df157372ce3ee0c
 PyP100v2==0.0.20
 pyparsing==3.1.2
 python-dateutil==2.9.0.post0
