@@ -5,7 +5,6 @@ import pv_power_forecast
 import pandas as pd
 
 app = Flask(__name__)
-print(__name__)
 scheduler = APScheduler()
 
 @scheduler.task('interval', id='pvpower_forecast', minutes=244)
@@ -47,4 +46,4 @@ def return_pvpower_prediction():
     return response
   
 if __name__=='__flask_server__': 
-  app.run()
+  app.run(host="0.0.0.0", port=5000)
