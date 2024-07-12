@@ -43,7 +43,7 @@ jobs:
           
       - uses: actions/checkout@v4
         with:
-          working-directory: ./server
+          sparse-checkout: ./server
 
       - name: 'Login via Azure CLI'
         uses: azure/login@v1
