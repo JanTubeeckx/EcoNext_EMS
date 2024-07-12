@@ -54,11 +54,9 @@ jobs:
           login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
-          context: ./server
-          file: ./server/Dockerfile
 
       - run: |
-          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/flask_server:${{ github.sha }}
+          docker build ./server -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/flask_server:${{ github.sha }}
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/flask_server:${{ github.sha }}
 
       - name: 'Deploy to Azure Container Instances'
