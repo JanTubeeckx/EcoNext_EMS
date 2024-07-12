@@ -32,5 +32,7 @@ USER appuser
 # Define the FLASK_APP environment variable
 ENV FLASK_APP=flask_server.py
 
+ENTRYPOINT ["gunicorn", "app:flask_server"]
+
 # During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
 CMD ["flask", "run", "--host", "0.0.0.0"]
