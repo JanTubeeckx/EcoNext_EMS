@@ -49,10 +49,9 @@ jobs:
           login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
-
-      - run:
           working-directory: ./server
-          |
+
+      - run: |
           docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/flask_server:${{ github.sha }}
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/flask_server:${{ github.sha }}
 
