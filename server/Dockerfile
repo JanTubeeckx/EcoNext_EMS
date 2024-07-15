@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y libhdf5-dev
 
 # Install pip requirements
 COPY requirements.txt .
-RUN python -m pip install -r requirements.txt
+RUN python -m pip install --no-cache-dir --upgrade -r requirements.txt
 
 WORKDIR /app
 COPY . /app
@@ -33,5 +33,5 @@ USER appuser
 ENV FLASK_APP=flask_server.py
 
 # During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
-CMD ["gunicorn", "flask_server:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:80", "flask_server:app"]
 # CMD ["flask", "run", "--host", "0.0.0.0"]
