@@ -46,4 +46,4 @@ def return_pvpower_prediction():
     return response
   
 if __name__=='__flask_server__': 
-  app.run(host="0.0.0.0", port=5000)
+  app.run(host="0.0.0.0", port=80)

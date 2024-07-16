@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: ./Dockerfile
     ports:
-      - 5000:5000
+      - 5000:80
     # environment:
     #   - ACCESS_TOKEN=${ACCESS_TOKEN}
     #   - DB_NAME=${DB_NAME}

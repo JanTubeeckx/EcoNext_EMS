@@ -1,7 +1,7 @@
 # For more information, please refer to https://aka.ms/vscode-docker-python
 FROM python:3.12
 
-EXPOSE 5000
+EXPOSE 80
 
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -33,5 +33,5 @@ USER appuser
 ENV FLASK_APP=flask_server.py
 
 # During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug
-CMD ["gunicorn", "--bind", "0.0.0.0:80", "flask_server:app"]
+CMD ["gunicorn", "flask_server:app"]
 # CMD ["flask", "run", "--host", "0.0.0.0"]
