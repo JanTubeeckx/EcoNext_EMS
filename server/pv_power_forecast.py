@@ -58,7 +58,7 @@ def add_lag_features(df):
     df['lag_1'] = (df.index - pd.Timedelta('12 hours')).map(target_map)
     df['lag_2'] = (df.index - pd.Timedelta('24 hours')).map(target_map)
     df['lag_3'] = (df.index - pd.Timedelta('48 hours')).map(target_map)
-    df['lag_4'] = (df.index - pd.Timedelta('72 hours')).map(target_map)
+    df['lag_4'] = (df.index - pd.Timedelta('96 hours')).map(target_map)
     return df
 
 def investigate_correlations(historical_data):
