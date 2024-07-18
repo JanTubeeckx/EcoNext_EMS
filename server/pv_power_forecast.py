@@ -93,7 +93,7 @@ def predict_pv_power(solar_irradiance_df, isProduction):
     nr_of_days_to_predict = 3
     next_day = datetime.now().day + 1
     # Get saved xgboost model
-    modelfile = open('./xgboost_model.pkl', 'rb')
+    modelfile = open('xgboost_model.pkl', 'rb')
     # xgb_model = xgb.XGBRegressor()
     # xgb_model.load_model("model.json")
     xgb_model = pickle.load(modelfile)
@@ -165,7 +165,7 @@ def predict_pv_power(solar_irradiance_df, isProduction):
 def main():
     solar_irradiance_df = create_irradiance_dataframe()
     prediction = predict_pv_power(solar_irradiance_df, True)
-    prediction.to_feather("./prediction.feather")
+    prediction.to_feather("prediction.feather")
        
 if __name__ == '__main__':
     main()
