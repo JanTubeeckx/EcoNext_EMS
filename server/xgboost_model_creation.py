@@ -21,7 +21,7 @@ def prepare_data():
     historical_data.index = pd.to_datetime(historical_data.index)
     historical_data = historical_data.ffill()
     # Add measured power output PV system
-    irradiance_and_power_df = historical_data.join(hourly_production_df, how='right')
+    # irradiance_and_power_df = historical_data.join(hourly_production_df, how='right')
     # Remove parameters with low correlation
     historical_data.drop(columns=['dauwpunt', 'neerslag', 'luchtdruk'], inplace=True)
     # Remove negative values
@@ -90,11 +90,10 @@ def create_and_train_model():
         X_test = test[FEATURES]
         y_test = test[TARGET]
 
-        xgb_model = xgb.XGBRegressor(device='gpu',
-                                    learning_rate=0.15,
-                                    n_estimators=2800,
-                                    objective='reg:squarederror',
-                                    max_depth=5)
+        xgb_model = xgb.XGBRegressor(learning_rate=0.15,
+                                     n_estimators=2800,
+                                     objective='reg:squarederror',
+                                     max_depth=5)
         
         xgb_model.fit(X_train, y_train,
                     eval_set=[(X_train, y_train), (X_test, y_test)],

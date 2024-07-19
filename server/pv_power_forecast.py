@@ -31,7 +31,7 @@ def prepare_data(solar_irradiance_df):
     historical_data.index = pd.to_datetime(historical_data.index)
     historical_data = historical_data.ffill()
     # Add measured power output PV system
-    irradiance_and_power_df = historical_data.join(hourly_production_df, how='right')
+    # irradiance_and_power_df = historical_data.join(hourly_production_df, how='right')
     # Remove parameters with low correlation
     historical_data.drop(columns=['dauwpunt', 'neerslag', 'luchtdruk'], inplace=True)
     # Remove negative values
@@ -137,7 +137,7 @@ def predict_pv_power(solar_irradiance_df, isProduction):
     future_with_features['solar_irr_prediction'] = future_with_features[solar_irradiation]
 
     # Add correct zero values (night hours and negative values) and remove unnecessary columns
-    future_with_features.loc[future_with_features.index.hour < 7,'solar_irr_prediction'] = 0
+    future_with_features.loc[future_with_features.index.hour < 6,'solar_irr_prediction'] = 0
     future_with_features.loc[future_with_features.index.hour > 21, 'solar_irr_prediction'] = 0
     future_with_features.loc[future_with_features['solar_irr_prediction'] < 0, 'solar_irr_prediction'] = 0
     future_with_features.drop(columns=['hour', 'dayofweek', 'quarter', 'month', 'year', 'dayofyear', 
