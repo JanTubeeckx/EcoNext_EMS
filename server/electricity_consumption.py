@@ -60,7 +60,7 @@ def get_electricity_consumption_data(period):
   # Convert UTC-timestamp InfluxDB to local time
   consumption_df['time'] = consumption_df['time'] + timedelta(hours=2)
   # Remove nanoseconds from timestamp
-  consumption_df['time'] = consumption_df['time'].astype('datetime64[s]')
+  consumption_df['time'] = consumption_df['time'].apply(lambda x: x.replace(microsecond=0))
   consumption_df['current_consumption'] = consumption_df['current_consumption'] * 1000
   consumption_df['current_production'] = consumption_df['current_production'] * 1000
   return consumption_df
@@ -75,7 +75,7 @@ def get_electricity_production_data(period):
   # Convert UTC-timestamp InfluxDB to local time
   production_df['time'] = production_df['time'] + timedelta(hours=2)
   # Remove nanoseconds from timestamp
-  production_df['time'] = production_df['time'].astype('datetime64[s]')
+  production_df['time'] = production_df['time'].apply(lambda x: x.replace(microsecond=0))
   production_df['current_power'] = production_df['current_power'] * 1000
   return production_df
 
