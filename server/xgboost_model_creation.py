@@ -45,6 +45,10 @@ def create_features(df):
 def add_lag_features(df):
     solar_irradiation = 'ghi'
     target_map = df[solar_irradiation].to_dict()
+    # df['lag_1'] = (df.index - pd.Timedelta('364 days')).map(target_map)
+    # df['lag_2'] = (df.index - pd.Timedelta('728 days')).map(target_map)
+    # df['lag_3'] = (df.index - pd.Timedelta('1092 days')).map(target_map)
+    # df['lag_4'] = (df.index - pd.Timedelta('1456 days')).map(target_map)
     df['lag_1'] = (df.index - pd.Timedelta('12 hours')).map(target_map)
     df['lag_2'] = (df.index - pd.Timedelta('24 hours')).map(target_map)
     df['lag_3'] = (df.index - pd.Timedelta('48 hours')).map(target_map)
@@ -54,7 +58,9 @@ def add_lag_features(df):
 # Create and train model
 def create_and_train_model():
     historical_data = prepare_data()
-    tss = TimeSeriesSplit(n_splits=5, test_size=24*365*1, gap=24)
+    tss = TimeSeriesSplit(n_splits=5
+                        #   , test_size=24*3*1, gap=24
+                          )
     df = historical_data.sort_index()
 
     fig, axs = plt.subplots(5, 1, figsize = (15,15), sharex=True)
@@ -91,7 +97,7 @@ def create_and_train_model():
         y_test = test[TARGET]
 
         xgb_model = xgb.XGBRegressor(learning_rate=0.15,
-                                     n_estimators=2800,
+                                     n_estimators=1000,
                                      objective='reg:squarederror',
                                      max_depth=5)
         

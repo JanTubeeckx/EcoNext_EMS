@@ -7,7 +7,7 @@ import pandas as pd
 import pvlib
 from geopy.geocoders import Nominatim
 from geopy.extra.rate_limiter import RateLimiter
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # Get solar irradiance data for specified address
 # User input
@@ -21,8 +21,8 @@ latitude = getLoc.latitude
 longitude = getLoc.longitude
 
 def get_irradiance_data():
-  # past_date = (datetime.now()-timedelta(365*5)).date()
-  past_date = '2019-1-1'
+  past_date = (datetime.now()-timedelta(365*10)).date()
+  # past_date = '2014-1-1'
   current_date  = datetime.now().date()
   # Get solar irradiance data from Copernicus Atmosphere Monitoring Service (CAMS)
   data = pvlib.iotools.get_cams(latitude, 

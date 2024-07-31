@@ -58,7 +58,11 @@ def add_lag_features(df):
     df['lag_1'] = (df.index - pd.Timedelta('12 hours')).map(target_map)
     df['lag_2'] = (df.index - pd.Timedelta('24 hours')).map(target_map)
     df['lag_3'] = (df.index - pd.Timedelta('48 hours')).map(target_map)
-    df['lag_4'] = (df.index - pd.Timedelta('96 hours')).map(target_map)
+    df['lag_4'] = (df.index - pd.Timedelta('72 hours')).map(target_map)
+    # df['lag_1'] = (df.index - pd.Timedelta('364 days')).map(target_map)
+    # df['lag_2'] = (df.index - pd.Timedelta('728 days')).map(target_map)
+    # df['lag_3'] = (df.index - pd.Timedelta('1092 days')).map(target_map)
+    # df['lag_4'] = (df.index - pd.Timedelta('1456 days')).map(target_map)
     return df
 
 def investigate_correlations(historical_data):
@@ -137,12 +141,12 @@ def predict_pv_power(solar_irradiance_df, isProduction):
     future_with_features['solar_irr_prediction'] = future_with_features[solar_irradiation]
 
     # Add correct zero values (night hours and negative values) and remove unnecessary columns
-    future_with_features.loc[future_with_features.index.hour < 6,'solar_irr_prediction'] = 0
-    future_with_features.loc[future_with_features.index.hour > 21, 'solar_irr_prediction'] = 0
+    # future_with_features.loc[future_with_features.index.hour < 6,'solar_irr_prediction'] = 0
+    # future_with_features.loc[future_with_features.index.hour > 21, 'solar_irr_prediction'] = 0
     future_with_features.loc[future_with_features['solar_irr_prediction'] < 0, 'solar_irr_prediction'] = 0
     future_with_features.drop(columns=['hour', 'dayofweek', 'quarter', 'month', 'year', 'dayofyear', 
-                                    'dayofmonth', 'temperatuur', 'luchtvochtigheid', 'lag_1', 'lag_2',
-                                    'lag_3', 'lag_4', 'ghi', 'dhi', 'bhi'], inplace=True)
+                                    'dayofmonth', 'temperatuur', 'luchtvochtigheid', 'windsnelheid', 'lag_1',
+                                    'lag_2', 'lag_3', 'lag_4', 'ghi', 'dhi', 'bhi'], inplace=True)
     # Adjust prediction with hours in shade
     future_with_features.loc[future_with_features.index.hour > 13,
                             'solar_irr_prediction'] = future_with_features['solar_irr_prediction'] * 0.6
@@ -160,6 +164,9 @@ def predict_pv_power(solar_irradiance_df, isProduction):
     prediction['time'] = prediction.index
     prediction['time'] = pd.to_datetime(prediction['time'])
     prediction['time'] = prediction['time'].dt.strftime("%Y-%m-%d %H:%M") 
+    prediction.loc[(prediction.index.hour < 6), 'pv_power_prediction'] = 0
+    prediction.loc[(prediction.index.hour > 21), 'pv_power_prediction'] = 0
+    print(prediction.tail(60))
     return prediction
 
 def main():
