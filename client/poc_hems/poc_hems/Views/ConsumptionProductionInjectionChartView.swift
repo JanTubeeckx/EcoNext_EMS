@@ -38,7 +38,7 @@ struct ConsumptionProductionInjectionChart: View {
                   .font(.system(size: 28)).bold()
                   .foregroundStyle(.orange)
                   .padding(.top, 20)
-              } else {
+              } else if (vm.selfConsumption > 0 && vm.selfConsumption > vm.injection) {
                 Text("\(vm.selfConsumption, specifier: "%.0f")")
                   .font(.system(size: 28)).bold()
                   .foregroundStyle(.green)

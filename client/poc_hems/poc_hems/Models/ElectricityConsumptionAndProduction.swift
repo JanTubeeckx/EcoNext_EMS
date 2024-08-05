@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct ElectricityConsumptionAndProduction: Codable {
-  var time: Date
-  var current_consumption: Float
-  var current_production: Float
+  let time: Date
+  let current_consumption: Float
+  let current_production: Float
 }
 
 struct ElectricityConsumptionAndProductionData: Codable {
-  var electricityData: [ElectricityConsumptionAndProduction]
+  let electricityData: [ElectricityConsumptionAndProduction]
 }

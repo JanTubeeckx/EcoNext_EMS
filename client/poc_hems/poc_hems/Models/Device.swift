@@ -8,11 +8,11 @@
 import Foundation
 
 struct Device {
-  var icon: String
-  var description: String
-  var durationInMinutes: Int
-  var powerConsumptionInKwh: Float
-  var theme: Theme
+  let icon: String
+  let description: String
+  let durationInMinutes: Int
+  let powerConsumptionInKwh: Float
+  let theme: Theme
 }
 
 extension Device {

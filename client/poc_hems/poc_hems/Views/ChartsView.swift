@@ -7,16 +7,12 @@
 
 import SwiftUI
 import Foundation
-import Charts
 
 struct ChartsView: View {
-  @EnvironmentObject var consumptioAndProductionFetcher: ConsumptionAndProductionFetcher
-  @ObservedObject var consumptionProductionViewModel = ConsumptionAndInjectionViewModel()
+  @ObservedObject var consumptionInjectionViewModel = ConsumptionAndInjectionViewModel()
   @ObservedObject var electricityDetailsViewModel = ElectricityDetailsViewModel()
   
-  @State private var data: [ElectricityData] = []
   @State private var electricityDetails: [ElectricityDetails] = []
-  @State private var predictiondata: [PvPowerPrediction] = []
   @State private var details: [ElectricityDetails] = []
   @State private var period = 1
   @State private var isPrediction = false
@@ -36,7 +32,7 @@ struct ChartsView: View {
       .overlay(.black)
       .padding(.bottom, 5)
     HStack{
-      Button(action: {daySelected = true; tommorrowSelected = false; consumptionProductionViewModel.fetchElectricityData(period: 1);
+      Button(action: {daySelected = true; tommorrowSelected = false; consumptionInjectionViewModel.fetchElectricityData(period: 1);
         isPrediction = false;
       }) {
         Text("Dag")
@@ -49,7 +45,7 @@ struct ChartsView: View {
       Button(action: {
         weekSelected = true;
         daySelected = false;
-        consumptionProductionViewModel.fetchElectricityData(period: 6);
+        consumptionInjectionViewModel.fetchElectricityData(period: 6);
         Task {
           await electricityDetailsViewModel.fetchElectricityDetails(period: 6)
         }}) {
@@ -79,112 +75,22 @@ struct ChartsView: View {
     .frame(width: 350)
     
     VStack {
-      if (isPrediction) {
-        Chart {
-          ForEach(predictiondata, id: \.time) { e in
-            LineMark(
-              x: .value("Time", e.time),
-              y: .value("Prediction", e.pv_power_prediction),
-              series: .value("Prediction", "Voorspelling PV productie")
-            )
-            .lineStyle(StrokeStyle(lineWidth: 2))
-            .foregroundStyle(by: .value("Prediction", "Voorspelling PV productie (Watt)"))
-          }
+      ConsumptionInjectionChart(period: $period, isPrediction: $isPrediction)
+      ZStack {
+        background
+        VStack {
+          ConsumptionProductionInjectionChart(period: $period)
+          ElectricityDetailsView(period: $period)
         }
-        .chartXAxis {
-          AxisMarks(
-            values: .automatic(desiredCount: 12)
-          )
-        }
-        .chartYAxis {
-          AxisMarks(
-            values: .automatic(desiredCount: 6)
-          )
-        }
-        .onAppear {
-          fetchPvPowerPrediction()
-        }
-        .chartForegroundStyleScale(["Voorspelling PV productie (Watt)": Color.green])
-        .chartLegend(alignment: .center)
-        .frame(height: 200)
-        .padding(25)
-      } else {
-        Chart {
-          ForEach(consumptionProductionViewModel.consumptionAndProductionData, id: \.time) { e in
-            LineMark(
-              x: .value("Time", e.time),
-              y: .value("Current consumption", e.current_consumption),
-              series: .value("Consumption", "Huidige consumptie (Watt)")
-            )
-            .lineStyle(StrokeStyle(lineWidth: 1))
-            .foregroundStyle(by: .value("Consumption", "Verbruik (Watt)"))
-            
-            LineMark(
-              x: .value("Time", e.time),
-              y: .value("Current production", e.current_production),
-              series: .value("Production", "Huidige productie (Watt)")
-            )
-            .lineStyle(StrokeStyle(lineWidth: 1))
-            .foregroundStyle(.orange)
-            .foregroundStyle(by: .value("Production", "Productieoverschot/injectie (Watt)"))
-          }
-        }
-        .chartXAxis {
-          AxisMarks(
-            values: .automatic(desiredCount: 6)
-          )
-        }
-        .chartYAxis {
-          AxisMarks(
-            values: .automatic(desiredCount: 10)
-          )
-        }
-        .chartForegroundStyleScale([
-          "Verbruik (Watt)" : Color.blue,
-          "Productieoverschot/injectie (Watt)": Color.orange
-        ])
-        .chartLegend(alignment: .center)
-        .frame(height: 200)
-        .padding(.horizontal, 30)
-        .padding(.vertical, 20)
+        .padding(.top, 40)
       }
-      ConsumptionProductionInjectionChart(period: $period)
-      ElectricityDetailsView(period: $period)
-    }
-    .onAppear {
-      Task {
-        await electricityDetailsViewModel.fetchElectricityDetails(period: 1)
-      }
-      consumptionProductionViewModel.fetchElectricityData(period: period)
     }
   }
   
-  func fetchPvPowerPrediction() {
-    let url = URL(string: "https://flask-server-hems.azurewebsites.net/pvpower-prediction")!
-    URLSession.shared.dataTask(with: url) {data, response, error in
-      guard let predictiondata = data else {return}
-      do {
-        let decoder = JSONDecoder()
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:"
-        dateFormatter.timeZone = TimeZone(secondsFromGMT: 3600)
-        decoder.dateDecodingStrategy = .formatted(dateFormatter)
-        let decodedData = try
-        decoder.decode([PvPowerPrediction].self, from: predictiondata)
-        DispatchQueue.main.async {
-          self.predictiondata = decodedData
-        }
-      }catch {
-        print(error)
-      }
-    }.resume()
+  var background: some View {
+    RoundedRectangle(cornerRadius: 5.0)
+      .fill(Color(.systemGray6))
   }
-}
-
-struct ElectricityData: Codable {
-  let time: Date
-  let current_consumption: Float
-  let current_production: Float
 }
 
 enum NetworkError: Error {
