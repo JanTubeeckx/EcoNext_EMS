@@ -79,17 +79,20 @@ struct ChartsView: View {
       ZStack {
         background
         VStack {
-          ConsumptionProductionInjectionChart(period: $period)
           ElectricityDetailsView(period: $period)
+          ConsumptionProductionInjectionChart(period: $period)
         }
-        .padding(.top, 40)
+        .padding(.bottom, 40)
       }
     }
   }
   
   var background: some View {
-    RoundedRectangle(cornerRadius: 5.0)
-      .fill(Color(.systemGray6))
+//    RoundedRectangle(cornerRadius: 5.0)
+//      .fill(Color(.systemGray6))
+    Rectangle()
+      .fill(Gradient(colors: [.blue, .green]))
+      .opacity(0.1).ignoresSafeArea()
   }
 }
 

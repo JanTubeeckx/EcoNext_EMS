@@ -5,7 +5,7 @@
 //  Created by Jan Tubeeckx on 12/05/2024.
 //
 
-import SwiftUI
+import Foundation
 
 struct ElectricityConsumptionAndProduction: Codable {
   let time: Date

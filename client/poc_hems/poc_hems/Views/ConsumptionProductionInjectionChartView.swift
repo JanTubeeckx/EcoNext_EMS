@@ -16,7 +16,7 @@ struct ConsumptionProductionInjectionChart: View {
     Chart(vm.consumptionAndProduction, id: \.self) { cp in
       SectorMark(
         angle: .value(cp.first!, Float(cp[1]) ?? 0.0),
-        innerRadius: .ratio(0.6)
+        innerRadius: .ratio(0.7)
       )
       .foregroundStyle(
         by: .value(cp.first!, cp.first!)
@@ -31,18 +31,20 @@ struct ConsumptionProductionInjectionChart: View {
               Text("\(vm.consumption, specifier: "%.0f")")
                 .font(.system(size: 28)).bold()
                 .foregroundStyle(.blue)
-                .padding(.top, 20)
+                .padding(.top, 15)
             } else{
               if (vm.injection > 0 && vm.injection > vm.selfConsumption) {
                 Text("\(vm.injection, specifier: "%.0f")")
                   .font(.system(size: 28)).bold()
                   .foregroundStyle(.orange)
-                  .padding(.top, 20)
-              } else if (vm.selfConsumption > 0 && vm.selfConsumption > vm.injection) {
-                Text("\(vm.selfConsumption, specifier: "%.0f")")
-                  .font(.system(size: 28)).bold()
-                  .foregroundStyle(.green)
-                  .padding(.top, 20)
+                  .padding(.top, 15)
+              } else {
+                if (vm.selfConsumption > 0 && vm.selfConsumption > vm.injection) {
+                  Text("\(vm.selfConsumption, specifier: "%.0f")")
+                    .font(.system(size: 28)).bold()
+                    .foregroundStyle(.green)
+                    .padding(.top, 15)
+                }
               }
             }
             Text("W")
@@ -50,7 +52,7 @@ struct ConsumptionProductionInjectionChart: View {
               .foregroundStyle(vm.consumption > vm.production ? .blue :
                                 (vm.injection > 0 && vm.injection > vm.selfConsumption) ? .orange : .green)
           }
-          .padding(20)
+//          .padding(25)
         }
         .position(x: frame.midX, y: frame.midY)
       }
@@ -63,6 +65,6 @@ struct ConsumptionProductionInjectionChart: View {
       }
     }
     .chartLegend(alignment: .center)
-    
+    .padding(20)
   }
 }

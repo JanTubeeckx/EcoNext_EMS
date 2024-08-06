@@ -26,6 +26,7 @@ struct ElectricityDetailsView: View {
         }
       }
     }
+    .frame(maxHeight: 120)
   }
   
   var background: some View {
@@ -58,7 +59,8 @@ struct ElectricityDetailsView: View {
       selfConsumption
       injection
     }
-    .padding(15)
+    .padding(.horizontal, 25)
+    .padding(.top, 20)
   }
   
   var revenueSelfConsumption: some View {

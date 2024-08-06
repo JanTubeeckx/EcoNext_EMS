@@ -5,7 +5,7 @@
 //  Created by Jan Tubeeckx on 09/06/2024.
 //
 
-import SwiftUI
+import Foundation
 
 struct ElectricityDetails: Codable {
   let current_consumption: [String]
