@@ -9,11 +9,11 @@ import SwiftUI
 import Charts
 
 struct ConsumptionProductionInjectionChart: View {
-  @StateObject var vm = ElectricityDetailsViewModel()
+  @StateObject var electricityDetails = ElectricityDetailsViewModel()
   @Binding var period: Int
   
   var body: some View {
-    Chart(vm.consumptionAndProduction, id: \.self) { cp in
+    Chart(electricityDetails.consumptionAndProduction, id: \.self) { cp in
       SectorMark(
         angle: .value(cp.first!, Float(cp[1]) ?? 0.0),
         innerRadius: .ratio(0.7)
@@ -27,20 +27,20 @@ struct ConsumptionProductionInjectionChart: View {
         let frame = geometry[chartProxy.plotFrame!]
         VStack {
           VStack {
-            if(vm.consumption > vm.production){
-              Text("\(vm.consumption, specifier: "%.0f")")
+            if(electricityDetails.consumption > electricityDetails.production){
+              Text("\(electricityDetails.consumption, specifier: "%.0f")")
                 .font(.system(size: 28)).bold()
                 .foregroundStyle(.blue)
                 .padding(.top, 15)
             } else{
-              if (vm.injection > 0 && vm.injection > vm.selfConsumption) {
-                Text("\(vm.injection, specifier: "%.0f")")
+              if (electricityDetails.injection > 0 && electricityDetails.injection > electricityDetails.selfConsumption) {
+                Text("\(electricityDetails.injection, specifier: "%.0f")")
                   .font(.system(size: 28)).bold()
                   .foregroundStyle(.orange)
                   .padding(.top, 15)
               } else {
-                if (vm.selfConsumption > 0 && vm.selfConsumption > vm.injection) {
-                  Text("\(vm.selfConsumption, specifier: "%.0f")")
+                if (electricityDetails.selfConsumption > 0 && electricityDetails.selfConsumption > electricityDetails.injection) {
+                  Text("\(electricityDetails.selfConsumption, specifier: "%.0f")")
                     .font(.system(size: 28)).bold()
                     .foregroundStyle(.green)
                     .padding(.top, 15)
@@ -49,8 +49,8 @@ struct ConsumptionProductionInjectionChart: View {
             }
             Text("W")
               .font(.system(size: 24)).bold()
-              .foregroundStyle(vm.consumption > vm.production ? .blue :
-                                (vm.injection > 0 && vm.injection > vm.selfConsumption) ? .orange : .green)
+              .foregroundStyle(electricityDetails.consumption > electricityDetails.production ? .blue :
+                                (electricityDetails.injection > 0 && electricityDetails.injection > electricityDetails.selfConsumption) ? .orange : .green)
           }
 //          .padding(25)
         }
@@ -58,9 +58,9 @@ struct ConsumptionProductionInjectionChart: View {
       }
     }
     .onAppear {
-      if vm.electricityDetails.isEmpty {
+      if electricityDetails.electricityDetails.isEmpty {
         Task {
-          await vm.fetchElectricityDetails(period: period)
+          await electricityDetails.fetchElectricityDetails(period: period)
         }
       }
     }

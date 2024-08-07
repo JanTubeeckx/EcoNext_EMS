@@ -5,7 +5,7 @@
 //  Created by Jan Tubeeckx on 09/06/2024.
 //
 
-import Foundation
+import SwiftUI
 
 @MainActor class ElectricityDetailsViewModel: ObservableObject {
   @Published var electricityDetails = [ElectricityDetails]()
@@ -32,7 +32,7 @@ import Foundation
     injection = Float(electricityDetails[0].current_injection[1])!
     //    totalProduction = Float(electricityDetails[0].total_production[1])!
     //    totalInjection = Float(electricityDetails[0].total_injection[1])!
-    //    selfConsumption = production - injection
+    selfConsumption = production - injection
     //    totalSelfConsumption = totalProduction - totalInjection
   }
 }

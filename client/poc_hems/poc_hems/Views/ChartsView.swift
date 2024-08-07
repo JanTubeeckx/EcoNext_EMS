@@ -9,10 +9,10 @@ import SwiftUI
 import Foundation
 
 struct ChartsView: View {
-  @ObservedObject var consumptionInjectionViewModel = ConsumptionAndInjectionViewModel()
-  @ObservedObject var electricityDetailsViewModel = ElectricityDetailsViewModel()
+  @ObservedObject var consumptionInjection = ConsumptionAndInjectionViewModel()
+  @ObservedObject var electricityDetails = ElectricityDetailsViewModel()
   
-  @State private var electricityDetails: [ElectricityDetails] = []
+  @State private var electricityDtls: [ElectricityDetails] = []
   @State private var details: [ElectricityDetails] = []
   @State private var period = 1
   @State private var isPrediction = false
@@ -31,48 +31,48 @@ struct ChartsView: View {
       .frame(width: 350)
       .overlay(.black)
       .padding(.bottom, 5)
-    HStack{
-      Button(action: {daySelected = true; tommorrowSelected = false; consumptionInjectionViewModel.fetchElectricityData(period: 1);
-        isPrediction = false;
-      }) {
-        Text("Dag")
-          .frame(maxWidth: 60)
-          .font(.system(size: 15))
-      }
-      .buttonStyle(.borderedProminent)
-      .tint(daySelected ? .blue : Color(.systemGray5))
-      .foregroundColor(daySelected ? .white : .gray)
-      Button(action: {
-        weekSelected = true;
-        daySelected = false;
-        consumptionInjectionViewModel.fetchElectricityData(period: 6);
-        Task {
-          await electricityDetailsViewModel.fetchElectricityDetails(period: 6)
-        }}) {
-          Text("Week")
-            .frame(maxWidth: 60)
-            .font(.system(size: 15).bold())
-        }
-        .buttonStyle(.borderedProminent)
-        .tint(weekSelected ? .blue : Color(.systemGray5))
-        .foregroundColor(weekSelected ? .white : .gray)
-      Button(action: {}) {
-        Text("Maand")
-          .frame(maxWidth: 60)
-          .font(.system(size: 15))
-      }
-      Button(action: {isPrediction = true; daySelected = false; tommorrowSelected = true}) {
-        Text("Morgen")
-          .frame(maxWidth: 60)
-          .font(.system(size: 15))
-      }
-      .buttonStyle(.borderedProminent)
-      .tint(tommorrowSelected ? .blue : Color(.systemGray5))
-      .foregroundColor(tommorrowSelected ? .white : .gray)
-    }
-    .foregroundColor(.gray)
-    .buttonStyle(.bordered)
-    .frame(width: 350)
+//    HStack{
+//      Button(action: {daySelected = true; tommorrowSelected = false; consumptionInjection.fetchElectricityData(period: 1);
+//        isPrediction = false;
+//      }) {
+//        Text("Dag")
+//          .frame(maxWidth: 60)
+//          .font(.system(size: 15))
+//      }
+//      .buttonStyle(.borderedProminent)
+//      .tint(daySelected ? .blue : Color(.systemGray5))
+//      .foregroundColor(daySelected ? .white : .gray)
+//      Button(action: {
+//        weekSelected = true;
+//        daySelected = false;
+//        consumptionInjection.fetchElectricityData(period: 6);
+//        Task {
+//          await electricityDetails.fetchElectricityDetails(period: 6)
+//        }}) {
+//          Text("Week")
+//            .frame(maxWidth: 60)
+//            .font(.system(size: 15).bold())
+//        }
+//        .buttonStyle(.borderedProminent)
+//        .tint(weekSelected ? .blue : Color(.systemGray5))
+//        .foregroundColor(weekSelected ? .white : .gray)
+//      Button(action: {}) {
+//        Text("Maand")
+//          .frame(maxWidth: 60)
+//          .font(.system(size: 15))
+//      }
+//      Button(action: {isPrediction = true; daySelected = false; tommorrowSelected = true}) {
+//        Text("Morgen")
+//          .frame(maxWidth: 60)
+//          .font(.system(size: 15))
+//      }
+//      .buttonStyle(.borderedProminent)
+//      .tint(tommorrowSelected ? .blue : Color(.systemGray5))
+//      .foregroundColor(tommorrowSelected ? .white : .gray)
+//    }
+//    .foregroundColor(.gray)
+//    .buttonStyle(.bordered)
+//    .frame(width: 350)
     
     VStack {
       ConsumptionInjectionChart(period: $period, isPrediction: $isPrediction)

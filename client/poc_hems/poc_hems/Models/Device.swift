@@ -13,6 +13,14 @@ struct Device {
   let durationInMinutes: Int
   let powerConsumptionInKwh: Float
   let theme: Theme
+  
+  init(icon: String, description: String, durationInMinutes: Int, powerConsumptionInKwh: Float, theme: Theme) {
+    self.icon = icon
+    self.description = description
+    self.durationInMinutes = durationInMinutes
+    self.powerConsumptionInKwh = powerConsumptionInKwh
+    self.theme = theme
+  }
 }
 
 extension Device {

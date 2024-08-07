@@ -11,6 +11,8 @@ class ConsumptionAndInjectionViewModel: ObservableObject {
   @Published var consumptionAndProductionData: [ElectricityConsumptionAndProduction] = [] 
   @Published var predictiondata: [PvPowerPrediction] = []
   
+  let periods = ["Dag", "Week", "Maand", "Morgen"]
+  
   func fetchElectricityData(period: Int) {
     let url = URL(string: "https://flask-server-hems.azurewebsites.net/electricity-data?period=\(period)")!
     URLSession.shared.dataTask(with: url) {data, response, error in

@@ -13,6 +13,7 @@
 		C93716D72BC322D6009CA28E /* poc_hemsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93716D62BC322D6009CA28E /* poc_hemsTests.swift */; };
 		C93716E12BC322D6009CA28E /* poc_hemsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93716E02BC322D6009CA28E /* poc_hemsUITests.swift */; };
 		C93716E32BC322D6009CA28E /* poc_hemsUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93716E22BC322D6009CA28E /* poc_hemsUITestsLaunchTests.swift */; };
+		C943FDF72C63FBE10090BC4C /* DeviceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943FDF62C63FBE10090BC4C /* DeviceViewModel.swift */; };
 		C94DCE942C61131D00CC68C6 /* ConsumptionInjectionChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94DCE932C61131D00CC68C6 /* ConsumptionInjectionChartView.swift */; };
 		C95CA3C52BEA0B35008488B4 /* DeviceListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95CA3C42BEA0B35008488B4 /* DeviceListView.swift */; };
 		C98899082BD4F6FE0034D4A1 /* ChartsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98899072BD4F6FE0034D4A1 /* ChartsView.swift */; };
@@ -56,6 +57,7 @@
 		C93716DC2BC322D6009CA28E /* poc_hemsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = poc_hemsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C93716E02BC322D6009CA28E /* poc_hemsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = poc_hemsUITests.swift; sourceTree = "<group>"; };
 		C93716E22BC322D6009CA28E /* poc_hemsUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = poc_hemsUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		C943FDF62C63FBE10090BC4C /* DeviceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceViewModel.swift; sourceTree = "<group>"; };
 		C94DCE932C61131D00CC68C6 /* ConsumptionInjectionChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsumptionInjectionChartView.swift; sourceTree = "<group>"; };
 		C95CA3C42BEA0B35008488B4 /* DeviceListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceListView.swift; sourceTree = "<group>"; };
 		C98899072BD4F6FE0034D4A1 /* ChartsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsView.swift; sourceTree = "<group>"; };
@@ -181,6 +183,7 @@
 			children = (
 				C9D585A32BF12889002AD9EF /* ConsumptionAndInjectionViewModel.swift */,
 				C9FAAFAE2C15E00F0084D220 /* ElectricityDetailsViewModel.swift */,
+				C943FDF62C63FBE10090BC4C /* DeviceViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -340,6 +343,7 @@
 				C9E356372BE955B2009202B8 /* Device.swift in Sources */,
 				C9FAAFB12C15E0CB0084D220 /* ConsumptionProductionInjectionChartView.swift in Sources */,
 				C9FAAFAB2C15DC530084D220 /* ElectricityDetailsView.swift in Sources */,
+				C943FDF72C63FBE10090BC4C /* DeviceViewModel.swift in Sources */,
 				C9D585A42BF12889002AD9EF /* ConsumptionAndInjectionViewModel.swift in Sources */,
 				C9D5859D2BF11749002AD9EF /* ElectricityConsumptionAndProduction.swift in Sources */,
 				C9E356392BE95CAD009202B8 /* DeviceView.swift in Sources */,

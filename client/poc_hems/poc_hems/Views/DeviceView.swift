@@ -9,6 +9,7 @@ import SwiftUI
 
 struct DeviceView: View {
   let device: Device
+  
   var body: some View {
     VStack(alignment: .leading) {
       DeviceDetails(device: device)

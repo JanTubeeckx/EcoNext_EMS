@@ -8,20 +8,20 @@
 import SwiftUI
 
 struct ElectricityDetailsView: View {
-  @StateObject var vm = ElectricityDetailsViewModel()
+  @StateObject var electricityDetails = ElectricityDetailsViewModel()
   @Binding var period: Int
   
   var body: some View {
     VStack {
       VStack() {
-        electricityDetails
+        consumptionInjectionDetails
 //        financialSaving
       }
       .padding(.vertical, 15)
       .onAppear {
-        if vm.electricityDetails.isEmpty {
+        if electricityDetails.electricityDetails.isEmpty {
           Task {
-            await vm.fetchElectricityDetails(period: period)
+            await electricityDetails.fetchElectricityDetails(period: period)
           }
         }
       }
@@ -37,23 +37,23 @@ struct ElectricityDetailsView: View {
   
   var consumption: some View {
     electricityDetail(by: "arrowshape.up", color:Color.blue,
-                      value: vm.electricityDetails.first?.current_consumption[1] ?? "",
-                      unit: vm.electricityDetails.first?.current_consumption[2] ?? "")
+                      value: electricityDetails.electricityDetails.first?.current_consumption[1] ?? "",
+                      unit: electricityDetails.electricityDetails.first?.current_consumption[2] ?? "")
   }
   
   var selfConsumption: some View {
     electricityDetail(by: "leaf.arrow.triangle.circlepath", color:Color.green,
-                      value: vm.electricityDetails.first?.production_minus_injection[1] ?? "",
-                      unit: vm.electricityDetails.first?.production_minus_injection[2] ?? "")
+                      value: electricityDetails.electricityDetails.first?.production_minus_injection[1] ?? "",
+                      unit: electricityDetails.electricityDetails.first?.production_minus_injection[2] ?? "")
   }
   
   var injection: some View {
     electricityDetail(by: "arrowshape.down", color:Color.orange,
-                      value: vm.electricityDetails.first?.current_injection[1] ?? "",
-                      unit: vm.electricityDetails.first?.current_injection[2] ?? "")
+                      value: electricityDetails.electricityDetails.first?.current_injection[1] ?? "",
+                      unit: electricityDetails.electricityDetails.first?.current_injection[2] ?? "")
   }
   
-  var electricityDetails: some View {
+  var consumptionInjectionDetails: some View {
     HStack {
       consumption
       selfConsumption
@@ -65,13 +65,13 @@ struct ElectricityDetailsView: View {
   
   var revenueSelfConsumption: some View {
     electricityDetail(by: "eurosign.circle", color:Color.green,
-                      value: vm.electricityDetails.first?.revenue_selfconsumption[1] ?? "",
+                      value: electricityDetails.electricityDetails.first?.revenue_selfconsumption[1] ?? "",
                       unit: "")
   }
   
   var revenueInjection: some View {
     electricityDetail(by: "eurosign.circle", color:Color.orange,
-                      value: vm.electricityDetails.first?.revenue_injection[1] ?? "",
+                      value: electricityDetails.electricityDetails.first?.revenue_injection[1] ?? "",
                       unit: "")
   }
   
