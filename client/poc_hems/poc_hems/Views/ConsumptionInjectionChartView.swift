@@ -17,79 +17,9 @@ struct ConsumptionInjectionChart: View {
   var body: some View {
     periodControls
     if (isPrediction) {
-      Chart {
-        ForEach(consumptionInjection.predictiondata, id: \.time) { e in
-          LineMark(
-            x: .value("Time", e.time),
-            y: .value("Prediction", e.pv_power_prediction),
-            series: .value("Prediction", "Voorspelling PV productie")
-          )
-          .lineStyle(StrokeStyle(lineWidth: 2))
-          .foregroundStyle(by: .value("Prediction", "Voorspelling PV productie (Watt)"))
-        }
-      }
-      .chartXAxis {
-        AxisMarks(
-          values: .automatic(desiredCount: 24)
-        )
-      }
-      .chartYAxis {
-        AxisMarks(
-          values: .automatic(desiredCount: 6)
-        )
-      }
-      .onAppear {
-        consumptionInjection.fetchPvPowerPrediction()
-      }
-      .chartForegroundStyleScale(["Voorspelling PV productie (Watt)": Color.green])
-      .chartLegend(alignment: .center)
-      .frame(height: 200)
-      .padding(25)
+      predictionChart
     } else {
-      Chart {
-        ForEach(consumptionInjection.consumptionAndProductionData, id: \.time) { e in
-          LineMark(
-            x: .value("Time", e.time),
-            y: .value("Current consumption", e.current_consumption),
-            series: .value("Consumption", "Huidige consumptie (Watt)")
-          )
-          .lineStyle(StrokeStyle(lineWidth: 1))
-          .foregroundStyle(by: .value("Consumption", "Verbruik (Watt)"))
-          
-          LineMark(
-            x: .value("Time", e.time),
-            y: .value("Current production", e.current_production),
-            series: .value("Production", "Huidige productie (Watt)")
-          )
-          .lineStyle(StrokeStyle(lineWidth: 1))
-          .foregroundStyle(.orange)
-          .foregroundStyle(by: .value("Production", "Productieoverschot/injectie (Watt)"))
-        }
-      }
-      .onAppear {
-        Task {
-          await electricityDetails.fetchElectricityDetails(period: period)
-        }
-        consumptionInjection.fetchElectricityData(period: period)
-      }
-      .chartXAxis {
-        AxisMarks(
-          values: .automatic(desiredCount: 12)
-        )
-      }
-      .chartYAxis {
-        AxisMarks(
-          values: .automatic(desiredCount: 6)
-        )
-      }
-      .chartForegroundStyleScale([
-        "Verbruik (Watt)" : Color.blue,
-        "Productieoverschot/injectie (Watt)": Color.orange
-      ])
-      .chartLegend(alignment: .center)
-      .frame(height: 200)
-      .padding(.horizontal, 30)
-      .padding(.vertical, 20)
+      consumptionInjectionChart
     }
   }
   
@@ -99,7 +29,7 @@ struct ConsumptionInjectionChart: View {
         periodSelector(by: index)
       }
     }
-    .padding(.horizontal, 20)
+    .padding(.horizontal, 25)
   }
   
   func periodSelector(by label: String) -> some View {
@@ -109,5 +39,83 @@ struct ConsumptionInjectionChart: View {
         .font(.system(size: 15))
     }
     .buttonStyle(.borderedProminent)
+  }
+  
+  var predictionChart: some View {
+    Chart {
+      ForEach(consumptionInjection.predictiondata, id: \.time) { e in
+        LineMark(
+          x: .value("Time", e.time),
+          y: .value("Prediction", e.pv_power_prediction),
+          series: .value("Prediction", "Voorspelling PV productie")
+        )
+        .lineStyle(StrokeStyle(lineWidth: 2))
+        .foregroundStyle(by: .value("Prediction", "Voorspelling PV productie (Watt)"))
+      }
+    }
+    .chartXAxis {
+      AxisMarks(
+        values: .automatic(desiredCount: 24)
+      )
+    }
+    .chartYAxis {
+      AxisMarks(
+        values: .automatic(desiredCount: 6)
+      )
+    }
+    .onAppear {
+      consumptionInjection.fetchPvPowerPrediction()
+    }
+    .chartForegroundStyleScale(["Voorspelling PV productie (Watt)": Color.green])
+    .chartLegend(alignment: .center)
+    .frame(height: 200)
+    .padding(25)
+  }
+  
+  var consumptionInjectionChart: some View {
+    Chart {
+      ForEach(consumptionInjection.consumptionAndProductionData, id: \.time) { e in
+        LineMark(
+          x: .value("Time", e.time),
+          y: .value("Current consumption", e.current_consumption),
+          series: .value("Consumption", "Huidige consumptie (Watt)")
+        )
+        .lineStyle(StrokeStyle(lineWidth: 1))
+        .foregroundStyle(by: .value("Consumption", "Verbruik (Watt)"))
+        
+        LineMark(
+          x: .value("Time", e.time),
+          y: .value("Current production", e.current_production),
+          series: .value("Production", "Huidige productie (Watt)")
+        )
+        .lineStyle(StrokeStyle(lineWidth: 1))
+        .foregroundStyle(.orange)
+        .foregroundStyle(by: .value("Production", "Productieoverschot/injectie (Watt)"))
+      }
+    }
+    .onAppear {
+      Task {
+        await electricityDetails.fetchElectricityDetails(period: period)
+      }
+      consumptionInjection.fetchElectricityData(period: period)
+    }
+    .chartXAxis {
+      AxisMarks(
+        values: .automatic(desiredCount: 12)
+      )
+    }
+    .chartYAxis {
+      AxisMarks(
+        values: .automatic(desiredCount: 6)
+      )
+    }
+    .chartForegroundStyleScale([
+      "Verbruik (Watt)" : Color.blue,
+      "Productieoverschot/injectie (Watt)": Color.orange
+    ])
+    .chartLegend(alignment: .center)
+    .frame(height: 200)
+    .padding(.horizontal, 30)
+    .padding(.vertical, 20)
   }
 }
