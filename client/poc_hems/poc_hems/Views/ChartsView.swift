@@ -9,17 +9,10 @@ import SwiftUI
 import Foundation
 
 struct ChartsView: View {
-  @ObservedObject var consumptionInjection = ConsumptionAndInjectionViewModel()
-  @ObservedObject var electricityDetails = ElectricityDetailsViewModel()
+  @ObservedObject var consumptionInjection: ConsumptionAndInjectionViewModel
+  @ObservedObject var electricityDetails: ElectricityDetailsViewModel
   
-  @State private var electricityDtls: [ElectricityDetails] = []
-  @State private var details: [ElectricityDetails] = []
-  @State private var period = 1
   @State private var isPrediction = false
-  @State private var daySelected = true
-  @State private var weekSelected = false
-  @State private var monthSelected = false
-  @State private var tommorrowSelected = false
   
   var body: some View {
     Text(isPrediction ? "Morgen" : "Vandaag")
@@ -75,12 +68,17 @@ struct ChartsView: View {
 //    .frame(width: 350)
     
     VStack {
-      ConsumptionInjectionChart(period: $period, isPrediction: $isPrediction)
+      ConsumptionInjectionChart(
+        consumptionInjection: consumptionInjection,
+        electricityDetails: electricityDetails,
+        period: $consumptionInjection.period,
+        isPrediction: $isPrediction
+      )
       ZStack {
         background
         VStack {
-          ElectricityDetailsView(period: $period)
-          ConsumptionProductionInjectionChart(period: $period)
+          ElectricityDetailsView(electricityDetails: electricityDetails)
+          ConsumptionProductionInjectionChart(electricityDetails: electricityDetails)
         }
         .padding(.bottom, 40)
       }
@@ -130,5 +128,8 @@ class WebService {
 }
 
 #Preview {
-  ChartsView()
+  ChartsView(
+    consumptionInjection: ConsumptionAndInjectionViewModel(),
+    electricityDetails: ElectricityDetailsViewModel()
+  )
 }

@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct ElectricityDetailsView: View {
-  @StateObject var electricityDetails = ElectricityDetailsViewModel()
-  @Binding var period: Int
+  @ObservedObject var electricityDetails: ElectricityDetailsViewModel
   
   var body: some View {
     VStack {
@@ -21,7 +20,7 @@ struct ElectricityDetailsView: View {
       .onAppear {
         if electricityDetails.electricityDetails.isEmpty {
           Task {
-            await electricityDetails.fetchElectricityDetails(period: period)
+            await electricityDetails.fetchElectricityDetails(period: electricityDetails.period)
           }
         }
       }

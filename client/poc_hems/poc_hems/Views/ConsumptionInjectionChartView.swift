@@ -9,10 +9,13 @@ import SwiftUI
 import Charts
 
 struct ConsumptionInjectionChart: View {
-  @StateObject var consumptionInjection = ConsumptionAndInjectionViewModel()
-  @StateObject var electricityDetails = ElectricityDetailsViewModel()
+  @ObservedObject var consumptionInjection: ConsumptionAndInjectionViewModel
+  @ObservedObject var electricityDetails: ElectricityDetailsViewModel
+  
   @Binding var period: Int
   @Binding var isPrediction: Bool
+  
+  @State var selected: Bool = true
   
   var body: some View {
     periodControls
@@ -33,12 +36,14 @@ struct ConsumptionInjectionChart: View {
   }
   
   func periodSelector(by label: String) -> some View {
-    Button(action: {}) {
+    Button(action: {consumptionInjection.selectPeriod()}) {
       Text(label)
         .frame(maxWidth: 60)
         .font(.system(size: 15))
     }
     .buttonStyle(.borderedProminent)
+    .foregroundColor(.white)
+//    .tint(Color(.systemGray5))
   }
   
   var predictionChart: some View {

@@ -17,6 +17,7 @@ import SwiftUI
   @Published var selfConsumption = Float()
   @Published var totalSelfConsumption = Float()
   @Published var consumptionAndProduction = [[String]]()
+  @Published var period = 1
   
   func fetchElectricityDetails(period: Int) async {
     guard let downloadedDetails: [ElectricityDetails] = await WebService()

@@ -10,8 +10,15 @@ import SwiftUI
 class ConsumptionAndInjectionViewModel: ObservableObject {
   @Published var consumptionAndProductionData: [ElectricityConsumptionAndProduction] = [] 
   @Published var predictiondata: [PvPowerPrediction] = []
+  @Published var period = 1
   
   let periods = ["Dag", "Week", "Maand", "Morgen"]
+  
+  // MARK: - Intents
+  
+  func selectPeriod() {
+    
+  }
   
   func fetchElectricityData(period: Int) {
     let url = URL(string: "https://flask-server-hems.azurewebsites.net/electricity-data?period=\(period)")!

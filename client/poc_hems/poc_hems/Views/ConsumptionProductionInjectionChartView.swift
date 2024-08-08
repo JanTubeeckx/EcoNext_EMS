@@ -9,8 +9,7 @@ import SwiftUI
 import Charts
 
 struct ConsumptionProductionInjectionChart: View {
-  @StateObject var electricityDetails = ElectricityDetailsViewModel()
-  @Binding var period: Int
+  @ObservedObject var electricityDetails: ElectricityDetailsViewModel
   
   var body: some View {
     Chart(electricityDetails.consumptionAndProduction, id: \.self) { cp in
@@ -60,7 +59,7 @@ struct ConsumptionProductionInjectionChart: View {
     .onAppear {
       if electricityDetails.electricityDetails.isEmpty {
         Task {
-          await electricityDetails.fetchElectricityDetails(period: period)
+          await electricityDetails.fetchElectricityDetails(period: electricityDetails.period)
         }
       }
     }

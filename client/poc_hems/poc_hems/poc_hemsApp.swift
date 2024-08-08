@@ -9,12 +9,16 @@ import SwiftUI
 
 @main
 struct poc_hemsApp: App {
-  @ObservedObject var consumptionProductionViewModel = ConsumptionAndInjectionViewModel()
+  @StateObject var consumptionProduction = ConsumptionAndInjectionViewModel()
+  @StateObject var electricityDetails = ElectricityDetailsViewModel()
   
   var body: some Scene {
     WindowGroup {
-      ChartsView()
-//      DeviceListView(devices: Device.sampleData)
+      ChartsView(
+        consumptionInjection: ConsumptionAndInjectionViewModel(),
+        electricityDetails: ElectricityDetailsViewModel()
+      )
+      //      DeviceListView(devices: Device.sampleData)
     }
   }
 }
