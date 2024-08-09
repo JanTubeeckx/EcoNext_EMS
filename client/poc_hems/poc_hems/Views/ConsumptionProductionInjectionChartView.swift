@@ -51,7 +51,6 @@ struct ConsumptionProductionInjectionChart: View {
               .foregroundStyle(electricityDetails.consumption > electricityDetails.production ? .blue :
                                 (electricityDetails.injection > 0 && electricityDetails.injection > electricityDetails.selfConsumption) ? .orange : .green)
           }
-//          .padding(25)
         }
         .position(x: frame.midX, y: frame.midY)
       }

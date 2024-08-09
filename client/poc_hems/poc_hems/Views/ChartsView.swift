@@ -11,125 +11,149 @@ import Foundation
 struct ChartsView: View {
   @ObservedObject var consumptionInjection: ConsumptionAndInjectionViewModel
   @ObservedObject var electricityDetails: ElectricityDetailsViewModel
-  
-  @State private var isPrediction = false
+  @Binding var period: Int
   
   var body: some View {
-    Text(isPrediction ? "Morgen" : "Vandaag")
-      .frame(maxWidth: 345, alignment: .leading)
-      .font(.system(size: 30).bold())
-      .padding(.top, 10)
-      .padding(.bottom, 0.5)
-    Divider()
-      .frame(width: 350)
-      .overlay(.black)
-      .padding(.bottom, 5)
-//    HStack{
-//      Button(action: {daySelected = true; tommorrowSelected = false; consumptionInjection.fetchElectricityData(period: 1);
-//        isPrediction = false;
-//      }) {
-//        Text("Dag")
-//          .frame(maxWidth: 60)
-//          .font(.system(size: 15))
-//      }
-//      .buttonStyle(.borderedProminent)
-//      .tint(daySelected ? .blue : Color(.systemGray5))
-//      .foregroundColor(daySelected ? .white : .gray)
-//      Button(action: {
-//        weekSelected = true;
-//        daySelected = false;
-//        consumptionInjection.fetchElectricityData(period: 6);
-//        Task {
-//          await electricityDetails.fetchElectricityDetails(period: 6)
-//        }}) {
-//          Text("Week")
-//            .frame(maxWidth: 60)
-//            .font(.system(size: 15).bold())
-//        }
-//        .buttonStyle(.borderedProminent)
-//        .tint(weekSelected ? .blue : Color(.systemGray5))
-//        .foregroundColor(weekSelected ? .white : .gray)
-//      Button(action: {}) {
-//        Text("Maand")
-//          .frame(maxWidth: 60)
-//          .font(.system(size: 15))
-//      }
-//      Button(action: {isPrediction = true; daySelected = false; tommorrowSelected = true}) {
-//        Text("Morgen")
-//          .frame(maxWidth: 60)
-//          .font(.system(size: 15))
-//      }
-//      .buttonStyle(.borderedProminent)
-//      .tint(tommorrowSelected ? .blue : Color(.systemGray5))
-//      .foregroundColor(tommorrowSelected ? .white : .gray)
-//    }
-//    .foregroundColor(.gray)
-//    .buttonStyle(.bordered)
-//    .frame(width: 350)
-    
+
     VStack {
-      ConsumptionInjectionChart(
-        consumptionInjection: consumptionInjection,
-        electricityDetails: electricityDetails,
-        period: $consumptionInjection.period,
-        isPrediction: $isPrediction
-      )
-      ZStack {
-        background
-        VStack {
-          ElectricityDetailsView(electricityDetails: electricityDetails)
-          ConsumptionProductionInjectionChart(electricityDetails: electricityDetails)
+      welcomeText
+      Divider()
+        .frame(width: 350)
+        .overlay(.black)
+      if consumptionInjection.isConsumptionInjectionChart {
+        ConsumptionInjectionChart(
+          consumptionInjection: consumptionInjection,
+          electricityDetails: electricityDetails,
+          period: $consumptionInjection.period,
+          isPrediction: $consumptionInjection.isPrediction
+        )
+      } else {
+        HStack {
+          infoLabel
+          chartSelector
         }
-        .padding(.bottom, 40)
+        .padding(.top, 40)
+        .padding(.bottom, 5)
+        .padding(.horizontal, 25)
+        ZStack {
+          background
+          VStack {
+            ElectricityDetailsView(electricityDetails: electricityDetails)
+            ConsumptionProductionInjectionChart(electricityDetails: electricityDetails)
+          }
+          .padding(.bottom, 40)
+        }
+        revenueDetails
       }
+    }
+    .onAppear {
+      Task {
+        await electricityDetails.fetchElectricityDetails(period: period)
+      }
+      consumptionInjection.fetchElectricityData(period: period)
     }
   }
   
-  var background: some View {
-//    RoundedRectangle(cornerRadius: 5.0)
-//      .fill(Color(.systemGray6))
-    Rectangle()
-      .fill(Gradient(colors: [.blue, .green]))
-      .opacity(0.1).ignoresSafeArea()
-  }
-}
-
-enum NetworkError: Error {
-  case badUrl
-  case invalidRequest
-  case badResponse
-  case badStatus
-  case failedToDecodeResponse
-}
-
-class WebService {
-  func downloadData<T: Codable>(fromURL: String) async -> T? {
-    do {
-      guard let url = URL(string: fromURL) else { throw NetworkError.badUrl }
-      let (data, response) = try await URLSession.shared.data(from: url)
-      guard let response = response as? HTTPURLResponse else { throw NetworkError.badResponse }
-      guard response.statusCode >= 200 && response.statusCode < 300 else { throw NetworkError.badStatus }
-      guard let decodedResponse = try? JSONDecoder().decode(T.self, from: data) else { throw NetworkError.failedToDecodeResponse }
-      return decodedResponse
-    } catch NetworkError.badUrl {
-      print("There was an error creating the URL")
-    } catch NetworkError.badResponse {
-      print("Did not get a valid response")
-    } catch NetworkError.badStatus {
-      print("Did not get a 2xx status code from the response")
-    } catch NetworkError.failedToDecodeResponse {
-      print("Failed to decode response into the given type")
-    } catch {
-      print("An error occured downloading the data")
+  var welcomeText: some View {
+    HStack {
+      greeting
+      date
     }
-    
-    return nil
+    .padding(.top, 20)
+    .padding(.horizontal, 25)
+    .padding(.bottom, 5)
+  }
+  
+  var greeting: some View {
+    Text("Dag Jan,")
+      .frame(maxWidth: 350, alignment: .leading)
+      .font(.system(size: 28).bold())
+  }
+  
+  var date: some View {
+    Text("9 augustus 2024")
+      .font(.system(size: 20).bold())
+      .padding(.top, 5)
+  }
+  
+  var infoLabel: some View {
+    Text("Huidig verbruik")
+      .frame(maxWidth: 350, alignment: .leading)
+      .font(.system(size: 20).bold())
+  }
+  
+  var chartSelector: some View {
+    Button(action: {consumptionInjection.showConsumptionInjectionChart()}, label: {
+      Image(systemName: "chart.bar.xaxis")
+        .foregroundColor(Color(.systemGray2))
+        .imageScale(.medium)
+        .font(.title3)
+    })
+  }
+
+  var background: some View {
+    RoundedRectangle(cornerRadius: 10.0 )
+      .fill(Gradient(colors: [.green, .blue]))
+      .opacity(0.1).ignoresSafeArea()
+      .padding(.horizontal, 15)
+  }
+  
+  var revenueSelfConsumption: some View {
+    electricityDetail(
+      by: "eurosign.circle",
+      label: "Bespaard",
+      color:Color.green,
+      value: electricityDetails.electricityDetails.first?.revenue_selfconsumption[1] ?? "",
+      unit: ""
+    )
+  }
+  
+  var revenueInjection: some View {
+    electricityDetail(
+      by: "eurosign.circle",
+      label: "Verdiend",
+      color:Color.orange,
+      value: electricityDetails.electricityDetails.first?.revenue_injection[1] ?? "",
+      unit: ""
+    )
+  }
+  
+  var revenueDetails: some View {
+    HStack {
+      revenueSelfConsumption
+      revenueInjection
+    }
+    .padding(.horizontal, 50)
+    .padding()
+
+  }
+  
+  func electricityDetail(by icon: String, label: String, color: Color, value: String, unit: String) -> some View {
+    ZStack {
+      VStack {
+        HStack {
+          Image(systemName: icon)
+            .font(.system(size: 20.0))
+            .foregroundColor(color)
+          Text(label)
+            .font(.system(size: 20.0))
+            .foregroundColor(color)
+        }
+        Text(value + unit)
+          .frame(maxWidth: .infinity, alignment: .center)
+          .font(.system(size: 18).bold())
+          .foregroundColor(Color(.systemGray))
+          .padding(.top, 0.5)
+      }
+      .padding(5)
+    }
   }
 }
 
 #Preview {
   ChartsView(
     consumptionInjection: ConsumptionAndInjectionViewModel(),
-    electricityDetails: ElectricityDetailsViewModel()
+    electricityDetails: ElectricityDetailsViewModel(), 
+    period: .constant(1)
   )
 }

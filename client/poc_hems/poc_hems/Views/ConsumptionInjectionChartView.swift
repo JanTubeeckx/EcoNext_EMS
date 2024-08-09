@@ -24,6 +24,10 @@ struct ConsumptionInjectionChart: View {
     } else {
       consumptionInjectionChart
     }
+    RoundedRectangle(cornerRadius: 10)
+      .fill(Gradient(colors: [.blue, .orange]))
+      .opacity(0.1)
+      .padding(.horizontal, 15)
   }
   
   var periodControls: some View {
@@ -33,6 +37,7 @@ struct ConsumptionInjectionChart: View {
       }
     }
     .padding(.horizontal, 25)
+    .padding(.top, 20)
   }
   
   func periodSelector(by label: String) -> some View {
@@ -45,6 +50,49 @@ struct ConsumptionInjectionChart: View {
     .foregroundColor(.white)
 //    .tint(Color(.systemGray5))
   }
+  
+  //    HStack{
+  //      Button(action: {daySelected = true; tommorrowSelected = false; consumptionInjection.fetchElectricityData(period: 1);
+  //        isPrediction = false;
+  //      }) {
+  //        Text("Dag")
+  //          .frame(maxWidth: 60)
+  //          .font(.system(size: 15))
+  //      }
+  //      .buttonStyle(.borderedProminent)
+  //      .tint(daySelected ? .blue : Color(.systemGray5))
+  //      .foregroundColor(daySelected ? .white : .gray)
+  //      Button(action: {
+  //        weekSelected = true;
+  //        daySelected = false;
+  //        consumptionInjection.fetchElectricityData(period: 6);
+  //        Task {
+  //          await electricityDetails.fetchElectricityDetails(period: 6)
+  //        }}) {
+  //          Text("Week")
+  //            .frame(maxWidth: 60)
+  //            .font(.system(size: 15).bold())
+  //        }
+  //        .buttonStyle(.borderedProminent)
+  //        .tint(weekSelected ? .blue : Color(.systemGray5))
+  //        .foregroundColor(weekSelected ? .white : .gray)
+  //      Button(action: {}) {
+  //        Text("Maand")
+  //          .frame(maxWidth: 60)
+  //          .font(.system(size: 15))
+  //      }
+  //      Button(action: {isPrediction = true; daySelected = false; tommorrowSelected = true}) {
+  //        Text("Morgen")
+  //          .frame(maxWidth: 60)
+  //          .font(.system(size: 15))
+  //      }
+  //      .buttonStyle(.borderedProminent)
+  //      .tint(tommorrowSelected ? .blue : Color(.systemGray5))
+  //      .foregroundColor(tommorrowSelected ? .white : .gray)
+  //    }
+  //    .foregroundColor(.gray)
+  //    .buttonStyle(.bordered)
+  //    .frame(width: 350)
   
   var predictionChart: some View {
     Chart {

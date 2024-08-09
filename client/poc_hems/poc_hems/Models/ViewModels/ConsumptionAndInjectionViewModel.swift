@@ -11,6 +11,8 @@ class ConsumptionAndInjectionViewModel: ObservableObject {
   @Published var consumptionAndProductionData: [ElectricityConsumptionAndProduction] = [] 
   @Published var predictiondata: [PvPowerPrediction] = []
   @Published var period = 1
+  @Published var isConsumptionInjectionChart = false
+  @Published var isPrediction = false
   
   let periods = ["Dag", "Week", "Maand", "Morgen"]
   
@@ -18,6 +20,10 @@ class ConsumptionAndInjectionViewModel: ObservableObject {
   
   func selectPeriod() {
     
+  }
+  
+  func showConsumptionInjectionChart() {
+    isConsumptionInjectionChart = true
   }
   
   func fetchElectricityData(period: Int) {

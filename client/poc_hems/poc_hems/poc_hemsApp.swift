@@ -16,7 +16,8 @@ struct poc_hemsApp: App {
     WindowGroup {
       ChartsView(
         consumptionInjection: ConsumptionAndInjectionViewModel(),
-        electricityDetails: ElectricityDetailsViewModel()
+        electricityDetails: ElectricityDetailsViewModel(),
+        period: .constant(1)
       )
       //      DeviceListView(devices: Device.sampleData)
     }
