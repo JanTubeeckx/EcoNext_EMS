@@ -18,6 +18,7 @@
 		C950B13B2C66B2B600B601CD /* WebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C950B13A2C66B2B600B601CD /* WebService.swift */; };
 		C95CA3C52BEA0B35008488B4 /* DeviceListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95CA3C42BEA0B35008488B4 /* DeviceListView.swift */; };
 		C98899082BD4F6FE0034D4A1 /* ChartsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98899072BD4F6FE0034D4A1 /* ChartsView.swift */; };
+		C998C2782C694FC200870142 /* Period.swift in Sources */ = {isa = PBXBuildFile; fileRef = C998C2772C694FC100870142 /* Period.swift */; };
 		C9D5859D2BF11749002AD9EF /* ElectricityConsumptionAndProduction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D5859C2BF11749002AD9EF /* ElectricityConsumptionAndProduction.swift */; };
 		C9D5859F2BF1187B002AD9EF /* ConsumptionAndProductionFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D5859E2BF1187B002AD9EF /* ConsumptionAndProductionFetcher.swift */; };
 		C9D585A42BF12889002AD9EF /* ConsumptionAndInjectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D585A32BF12889002AD9EF /* ConsumptionAndInjectionViewModel.swift */; };
@@ -63,6 +64,7 @@
 		C950B13A2C66B2B600B601CD /* WebService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebService.swift; sourceTree = "<group>"; };
 		C95CA3C42BEA0B35008488B4 /* DeviceListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceListView.swift; sourceTree = "<group>"; };
 		C98899072BD4F6FE0034D4A1 /* ChartsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsView.swift; sourceTree = "<group>"; };
+		C998C2772C694FC100870142 /* Period.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Period.swift; sourceTree = "<group>"; };
 		C9D5859C2BF11749002AD9EF /* ElectricityConsumptionAndProduction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElectricityConsumptionAndProduction.swift; sourceTree = "<group>"; };
 		C9D5859E2BF1187B002AD9EF /* ConsumptionAndProductionFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsumptionAndProductionFetcher.swift; sourceTree = "<group>"; };
 		C9D585A32BF12889002AD9EF /* ConsumptionAndInjectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsumptionAndInjectionViewModel.swift; sourceTree = "<group>"; };
@@ -197,6 +199,7 @@
 				C9E356362BE955B2009202B8 /* Device.swift */,
 				C9D5859C2BF11749002AD9EF /* ElectricityConsumptionAndProduction.swift */,
 				C9FAAFAC2C15DDC80084D220 /* ElectricityDetails.swift */,
+				C998C2772C694FC100870142 /* Period.swift */,
 				C9FAAFB22C15E1880084D220 /* PVPowerPrediction.swift */,
 				C950B13A2C66B2B600B601CD /* WebService.swift */,
 				C9D585A22BF12857002AD9EF /* ViewModels */,
@@ -338,6 +341,7 @@
 				C9E356352BE953C5009202B8 /* Theme.swift in Sources */,
 				C9FAAFB32C15E1880084D220 /* PVPowerPrediction.swift in Sources */,
 				C94DCE942C61131D00CC68C6 /* ConsumptionInjectionChartView.swift in Sources */,
+				C998C2782C694FC200870142 /* Period.swift in Sources */,
 				C950B13B2C66B2B600B601CD /* WebService.swift in Sources */,
 				C9FAAFAD2C15DDC80084D220 /* ElectricityDetails.swift in Sources */,
 				C9D5859F2BF1187B002AD9EF /* ConsumptionAndProductionFetcher.swift in Sources */,

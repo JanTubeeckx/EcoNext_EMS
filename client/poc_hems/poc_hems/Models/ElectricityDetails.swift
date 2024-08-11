@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ElectricityDetails: Codable {
+struct ElectricityDetails: Decodable {
   let current_consumption: [String]
   let current_injection: [String]
   let quarter_peak: [String]

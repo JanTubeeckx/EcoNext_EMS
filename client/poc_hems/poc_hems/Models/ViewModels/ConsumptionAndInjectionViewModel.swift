@@ -13,14 +13,9 @@ class ConsumptionAndInjectionViewModel: ObservableObject {
   @Published var period = 1
   @Published var isConsumptionInjectionChart = false
   @Published var isPrediction = false
-  
-  let periods = ["Dag", "Week", "Maand", "Morgen"]
+  @Published var selectedPeriod = Period.day(nrOfDays: 1)
   
   // MARK: - Intents
-  
-  func selectPeriod() {
-    
-  }
   
   func showConsumptionInjectionChart() {
     isConsumptionInjectionChart = true

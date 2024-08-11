@@ -11,11 +11,9 @@ import Charts
 struct ConsumptionInjectionChart: View {
   @ObservedObject var consumptionInjection: ConsumptionAndInjectionViewModel
   @ObservedObject var electricityDetails: ElectricityDetailsViewModel
-  
   @Binding var period: Int
   @Binding var isPrediction: Bool
-  
-  @State var selected: Bool = true
+  @Binding var selectedPeriod: Period
   
   var body: some View {
     periodControls
@@ -31,24 +29,15 @@ struct ConsumptionInjectionChart: View {
   }
   
   var periodControls: some View {
-    HStack {
-      ForEach(consumptionInjection.periods, id: \.self) { index in
-        periodSelector(by: index)
-      }
+    Picker(selection: $selectedPeriod, label: Text("")) {
+      Text("Dag").tag(Period.day(nrOfDays: 1))
+      Text("Week").tag(Period.week(nrOfDays: 7))
+      Text("Maand").tag(Period.month(nrOfDays: 30))
+      Text("Morgen").tag(Period.tommorow)
     }
-    .padding(.horizontal, 25)
-    .padding(.top, 20)
-  }
-  
-  func periodSelector(by label: String) -> some View {
-    Button(action: {consumptionInjection.selectPeriod()}) {
-      Text(label)
-        .frame(maxWidth: 60)
-        .font(.system(size: 15))
-    }
-    .buttonStyle(.borderedProminent)
-    .foregroundColor(.white)
-//    .tint(Color(.systemGray5))
+    .pickerStyle(SegmentedPickerStyle())
+    .padding()
+    .onChange(of: selectedPeriod) { print(selectedPeriod.hashValue) }
   }
   
   //    HStack{
@@ -108,7 +97,7 @@ struct ConsumptionInjectionChart: View {
     }
     .chartXAxis {
       AxisMarks(
-        values: .automatic(desiredCount: 24)
+        values: .automatic(desiredCount: 12)
       )
     }
     .chartYAxis {

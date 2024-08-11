@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PvPowerPrediction: Codable {
+struct PvPowerPrediction: Decodable {
   let time: Date
   let pv_power_prediction: Float
 }

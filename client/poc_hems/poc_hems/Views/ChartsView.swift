@@ -25,7 +25,8 @@ struct ChartsView: View {
           consumptionInjection: consumptionInjection,
           electricityDetails: electricityDetails,
           period: $consumptionInjection.period,
-          isPrediction: $consumptionInjection.isPrediction
+          isPrediction: $consumptionInjection.isPrediction,
+          selectedPeriod: $consumptionInjection.selectedPeriod
         )
       } else {
         HStack {

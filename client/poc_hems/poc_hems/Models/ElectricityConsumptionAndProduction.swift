@@ -7,12 +7,12 @@
 
 import Foundation
 
-struct ElectricityConsumptionAndProduction: Codable {
+struct ElectricityConsumptionAndProduction: Decodable {
   let time: Date
   let current_consumption: Float
   let current_production: Float
 }
 
-struct ElectricityConsumptionAndProductionData: Codable {
+struct ElectricityConsumptionAndProductionData: Decodable {
   let electricityData: [ElectricityConsumptionAndProduction]
 }

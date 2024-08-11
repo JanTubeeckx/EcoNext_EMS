@@ -8,7 +8,7 @@
 import Foundation
 
 class WebService {
-  func downloadData<T: Codable>(fromURL: String) async -> T? {
+  func downloadData<T: Decodable>(fromURL: String) async -> T? {
     do {
       guard let url = URL(string: fromURL) else { throw NetworkError.badUrl }
       let (data, response) = try await URLSession.shared.data(from: url)
