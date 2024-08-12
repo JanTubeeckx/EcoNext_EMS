@@ -84,8 +84,11 @@ def get_electricity_consumption_and_injection_data(period):
   electricity_consumption.drop(columns=['average_quarter_peak', 'quarter_peak'], inplace=True)
   # electricity_production = get_electricity_production_data(period)
   electricity_consumption['current_production'] = -electricity_consumption['current_production']
+  electricity_consumption.set_index('time', drop=False, inplace=True)
+  electricity_consumption = electricity_consumption.resample('Min').mean()
   # consumption_and_production = electricity_consumption.merge(electricity_production[['time', 'current_power']]) 
   electricity_consumption['time'] = electricity_consumption['time'].dt.strftime("%Y-%m-%d %H:%M") 
+  print(electricity_consumption)
   return electricity_consumption
 
 def get_electricity_consumption_and_production_details(period):
