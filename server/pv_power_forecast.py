@@ -55,14 +55,14 @@ def create_features(df):
 def add_lag_features(df):
     solar_irradiation = 'ghi'
     target_map = df[solar_irradiation].to_dict()
-    df['lag_1'] = (df.index - pd.Timedelta('12 hours')).map(target_map)
-    df['lag_2'] = (df.index - pd.Timedelta('24 hours')).map(target_map)
-    df['lag_3'] = (df.index - pd.Timedelta('48 hours')).map(target_map)
-    df['lag_4'] = (df.index - pd.Timedelta('72 hours')).map(target_map)
-    # df['lag_1'] = (df.index - pd.Timedelta('364 days')).map(target_map)
-    # df['lag_2'] = (df.index - pd.Timedelta('728 days')).map(target_map)
-    # df['lag_3'] = (df.index - pd.Timedelta('1092 days')).map(target_map)
-    # df['lag_4'] = (df.index - pd.Timedelta('1456 days')).map(target_map)
+    # df['lag_1'] = (df.index - pd.Timedelta('12 hours')).map(target_map)
+    # df['lag_2'] = (df.index - pd.Timedelta('24 hours')).map(target_map)
+    # df['lag_3'] = (df.index - pd.Timedelta('48 hours')).map(target_map)
+    # df['lag_4'] = (df.index - pd.Timedelta('72 hours')).map(target_map)
+    df['lag_1'] = (df.index - pd.Timedelta('364 days')).map(target_map)
+    df['lag_2'] = (df.index - pd.Timedelta('728 days')).map(target_map)
+    df['lag_3'] = (df.index - pd.Timedelta('1092 days')).map(target_map)
+    df['lag_4'] = (df.index - pd.Timedelta('1456 days')).map(target_map)
     return df
 
 def investigate_correlations(historical_data):
@@ -94,7 +94,7 @@ def convert_predicted_solar_radiation_to_pv_power(prediction):
 def predict_pv_power(solar_irradiance_df, isProduction):
     # Define variables
     solar_irradiation = 'ghi'
-    nr_of_days_to_predict = 3
+    nr_of_days_to_predict = 2
     next_day = datetime.now().day + 1
     # Get saved xgboost model
     modelfile = open('xgboost_model.pkl', 'rb')
@@ -125,7 +125,8 @@ def predict_pv_power(solar_irradiance_df, isProduction):
     if visualize:
         xgb.plot_importance(xgb_model)
     # Create dataframe to write future values of solar irradiation
-    current_date = solar_irradiance_df.index.max().date()
+    # current_date = solar_irradiance_df.index.max().date()
+    current_date = datetime.today().date()
     future_date = current_date+timedelta(nr_of_days_to_predict)
     future = pd.date_range(str(current_date), str(future_date), freq='15min')
     future_df = pd.DataFrame(index=future)

@@ -45,14 +45,14 @@ def create_features(df):
 def add_lag_features(df):
     solar_irradiation = 'ghi'
     target_map = df[solar_irradiation].to_dict()
-    # df['lag_1'] = (df.index - pd.Timedelta('364 days')).map(target_map)
-    # df['lag_2'] = (df.index - pd.Timedelta('728 days')).map(target_map)
-    # df['lag_3'] = (df.index - pd.Timedelta('1092 days')).map(target_map)
-    # df['lag_4'] = (df.index - pd.Timedelta('1456 days')).map(target_map)
-    df['lag_1'] = (df.index - pd.Timedelta('12 hours')).map(target_map)
-    df['lag_2'] = (df.index - pd.Timedelta('24 hours')).map(target_map)
-    df['lag_3'] = (df.index - pd.Timedelta('48 hours')).map(target_map)
-    df['lag_4'] = (df.index - pd.Timedelta('72 hours')).map(target_map)
+    df['lag_1'] = (df.index - pd.Timedelta('364 days')).map(target_map)
+    df['lag_2'] = (df.index - pd.Timedelta('728 days')).map(target_map)
+    df['lag_3'] = (df.index - pd.Timedelta('1092 days')).map(target_map)
+    df['lag_4'] = (df.index - pd.Timedelta('1456 days')).map(target_map)
+    # df['lag_1'] = (df.index - pd.Timedelta('12 hours')).map(target_map)
+    # df['lag_2'] = (df.index - pd.Timedelta('24 hours')).map(target_map)
+    # df['lag_3'] = (df.index - pd.Timedelta('48 hours')).map(target_map)
+    # df['lag_4'] = (df.index - pd.Timedelta('72 hours')).map(target_map)
     return df
 
 # Create and train model
