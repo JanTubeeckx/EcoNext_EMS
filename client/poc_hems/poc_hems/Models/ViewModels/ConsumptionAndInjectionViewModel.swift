@@ -8,9 +8,12 @@
 import SwiftUI
 
 class ConsumptionAndInjectionViewModel: ObservableObject {
-  @Published var consumptionAndProductionData: [ElectricityConsumptionAndProduction] = [] 
+  private var consumptionAndInjection: ElectricityConsumptionAndInjection = ElectricityConsumptionAndInjection()
+  
+  var consumptionInjectionData: [ElectricityConsumptionAndInjectionTimeSerie] = []
+//@Published var consumptionAndProductionData: [ElectricityConsumptionAndProduction] = []
   @Published var predictiondata: [PvPowerPrediction] = []
-  @Published var period = 1
+  @Published var period = 7
   @Published var isConsumptionInjectionChart = false
   @Published var isPrediction = false
   @Published var selectedPeriod = Period.day(nrOfDays: 1)
@@ -31,9 +34,10 @@ class ConsumptionAndInjectionViewModel: ObservableObject {
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:"
         decoder.dateDecodingStrategy = .formatted(dateFormatter)
         let decodedData = try
-        decoder.decode([ElectricityConsumptionAndProduction].self, from: data)
+        decoder.decode([ElectricityConsumptionAndInjectionTimeSerie].self, from: data)
         DispatchQueue.main.async {
-          self.consumptionAndProductionData = decodedData
+          self.consumptionInjectionData = decodedData
+          print(self.consumptionInjectionData)
         }
       }catch {
         print(error)

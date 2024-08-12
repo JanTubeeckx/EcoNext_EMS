@@ -116,18 +116,18 @@ struct ConsumptionInjectionChart: View {
   
   var consumptionInjectionChart: some View {
     Chart {
-      ForEach(consumptionInjection.consumptionAndProductionData, id: \.time) { e in
+      ForEach(consumptionInjection.consumptionInjectionData, id: \.time) { e in
         LineMark(
-          x: .value("Time", e.time),
-          y: .value("Current consumption", e.current_consumption),
+          x: .value("Time", e.time ?? Date()),
+          y: .value("Current consumption", e.current_consumption ?? 0.0),
           series: .value("Consumption", "Huidige consumptie (Watt)")
         )
         .lineStyle(StrokeStyle(lineWidth: 1))
         .foregroundStyle(by: .value("Consumption", "Verbruik (Watt)"))
         
         LineMark(
-          x: .value("Time", e.time),
-          y: .value("Current production", e.current_production),
+          x: .value("Time", e.time ?? Date()),
+          y: .value("Current production", e.current_production ?? 0.0),
           series: .value("Production", "Huidige productie (Watt)")
         )
         .lineStyle(StrokeStyle(lineWidth: 1))

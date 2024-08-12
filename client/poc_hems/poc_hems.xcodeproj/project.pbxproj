@@ -19,7 +19,8 @@
 		C95CA3C52BEA0B35008488B4 /* DeviceListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95CA3C42BEA0B35008488B4 /* DeviceListView.swift */; };
 		C98899082BD4F6FE0034D4A1 /* ChartsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98899072BD4F6FE0034D4A1 /* ChartsView.swift */; };
 		C998C2782C694FC200870142 /* Period.swift in Sources */ = {isa = PBXBuildFile; fileRef = C998C2772C694FC100870142 /* Period.swift */; };
-		C9D5859D2BF11749002AD9EF /* ElectricityConsumptionAndProduction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D5859C2BF11749002AD9EF /* ElectricityConsumptionAndProduction.swift */; };
+		C998C27A2C6A9C7A00870142 /* ElectricityConsumptionAndInjectionTimeSerie.swift in Sources */ = {isa = PBXBuildFile; fileRef = C998C2792C6A9C7A00870142 /* ElectricityConsumptionAndInjectionTimeSerie.swift */; };
+		C9D5859D2BF11749002AD9EF /* ElectricityConsumptionAndInjection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D5859C2BF11749002AD9EF /* ElectricityConsumptionAndInjection.swift */; };
 		C9D5859F2BF1187B002AD9EF /* ConsumptionAndProductionFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D5859E2BF1187B002AD9EF /* ConsumptionAndProductionFetcher.swift */; };
 		C9D585A42BF12889002AD9EF /* ConsumptionAndInjectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D585A32BF12889002AD9EF /* ConsumptionAndInjectionViewModel.swift */; };
 		C9E356352BE953C5009202B8 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E356342BE953C5009202B8 /* Theme.swift */; };
@@ -65,7 +66,8 @@
 		C95CA3C42BEA0B35008488B4 /* DeviceListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceListView.swift; sourceTree = "<group>"; };
 		C98899072BD4F6FE0034D4A1 /* ChartsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartsView.swift; sourceTree = "<group>"; };
 		C998C2772C694FC100870142 /* Period.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Period.swift; sourceTree = "<group>"; };
-		C9D5859C2BF11749002AD9EF /* ElectricityConsumptionAndProduction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElectricityConsumptionAndProduction.swift; sourceTree = "<group>"; };
+		C998C2792C6A9C7A00870142 /* ElectricityConsumptionAndInjectionTimeSerie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElectricityConsumptionAndInjectionTimeSerie.swift; sourceTree = "<group>"; };
+		C9D5859C2BF11749002AD9EF /* ElectricityConsumptionAndInjection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElectricityConsumptionAndInjection.swift; sourceTree = "<group>"; };
 		C9D5859E2BF1187B002AD9EF /* ConsumptionAndProductionFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsumptionAndProductionFetcher.swift; sourceTree = "<group>"; };
 		C9D585A32BF12889002AD9EF /* ConsumptionAndInjectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsumptionAndInjectionViewModel.swift; sourceTree = "<group>"; };
 		C9E356342BE953C5009202B8 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
@@ -197,7 +199,8 @@
 			children = (
 				C9E356342BE953C5009202B8 /* Theme.swift */,
 				C9E356362BE955B2009202B8 /* Device.swift */,
-				C9D5859C2BF11749002AD9EF /* ElectricityConsumptionAndProduction.swift */,
+				C9D5859C2BF11749002AD9EF /* ElectricityConsumptionAndInjection.swift */,
+				C998C2792C6A9C7A00870142 /* ElectricityConsumptionAndInjectionTimeSerie.swift */,
 				C9FAAFAC2C15DDC80084D220 /* ElectricityDetails.swift */,
 				C998C2772C694FC100870142 /* Period.swift */,
 				C9FAAFB22C15E1880084D220 /* PVPowerPrediction.swift */,
@@ -353,7 +356,8 @@
 				C9FAAFAB2C15DC530084D220 /* ElectricityDetailsView.swift in Sources */,
 				C943FDF72C63FBE10090BC4C /* DeviceViewModel.swift in Sources */,
 				C9D585A42BF12889002AD9EF /* ConsumptionAndInjectionViewModel.swift in Sources */,
-				C9D5859D2BF11749002AD9EF /* ElectricityConsumptionAndProduction.swift in Sources */,
+				C9D5859D2BF11749002AD9EF /* ElectricityConsumptionAndInjection.swift in Sources */,
+				C998C27A2C6A9C7A00870142 /* ElectricityConsumptionAndInjectionTimeSerie.swift in Sources */,
 				C9E356392BE95CAD009202B8 /* DeviceView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
