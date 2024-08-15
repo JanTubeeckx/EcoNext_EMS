@@ -88,11 +88,13 @@ def get_electricity_consumption_and_injection_data(period):
   # Resample to minute data instead of seconds
   if period == 1:
     electricity_consumption = electricity_consumption.resample('Min').mean()
-  if period == 7:
+  if (period > 1) and (period <= 7):
     electricity_consumption = electricity_consumption.resample('15min').mean()
+  if period > 29:
+    electricity_consumption = electricity_consumption.resample('60min').mean()
   # consumption_and_production = electricity_consumption.merge(electricity_production[['time', 'current_power']]) 
   electricity_consumption['time'] = electricity_consumption['time'].dt.strftime("%Y-%m-%d %H:%M") 
-  print(electricity_consumption)
+  # print(electricity_consumption)
   return electricity_consumption
 
 def get_electricity_consumption_and_production_details(period):
