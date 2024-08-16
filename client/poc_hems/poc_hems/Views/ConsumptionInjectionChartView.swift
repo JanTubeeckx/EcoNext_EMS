@@ -135,15 +135,16 @@ struct ConsumptionInjectionChart: View {
         .foregroundStyle(by: .value("Production", "Productieoverschot/injectie (Watt)"))
       }
     }
-    .onAppear {
-      Task {
-        await electricityDetails.fetchElectricityDetails(period: period)
-      }
-      consumptionInjection.fetchElectricityData(period: period)
-    }
+//    .onAppear {
+////      Task {
+////        await electricityDetails.fetchElectricityDetails(period: period)
+////      }
+////      consumptionInjection.fetchElectricityData(period: 1)
+////      consumptionInjection.fetchElectricityData(period: 6)
+//    }
     .chartXAxis {
       AxisMarks(
-        values: .automatic(desiredCount: 12)
+        values: .automatic(desiredCount: 6)
       )
     }
     .chartYAxis {

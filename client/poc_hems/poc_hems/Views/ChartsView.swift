@@ -47,11 +47,9 @@ struct ChartsView: View {
         revenueDetails
       }
     }
-    .onAppear {
-      Task {
-        await electricityDetails.fetchElectricityDetails(period: period)
-      }
-      consumptionInjection.fetchElectricityData(period: period)
+    .task {
+      await electricityDetails.fetchElectricityDetails(period: 1)
+      await consumptionInjection.fetchElectricityData(period: 6)
     }
   }
   

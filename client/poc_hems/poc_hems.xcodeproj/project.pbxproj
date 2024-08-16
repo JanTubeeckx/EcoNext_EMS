@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C919A1AD2C6F8A3C00BDC945 /* ElectricityConsumptionInjectionError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C919A1AC2C6F8A3C00BDC945 /* ElectricityConsumptionInjectionError.swift */; };
+		C919A1AF2C6F8E3C00BDC945 /* TestData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C919A1AE2C6F8E3C00BDC945 /* TestData.swift */; };
 		C93716C62BC322D5009CA28E /* poc_hemsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93716C52BC322D5009CA28E /* poc_hemsApp.swift */; };
 		C93716CA2BC322D6009CA28E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C93716C92BC322D6009CA28E /* Assets.xcassets */; };
 		C93716CD2BC322D6009CA28E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C93716CC2BC322D6009CA28E /* Preview Assets.xcassets */; };
@@ -51,6 +53,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C919A1AC2C6F8A3C00BDC945 /* ElectricityConsumptionInjectionError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElectricityConsumptionInjectionError.swift; sourceTree = "<group>"; };
+		C919A1AE2C6F8E3C00BDC945 /* TestData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestData.swift; sourceTree = "<group>"; };
 		C93716C22BC322D5009CA28E /* poc_hems.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = poc_hems.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C93716C52BC322D5009CA28E /* poc_hemsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = poc_hemsApp.swift; sourceTree = "<group>"; };
 		C93716C92BC322D6009CA28E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -105,6 +109,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C919A1AB2C6F8A0A00BDC945 /* Errors */ = {
+			isa = PBXGroup;
+			children = (
+				C919A1AC2C6F8A3C00BDC945 /* ElectricityConsumptionInjectionError.swift */,
+			);
+			path = Errors;
+			sourceTree = "<group>";
+		};
 		C93716B92BC322D5009CA28E = {
 			isa = PBXGroup;
 			children = (
@@ -128,6 +140,7 @@
 		C93716C42BC322D5009CA28E /* poc_hems */ = {
 			isa = PBXGroup;
 			children = (
+				C919A1AB2C6F8A0A00BDC945 /* Errors */,
 				C93716C52BC322D5009CA28E /* poc_hemsApp.swift */,
 				C9D585992BF0D058002AD9EF /* Services */,
 				C95CA3C32BEA0A4E008488B4 /* Views */,
@@ -150,6 +163,7 @@
 			isa = PBXGroup;
 			children = (
 				C93716D62BC322D6009CA28E /* poc_hemsTests.swift */,
+				C919A1AE2C6F8E3C00BDC945 /* TestData.swift */,
 			);
 			path = poc_hemsTests;
 			sourceTree = "<group>";
@@ -346,6 +360,7 @@
 				C94DCE942C61131D00CC68C6 /* ConsumptionInjectionChartView.swift in Sources */,
 				C998C2782C694FC200870142 /* Period.swift in Sources */,
 				C950B13B2C66B2B600B601CD /* WebService.swift in Sources */,
+				C919A1AD2C6F8A3C00BDC945 /* ElectricityConsumptionInjectionError.swift in Sources */,
 				C9FAAFAD2C15DDC80084D220 /* ElectricityDetails.swift in Sources */,
 				C9D5859F2BF1187B002AD9EF /* ConsumptionAndProductionFetcher.swift in Sources */,
 				C93716C62BC322D5009CA28E /* poc_hemsApp.swift in Sources */,
@@ -367,6 +382,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C93716D72BC322D6009CA28E /* poc_hemsTests.swift in Sources */,
+				C919A1AF2C6F8E3C00BDC945 /* TestData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

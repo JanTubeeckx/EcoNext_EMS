@@ -55,13 +55,13 @@ struct ConsumptionProductionInjectionChart: View {
         .position(x: frame.midX, y: frame.midY)
       }
     }
-    .onAppear {
-      if electricityDetails.electricityDetails.isEmpty {
-        Task {
-          await electricityDetails.fetchElectricityDetails(period: electricityDetails.period)
-        }
-      }
-    }
+//    .onAppear {
+//      if electricityDetails.electricityDetails.isEmpty {
+//        Task {
+//          await electricityDetails.fetchElectricityDetails(period: electricityDetails.period)
+//        }
+//      }
+//    }
     .chartLegend(alignment: .center)
     .padding(20)
   }

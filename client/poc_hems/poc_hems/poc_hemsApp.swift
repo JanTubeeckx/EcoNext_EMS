@@ -19,6 +19,10 @@ struct poc_hemsApp: App {
         electricityDetails: ElectricityDetailsViewModel(),
         period: .constant(1)
       )
+      .task {
+        await electricityDetails.fetchElectricityDetails(period: 1)
+        await consumptionProduction.fetchElectricityData(period: 1)
+      }
       //      DeviceListView(devices: Device.sampleData)
     }
   }
