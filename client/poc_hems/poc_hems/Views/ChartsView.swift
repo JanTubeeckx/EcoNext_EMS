@@ -13,6 +13,7 @@ struct ChartsView: View {
   @ObservedObject var electricityDetails: ElectricityDetailsViewModel
   @Binding var period: Int
   
+  
   var body: some View {
 
     VStack {
@@ -50,6 +51,7 @@ struct ChartsView: View {
     .task {
       await electricityDetails.fetchElectricityDetails(period: 1)
       await consumptionInjection.fetchElectricityData(period: 1)
+      await consumptionInjection.fetchElectricityData(period: 6)
       await consumptionInjection.fetchPvPowerPrediction()
     }
   }
@@ -71,7 +73,12 @@ struct ChartsView: View {
   }
   
   var date: some View {
-    Text("9 augustus 2024")
+    let today = Date.now
+    let dateFormatter = DateFormatter()
+    dateFormatter.locale = Locale(identifier: "nl")
+    dateFormatter.dateFormat = "d MMMM y"
+    
+    return Text(dateFormatter.string(from: today))
       .font(.system(size: 20).bold())
       .padding(.top, 5)
   }
