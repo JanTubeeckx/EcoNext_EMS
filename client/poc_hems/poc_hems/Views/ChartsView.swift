@@ -26,7 +26,7 @@ struct ChartsView: View {
           electricityDetails: electricityDetails,
           period: $consumptionInjection.period,
           isPrediction: $consumptionInjection.isPrediction,
-          selectedPeriod: $consumptionInjection.selectedPeriod
+          selectPeriod: $consumptionInjection.selectPeriod
         )
       } else {
         HStack {
@@ -49,7 +49,8 @@ struct ChartsView: View {
     }
     .task {
       await electricityDetails.fetchElectricityDetails(period: 1)
-      await consumptionInjection.fetchElectricityData(period: 6)
+      await consumptionInjection.fetchElectricityData(period: 1)
+      await consumptionInjection.fetchPvPowerPrediction()
     }
   }
   

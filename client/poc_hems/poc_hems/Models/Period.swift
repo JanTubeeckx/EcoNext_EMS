@@ -7,12 +7,11 @@
 
 import Foundation
 
-enum Period: Hashable, Identifiable {
+enum Period: Int, Hashable, Identifiable {
   
-  case day(nrOfDays: Int)
-  case week(nrOfDays: Int)
-  case month(nrOfDays: Int)
-  case tommorow
+  case day = 1
+  case week = 6
+  case tommorow = 0
   
   var id: Self { self }
 }

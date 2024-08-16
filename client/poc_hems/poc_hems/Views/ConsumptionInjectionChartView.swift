@@ -13,11 +13,11 @@ struct ConsumptionInjectionChart: View {
   @ObservedObject var electricityDetails: ElectricityDetailsViewModel
   @Binding var period: Int
   @Binding var isPrediction: Bool
-  @Binding var selectedPeriod: Period
+  @Binding var selectPeriod: Int
   
   var body: some View {
     periodControls
-    if (isPrediction) {
+    if (consumptionInjection.isPrediction) {
       predictionChart
     } else {
       consumptionInjectionChart
@@ -29,59 +29,17 @@ struct ConsumptionInjectionChart: View {
   }
   
   var periodControls: some View {
-    Picker(selection: $selectedPeriod, label: Text("")) {
-      Text("Dag").tag(Period.day(nrOfDays: 1))
-      Text("Week").tag(Period.week(nrOfDays: 7))
-      Text("Maand").tag(Period.month(nrOfDays: 30))
-      Text("Morgen").tag(Period.tommorow)
+    Picker(selection: $selectPeriod, label: Text("")) {
+      Text("Dag").tag(Period.day.rawValue)
+      Text("Week").tag(Period.week.rawValue)
+      Text("Morgen").tag(Period.tommorow.rawValue)
     }
     .pickerStyle(SegmentedPickerStyle())
     .padding()
-    .onChange(of: selectedPeriod) { print(selectedPeriod.hashValue) }
+    .onChange(of: selectPeriod) {
+      consumptionInjection.changePeriod(selectedPeriod: selectPeriod)
+    }
   }
-  
-  //    HStack{
-  //      Button(action: {daySelected = true; tommorrowSelected = false; consumptionInjection.fetchElectricityData(period: 1);
-  //        isPrediction = false;
-  //      }) {
-  //        Text("Dag")
-  //          .frame(maxWidth: 60)
-  //          .font(.system(size: 15))
-  //      }
-  //      .buttonStyle(.borderedProminent)
-  //      .tint(daySelected ? .blue : Color(.systemGray5))
-  //      .foregroundColor(daySelected ? .white : .gray)
-  //      Button(action: {
-  //        weekSelected = true;
-  //        daySelected = false;
-  //        consumptionInjection.fetchElectricityData(period: 6);
-  //        Task {
-  //          await electricityDetails.fetchElectricityDetails(period: 6)
-  //        }}) {
-  //          Text("Week")
-  //            .frame(maxWidth: 60)
-  //            .font(.system(size: 15).bold())
-  //        }
-  //        .buttonStyle(.borderedProminent)
-  //        .tint(weekSelected ? .blue : Color(.systemGray5))
-  //        .foregroundColor(weekSelected ? .white : .gray)
-  //      Button(action: {}) {
-  //        Text("Maand")
-  //          .frame(maxWidth: 60)
-  //          .font(.system(size: 15))
-  //      }
-  //      Button(action: {isPrediction = true; daySelected = false; tommorrowSelected = true}) {
-  //        Text("Morgen")
-  //          .frame(maxWidth: 60)
-  //          .font(.system(size: 15))
-  //      }
-  //      .buttonStyle(.borderedProminent)
-  //      .tint(tommorrowSelected ? .blue : Color(.systemGray5))
-  //      .foregroundColor(tommorrowSelected ? .white : .gray)
-  //    }
-  //    .foregroundColor(.gray)
-  //    .buttonStyle(.bordered)
-  //    .frame(width: 350)
   
   var predictionChart: some View {
     Chart {
@@ -105,9 +63,6 @@ struct ConsumptionInjectionChart: View {
         values: .automatic(desiredCount: 6)
       )
     }
-    .onAppear {
-      consumptionInjection.fetchPvPowerPrediction()
-    }
     .chartForegroundStyleScale(["Voorspelling PV productie (Watt)": Color.green])
     .chartLegend(alignment: .center)
     .frame(height: 200)
@@ -118,16 +73,16 @@ struct ConsumptionInjectionChart: View {
     Chart {
       ForEach(consumptionInjection.consumptionInjectionData, id: \.time) { e in
         LineMark(
-          x: .value("Time", e.time ?? Date()),
-          y: .value("Current consumption", e.current_consumption ?? 0.0),
+          x: .value("Time", e.time),
+          y: .value("Current consumption", e.current_consumption),
           series: .value("Consumption", "Huidige consumptie (Watt)")
         )
         .lineStyle(StrokeStyle(lineWidth: 1))
         .foregroundStyle(by: .value("Consumption", "Verbruik (Watt)"))
         
         LineMark(
-          x: .value("Time", e.time ?? Date()),
-          y: .value("Current production", e.current_production ?? 0.0),
+          x: .value("Time", e.time),
+          y: .value("Current production", e.current_production),
           series: .value("Production", "Huidige productie (Watt)")
         )
         .lineStyle(StrokeStyle(lineWidth: 1))
@@ -135,13 +90,9 @@ struct ConsumptionInjectionChart: View {
         .foregroundStyle(by: .value("Production", "Productieoverschot/injectie (Watt)"))
       }
     }
-//    .onAppear {
-////      Task {
-////        await electricityDetails.fetchElectricityDetails(period: period)
-////      }
-////      consumptionInjection.fetchElectricityData(period: 1)
-////      consumptionInjection.fetchElectricityData(period: 6)
-//    }
+    .task {
+      await consumptionInjection.fetchElectricityData(period: 6)
+    }
     .chartXAxis {
       AxisMarks(
         values: .automatic(desiredCount: 6)
