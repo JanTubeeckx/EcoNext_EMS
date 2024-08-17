@@ -13,79 +13,49 @@ struct ChartsView: View {
   @ObservedObject var electricityDetails: ElectricityDetailsViewModel
   @Binding var period: Int
   
-  
   var body: some View {
-
-    VStack {
-      welcomeText
-      Divider()
-        .frame(width: 350)
-        .overlay(.black)
-      if consumptionInjection.isConsumptionInjectionChart {
-        ConsumptionInjectionChart(
-          consumptionInjection: consumptionInjection,
-          electricityDetails: electricityDetails,
-          period: $consumptionInjection.period,
-          isPrediction: $consumptionInjection.isPrediction,
-          selectPeriod: $consumptionInjection.selectPeriod
-        )
-      } else {
-        HStack {
-          infoLabel
-          chartSelector
-        }
-        .padding(.top, 40)
-        .padding(.bottom, 5)
-        .padding(.horizontal, 25)
-        ZStack {
-          background
-          VStack {
-            ElectricityDetailsView(electricityDetails: electricityDetails)
-            ConsumptionProductionInjectionChart(electricityDetails: electricityDetails)
+    GeometryReader { bounds in
+      VStack {
+        if consumptionInjection.isConsumptionInjectionChart {
+          ConsumptionInjectionChart(
+            consumptionInjection: consumptionInjection,
+            electricityDetails: electricityDetails,
+            period: $consumptionInjection.period,
+            isPrediction: $consumptionInjection.isPrediction,
+            selectPeriod: $consumptionInjection.selectPeriod
+          )
+        } else {
+          HStack {
+            infoLabel
+            chartSelector
           }
-          .padding(.bottom, 40)
+          .padding(.top, 40)
+          .padding(.bottom, 5)
+          .padding(.horizontal, 25)
+          ZStack {
+            background
+            VStack {
+              ElectricityDetailsView(electricityDetails: electricityDetails)
+              ConsumptionProductionInjectionChart(electricityDetails: electricityDetails)
+            }
+            .padding(.bottom, 40)
+          }
+          revenueDetails
         }
-        revenueDetails
       }
+      .frame(width: bounds.size.width)
+      .task {
+        await electricityDetails.fetchElectricityDetails(period: 1)
+        await consumptionInjection.fetchElectricityData(period: 1)
+        await consumptionInjection.fetchElectricityData(period: 6)
+        await consumptionInjection.fetchPvPowerPrediction()
     }
-    .task {
-      await electricityDetails.fetchElectricityDetails(period: 1)
-      await consumptionInjection.fetchElectricityData(period: 1)
-      await consumptionInjection.fetchElectricityData(period: 6)
-      await consumptionInjection.fetchPvPowerPrediction()
     }
-  }
-  
-  var welcomeText: some View {
-    HStack {
-      greeting
-      date
-    }
-    .padding(.top, 20)
-    .padding(.horizontal, 25)
-    .padding(.bottom, 5)
-  }
-  
-  var greeting: some View {
-    Text("Dag Jan,")
-      .frame(maxWidth: 350, alignment: .leading)
-      .font(.system(size: 28).bold())
-  }
-  
-  var date: some View {
-    let today = Date.now
-    let dateFormatter = DateFormatter()
-    dateFormatter.locale = Locale(identifier: "nl")
-    dateFormatter.dateFormat = "d MMMM y"
-    
-    return Text(dateFormatter.string(from: today))
-      .font(.system(size: 20).bold())
-      .padding(.top, 5)
   }
   
   var infoLabel: some View {
     Text("Huidig verbruik")
-      .frame(maxWidth: 350, alignment: .leading)
+      .frame(maxWidth: .infinity, alignment: .leading)
       .font(.system(size: 20).bold())
   }
   

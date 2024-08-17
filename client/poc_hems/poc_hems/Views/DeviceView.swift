@@ -1,5 +1,5 @@
 //
-//  CardView.swift
+//  DeviceView.swift
 //  poc_hems
 //
 //  Created by Jan Tubeeckx on 06/05/2024.
@@ -57,7 +57,7 @@ struct DeviceView: View {
   }
 }
 
-struct CardView_Previews: PreviewProvider {
+struct DeviceView_Previews: PreviewProvider {
   static var device = Device.sampleData[0]
   static var previews: some View {
     DeviceView(device: device)

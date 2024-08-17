@@ -28,26 +28,26 @@ struct ConsumptionProductionInjectionChart: View {
           VStack {
             if(electricityDetails.consumption > electricityDetails.production){
               Text("\(electricityDetails.consumption, specifier: "%.0f")")
-                .font(.system(size: 28)).bold()
+                .font(.system(size: 40)).bold()
                 .foregroundStyle(.blue)
                 .padding(.top, 15)
             } else{
               if (electricityDetails.injection > 0 && electricityDetails.injection > electricityDetails.selfConsumption) {
                 Text("\(electricityDetails.injection, specifier: "%.0f")")
-                  .font(.system(size: 28)).bold()
+                  .font(.system(size: 40)).bold()
                   .foregroundStyle(.orange)
                   .padding(.top, 15)
               } else {
                 if (electricityDetails.selfConsumption > 0 && electricityDetails.selfConsumption > electricityDetails.injection) {
                   Text("\(electricityDetails.selfConsumption, specifier: "%.0f")")
-                    .font(.system(size: 28)).bold()
+                    .font(.system(size: 40)).bold()
                     .foregroundStyle(.green)
                     .padding(.top, 15)
                 }
               }
             }
             Text("W")
-              .font(.system(size: 24)).bold()
+              .font(.system(size: 34)).bold()
               .foregroundStyle(electricityDetails.consumption > electricityDetails.production ? .blue :
                                 (electricityDetails.injection > 0 && electricityDetails.injection > electricityDetails.selfConsumption) ? .orange : .green)
           }
@@ -55,14 +55,8 @@ struct ConsumptionProductionInjectionChart: View {
         .position(x: frame.midX, y: frame.midY)
       }
     }
-//    .onAppear {
-//      if electricityDetails.electricityDetails.isEmpty {
-//        Task {
-//          await electricityDetails.fetchElectricityDetails(period: electricityDetails.period)
-//        }
-//      }
-//    }
-    .chartLegend(alignment: .center)
-    .padding(20)
+    .chartLegend(alignment: .center, spacing: 25)
+    .padding(50)
+    .frame(maxWidth: 700)
   }
 }

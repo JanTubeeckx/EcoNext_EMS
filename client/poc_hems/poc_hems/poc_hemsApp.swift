@@ -13,17 +13,24 @@ struct poc_hemsApp: App {
   @StateObject var electricityDetails = ElectricityDetailsViewModel()
   
   var body: some Scene {
+    #if os(iOS)
     WindowGroup {
       ChartsView(
         consumptionInjection: ConsumptionAndInjectionViewModel(),
         electricityDetails: ElectricityDetailsViewModel(),
         period: .constant(1)
       )
-      .task {
-        await electricityDetails.fetchElectricityDetails(period: 1)
-        await consumptionProduction.fetchElectricityData(period: 1)
-      }
       //      DeviceListView(devices: Device.sampleData)
     }
+    #elseif os(macOS)
+    WindowGroup {
+      ChartsView(
+        consumptionInjection: ConsumptionAndInjectionViewModel(),
+        electricityDetails: ElectricityDetailsViewModel(),
+        period: .constant(1)
+      )
+      //      DeviceListView(devices: Device.sampleData)
+    }
+    #endif
   }
 }
