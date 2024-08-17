@@ -9,13 +9,37 @@ import SwiftUI
 
 class ConsumptionAndInjectionViewModel: ObservableObject {
   private var consumptionAndInjection: ElectricityConsumptionAndInjection = ElectricityConsumptionAndInjection()
-  
   var consumptionInjectionData: [ElectricityConsumptionAndInjectionTimeSerie] = []
   var predictiondata: [PvPowerPrediction] = []
   @Published var period = 1
   @Published var isConsumptionInjectionChart = false
   @Published var isPrediction = false
   @Published var selectPeriod = Period.day.rawValue
+  
+  var newConsumptionInjectionData: [ElectricityConsumptionAndInjectionTimeSerie] {
+    get async throws {
+      let feedURL = URL(string: "https://flask-server-hems.azurewebsites.net/electricity-data?period=\(selectPeriod)")!
+      let data = try await downloader.httpData(from: feedURL)
+      let allData = try decoder.decode([ElectricityConsumptionAndInjectionTimeSerie].self, from: data)
+      return allData
+    }
+  }
+  
+  private lazy var decoder: JSONDecoder = {
+    let aDecoder = JSONDecoder()
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:"
+    aDecoder.dateDecodingStrategy = .formatted(dateFormatter)
+    return aDecoder
+  }()
+  
+  
+  
+  private let downloader: any HTTPDataDownloader
+  
+  init(downloader: any HTTPDataDownloader = URLSession.shared) {
+    self.downloader = downloader
+  }
   
   // MARK: - Intents
   
@@ -97,4 +121,8 @@ class ConsumptionAndInjectionViewModel: ObservableObject {
       }
     }.resume()
   }
+}
+
+extension ConsumptionAndInjectionViewModel {
+  static var selectPeriod = Period.day.rawValue
 }

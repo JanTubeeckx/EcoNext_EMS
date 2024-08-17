@@ -16,4 +16,12 @@ class poc_hemsTests: XCTestCase {
 
     XCTAssertEqual(electricityConsumptionAndInjectionTimeSerie.current_production, -203.1166666667)
   }
+  
+  func testFetchElectricityConsumptionAndInjectionData() async throws {
+    let downloader = TestDownloader()
+    let client = ConsumptionAndInjectionViewModel(downloader: downloader)
+    let consumptionAndInjectionData = try await client.newConsumptionInjectionData
+    
+    XCTAssertEqual(consumptionAndInjectionData.count, 14)
+  }
 }

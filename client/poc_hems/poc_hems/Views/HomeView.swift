@@ -17,6 +17,16 @@ struct HomeView: View {
   @Binding var isPrediction: Bool
   @Binding var selectPeriod: Int
   
+  init(menuItems: [HomeMenuItem], devices: [Device], consumptionInjection: ConsumptionAndInjectionViewModel, electricityDetails: ElectricityDetailsViewModel, period: Binding<Int>, isPrediction: Binding<Bool>, selectPeriod: Binding<Int>) {
+    self.menuItems = menuItems
+    self.devices = devices
+    self.consumptionInjection = consumptionInjection
+    self.electricityDetails = electricityDetails
+    self._period = period
+    self._isPrediction = isPrediction
+    self._selectPeriod = selectPeriod
+  }
+  
   var body: some View {
     VStack {
       NavigationStack {
@@ -34,7 +44,7 @@ struct HomeView: View {
                         RealtimeConsumptionProductionView(consumptionInjection: ConsumptionAndInjectionViewModel(), electricityDetails: ElectricityDetailsViewModel(), period: $period)
                       }
                       if item.id == 2 {
-                        DeviceListView(devices: devices)
+                        ActiveDeviceListView(devices: devices)
                       }
                       if item.id == 3 {
                         ConsumptionInjectionChart(consumptionInjection: ConsumptionAndInjectionViewModel(), electricityDetails: ElectricityDetailsViewModel(), period: $period, isPrediction: $isPrediction, selectPeriod: $selectPeriod)
@@ -45,7 +55,6 @@ struct HomeView: View {
                   }
                 }
               }
-              .frame(width: .infinity)
               .padding(.top, 20)
               .padding(.horizontal, 30)
               .task {
@@ -53,7 +62,7 @@ struct HomeView: View {
                 await consumptionInjection.fetchElectricityData(period: 1)
                 await consumptionInjection.fetchElectricityData(period: 6)
                 await consumptionInjection.fetchPvPowerPrediction()
-            }
+              }
             }
           }
           .padding(.top, 20)

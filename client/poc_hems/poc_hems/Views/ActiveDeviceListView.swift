@@ -1,5 +1,5 @@
 //
-//  DeviceListView.swift
+//  ActiveDeviceListView.swift
 //  poc_hems
 //
 //  Created by Jan Tubeeckx on 07/05/2024.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct DeviceListView: View {
+struct ActiveDeviceListView: View {
   let devices: [Device]
   var body: some View {
     infoLabel
@@ -35,5 +35,5 @@ struct DeviceListView: View {
 }
 
 #Preview {
-  DeviceListView(devices: Device.sampleData)
+  ActiveDeviceListView(devices: Device.sampleData)
 }
