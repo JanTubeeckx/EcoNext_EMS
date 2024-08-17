@@ -14,16 +14,8 @@ struct ElectricityDetailsView: View {
     VStack {
       VStack() {
         consumptionInjectionDetails
-//        financialSaving
       }
       .padding(.vertical, 15)
-//      .onAppear {
-//        if electricityDetails.electricityDetails.isEmpty {
-//          Task {
-//            await electricityDetails.fetchElectricityDetails(period: electricityDetails.period)
-//          }
-//        }
-//      }
     }
     .frame(maxHeight: 120)
   }

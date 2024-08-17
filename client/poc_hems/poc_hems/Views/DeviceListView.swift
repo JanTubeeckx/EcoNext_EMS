@@ -10,21 +10,27 @@ import SwiftUI
 struct DeviceListView: View {
   let devices: [Device]
   var body: some View {
-    Text("Apparaten")
-      .frame(maxWidth: 345, alignment: .leading)
-      .font(.system(size: 30).bold())
-      .padding(.top, 20)
-      .padding(.bottom, 0.5)
-    Divider()
-      .frame(width: 350)
-      .overlay(.black)
+    infoLabel
     List(devices, id: \.description) { device in
       DeviceView(device: device)
         .listRowBackground(device.theme.mainColor)
     }
-    .background(Color.white)
+    .toolbar {
+      Button(action: {}) {
+        Image(systemName: "plus")
+      }
+    }
+    .background(Gradient(colors: [.blue, .green]).opacity(0.2)).ignoresSafeArea()
     .scrollContentBackground(.hidden)
     .listRowSpacing(15.0)
+  }
+  
+  var infoLabel: some View {
+    Text("Apparaten")
+      .frame(maxWidth: .infinity, alignment: .leading)
+      .font(.largeTitle).bold()
+      .padding(.horizontal, 25)
+      .padding(.top, 10)
   }
 }
 

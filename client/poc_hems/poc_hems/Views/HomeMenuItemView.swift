@@ -10,21 +10,20 @@ import SwiftUI
 struct HomeMenuItemView: View {
   let content: HomeMenuItem
   var body: some View {
-    VStack {
+    HStack() {
       Image(systemName: content.icon)
         .foregroundColor(.white)
         .imageScale(.large)
-        .font(.system(size: 45))
+        .font(.system(size: 60))
         .padding(5)
       Text(content.label)
         .frame(width: .infinity)
         .foregroundStyle(.white)
-        .font(.title2)
+        .font(.title)
         .bold()
     }
-    .frame(width: 200, height: 120)
+    .frame(width: 285, height: 80)
     .padding(30)
-    .padding(.horizontal, 10)
     .background(.blue)
     .cornerRadius(10)
   }
@@ -34,7 +33,6 @@ struct HomeMenuItem_Previews: PreviewProvider {
   static var content = HomeMenuItem.sampleData[0]
   static var previews: some View {
     HomeMenuItemView(content: content)
-      
-      .previewLayout(.fixed(width: 400, height: 200))
+      .previewLayout(.fixed(width: 400, height: 400))
   }
 }

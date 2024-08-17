@@ -22,10 +22,9 @@ struct ConsumptionInjectionChart: View {
     } else {
       consumptionInjectionChart
     }
-    RoundedRectangle(cornerRadius: 10)
+    Rectangle()
       .fill(Gradient(colors: [.blue, .orange]))
-      .opacity(0.1)
-      .padding(.horizontal, 15)
+      .opacity(0.2).ignoresSafeArea()
   }
   
   var periodControls: some View {

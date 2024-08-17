@@ -12,9 +12,9 @@ struct HomeMenuItem: Identifiable {
   var icon: String
   var theme: Theme
   
-  let id: UUID
+  let id: Int
   
-  init(label: String, icon: String, theme: Theme, id: UUID = UUID()) {
+  init(label: String, icon: String, theme: Theme, id: Int) {
     self.label = label
     self.icon = icon
     self.theme = theme
@@ -26,19 +26,22 @@ extension HomeMenuItem {
   static let sampleData: [HomeMenuItem] =
   [
     HomeMenuItem(
-      label: "Verbruik",
-      icon: "bolt.ring.closed",
-      theme: .navy
+      label: "Verbruik en productie",
+      icon: "bolt",
+      theme: .navy,
+      id: 1
     ),
     HomeMenuItem(
       label: "Apparaten",
-      icon: "powercord",
-      theme: .navy
+      icon: "dishwasher",
+      theme: .navy,
+      id: 2
     ),
     HomeMenuItem(
       label: "Inzichten",
       icon: "chart.bar",
-      theme: .navy
+      theme: .navy,
+      id: 3
     )
   ]
 }

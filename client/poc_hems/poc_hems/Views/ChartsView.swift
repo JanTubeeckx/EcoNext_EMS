@@ -25,22 +25,22 @@ struct ChartsView: View {
             selectPeriod: $consumptionInjection.selectPeriod
           )
         } else {
-          HStack {
-            infoLabel
-            chartSelector
-          }
-          .padding(.top, 40)
-          .padding(.bottom, 5)
-          .padding(.horizontal, 25)
+          infoLabel
           ZStack {
             background
             VStack {
               ElectricityDetailsView(electricityDetails: electricityDetails)
               ConsumptionProductionInjectionChart(electricityDetails: electricityDetails)
+              revenueDetails
             }
             .padding(.bottom, 40)
           }
-          revenueDetails
+          
+        }
+      }
+      .toolbar {
+        Button(action: {consumptionInjection.showConsumptionInjectionChart()}) {
+          Image(systemName: "chart.bar.xaxis")
         }
       }
       .frame(width: bounds.size.width)
@@ -49,30 +49,29 @@ struct ChartsView: View {
         await consumptionInjection.fetchElectricityData(period: 1)
         await consumptionInjection.fetchElectricityData(period: 6)
         await consumptionInjection.fetchPvPowerPrediction()
-    }
+      }
     }
   }
   
   var infoLabel: some View {
     Text("Huidig verbruik")
       .frame(maxWidth: .infinity, alignment: .leading)
-      .font(.system(size: 20).bold())
-  }
-  
-  var chartSelector: some View {
-    Button(action: {consumptionInjection.showConsumptionInjectionChart()}, label: {
-      Image(systemName: "chart.bar.xaxis")
-        .foregroundColor(Color(.systemGray2))
-        .imageScale(.medium)
-        .font(.title3)
-    })
+      .font(.largeTitle).bold()
+      .padding(.top, 20)
+      .padding(.bottom, 5)
+      .padding(.horizontal, 25)
   }
 
   var background: some View {
     RoundedRectangle(cornerRadius: 10.0 )
-      .fill(Gradient(colors: [.green, .blue]))
-      .opacity(0.1).ignoresSafeArea()
-      .padding(.horizontal, 15)
+      .fill(Gradient(colors: [.orange, .green]))
+      .opacity(0.2).ignoresSafeArea()
+  }
+  
+  var revenueBackground: some View {
+    RoundedRectangle(cornerRadius: 5.0)
+      .fill(Color(.white))
+      .padding(5)
   }
   
   var revenueSelfConsumption: some View {
@@ -100,13 +99,12 @@ struct ChartsView: View {
       revenueSelfConsumption
       revenueInjection
     }
-    .padding(.horizontal, 50)
-    .padding()
-
+    .padding(.horizontal, 25)
   }
   
   func electricityDetail(by icon: String, label: String, color: Color, value: String, unit: String) -> some View {
     ZStack {
+      revenueBackground
       VStack {
         HStack {
           Image(systemName: icon)
@@ -122,7 +120,7 @@ struct ChartsView: View {
           .foregroundColor(Color(.systemGray))
           .padding(.top, 0.5)
       }
-      .padding(5)
+      .padding(15)
     }
   }
 }
