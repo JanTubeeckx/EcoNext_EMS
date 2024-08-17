@@ -54,7 +54,7 @@ struct ConsumptionInjectionChart: View {
     }
     .chartXAxis {
       AxisMarks(
-        values: .automatic(desiredCount: 12)
+        values: .automatic(desiredCount: 12), stroke: StrokeStyle(lineWidth: 0)
       )
     }
     .chartYAxis {
@@ -65,7 +65,7 @@ struct ConsumptionInjectionChart: View {
     .chartForegroundStyleScale(["Voorspelling PV productie (Watt)": Color.green])
     .chartLegend(alignment: .center)
     .frame(height: 200)
-    .padding(25)
+    .padding(20)
   }
   
   var consumptionInjectionChart: some View {
@@ -94,7 +94,7 @@ struct ConsumptionInjectionChart: View {
     }
     .chartXAxis {
       AxisMarks(
-        values: .automatic(desiredCount: 6)
+        values: .automatic(desiredCount: 6), stroke: StrokeStyle(lineWidth: 0)
       )
     }
     .chartYAxis {
@@ -108,7 +108,7 @@ struct ConsumptionInjectionChart: View {
     ])
     .chartLegend(alignment: .center)
     .frame(height: 200)
-    .padding(.horizontal, 30)
+    .padding(.horizontal, 20)
     .padding(.vertical, 20)
   }
 }

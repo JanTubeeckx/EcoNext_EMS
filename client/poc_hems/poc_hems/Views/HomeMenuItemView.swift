@@ -10,22 +10,23 @@ import SwiftUI
 struct HomeMenuItemView: View {
   let content: HomeMenuItem
   var body: some View {
-    HStack() {
+    HStack(alignment: .center) {
       Image(systemName: content.icon)
-        .foregroundColor(.white)
         .imageScale(.large)
-        .font(.system(size: 60))
-        .padding(5)
+        .font(.system(size: 34))
+        .padding(.leading, 30)
+      Spacer()
       Text(content.label)
-        .frame(width: .infinity)
-        .foregroundStyle(.white)
-        .font(.title)
-        .bold()
+        .frame(width: 190)
+        .font(.system(size: 25))
+        .padding(.trailing, 10)
     }
-    .frame(width: 285, height: 80)
-    .padding(30)
-    .background(.blue)
+    .frame(height: 75)
+    .padding(20)
+    .background(.white)
+    .foregroundColor(.black)
     .cornerRadius(10)
+//    .shadow(color: Color(.systemGray5), radius: 5, x: 0, y: 2)
   }
 }
 

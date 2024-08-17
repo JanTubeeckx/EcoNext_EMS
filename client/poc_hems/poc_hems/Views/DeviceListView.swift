@@ -20,7 +20,7 @@ struct DeviceListView: View {
         Image(systemName: "plus")
       }
     }
-    .background(Gradient(colors: [.blue, .green]).opacity(0.2)).ignoresSafeArea()
+    .background(.blue.opacity(0.2)).ignoresSafeArea()
     .scrollContentBackground(.hidden)
     .listRowSpacing(15.0)
   }

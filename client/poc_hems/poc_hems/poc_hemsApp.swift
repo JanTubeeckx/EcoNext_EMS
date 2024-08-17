@@ -15,12 +15,11 @@ struct poc_hemsApp: App {
   var body: some Scene {
     #if os(iOS)
     WindowGroup {
-      ChartsView(
+      RealtimeConsumptionProductionView(
         consumptionInjection: ConsumptionAndInjectionViewModel(),
         electricityDetails: ElectricityDetailsViewModel(),
         period: .constant(1)
       )
-      //      DeviceListView(devices: Device.sampleData)
     }
     #elseif os(macOS)
     WindowGroup {
@@ -29,7 +28,6 @@ struct poc_hemsApp: App {
         electricityDetails: ElectricityDetailsViewModel(),
         period: .constant(1)
       )
-      //      DeviceListView(devices: Device.sampleData)
     }
     #endif
   }

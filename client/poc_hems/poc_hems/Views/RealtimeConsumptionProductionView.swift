@@ -1,5 +1,5 @@
 //
-//  ChartsView.swift
+//  RealtimeConsumptionProductionView.swift
 //  poc_hems
 //
 //  Created by Jan Tubeeckx on 21/04/2024.
@@ -8,7 +8,7 @@
 import SwiftUI
 import Foundation
 
-struct ChartsView: View {
+struct RealtimeConsumptionProductionView: View {
   @ObservedObject var consumptionInjection: ConsumptionAndInjectionViewModel
   @ObservedObject var electricityDetails: ElectricityDetailsViewModel
   @Binding var period: Int
@@ -35,7 +35,6 @@ struct ChartsView: View {
             }
             .padding(.bottom, 40)
           }
-          
         }
       }
       .toolbar {
@@ -99,7 +98,8 @@ struct ChartsView: View {
       revenueSelfConsumption
       revenueInjection
     }
-    .padding(.horizontal, 25)
+    .padding(.horizontal, 30)
+    .frame(maxHeight: 90)
   }
   
   func electricityDetail(by icon: String, label: String, color: Color, value: String, unit: String) -> some View {
@@ -108,10 +108,10 @@ struct ChartsView: View {
       VStack {
         HStack {
           Image(systemName: icon)
-            .font(.system(size: 20.0))
+            .font(.system(size: 18.0))
             .foregroundColor(color)
           Text(label)
-            .font(.system(size: 20.0))
+            .font(.system(size: 18.0))
             .foregroundColor(color)
         }
         Text(value + unit)
@@ -120,13 +120,13 @@ struct ChartsView: View {
           .foregroundColor(Color(.systemGray))
           .padding(.top, 0.5)
       }
-      .padding(15)
+      .padding(10)
     }
   }
 }
 
 #Preview {
-  ChartsView(
+  RealtimeConsumptionProductionView(
     consumptionInjection: ConsumptionAndInjectionViewModel(),
     electricityDetails: ElectricityDetailsViewModel(), 
     period: .constant(1)

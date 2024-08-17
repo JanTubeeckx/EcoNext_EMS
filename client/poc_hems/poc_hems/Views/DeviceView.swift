@@ -26,6 +26,7 @@ struct DeviceView: View {
         Image(systemName: device.icon)
           .font(.system(size: 44.0))
           .padding(.trailing, 10)
+          .frame(width: 70, alignment: .leading)
         VStack(alignment: .leading) {
           Text(device.description)
             .font(.system(size: 22.0).bold())

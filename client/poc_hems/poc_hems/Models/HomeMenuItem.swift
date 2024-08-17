@@ -26,20 +26,20 @@ extension HomeMenuItem {
   static let sampleData: [HomeMenuItem] =
   [
     HomeMenuItem(
-      label: "Verbruik en productie",
-      icon: "bolt",
+      label: "Huidig verbruik",
+      icon: "bolt.fill",
       theme: .navy,
       id: 1
     ),
     HomeMenuItem(
       label: "Apparaten",
-      icon: "dishwasher",
+      icon: "dishwasher.fill",
       theme: .navy,
       id: 2
     ),
     HomeMenuItem(
-      label: "Inzichten",
-      icon: "chart.bar",
+      label: "Grafieken",
+      icon: "chart.bar.xaxis.ascending",
       theme: .navy,
       id: 3
     )
