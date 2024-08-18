@@ -17,6 +17,8 @@ struct HomeView: View {
   @Binding var isPrediction: Bool
   @Binding var selectPeriod: Int
   
+  @State private var error: ElectricityConsumptionInjectionError?
+  
   init(menuItems: [HomeMenuItem], devices: [Device], consumptionInjection: ConsumptionAndInjectionViewModel, electricityDetails: ElectricityDetailsViewModel, period: Binding<Int>, isPrediction: Binding<Bool>, selectPeriod: Binding<Int>) {
     self.menuItems = menuItems
     self.devices = devices
@@ -59,9 +61,9 @@ struct HomeView: View {
               .padding(.horizontal, 30)
               .task {
                 await electricityDetails.fetchElectricityDetails(period: 1)
-                await consumptionInjection.fetchElectricityData(period: 1)
-                await consumptionInjection.fetchElectricityData(period: 6)
-                await consumptionInjection.fetchPvPowerPrediction()
+                await fetchElectricityData(for: 1)
+                await fetchElectricityData(for: 6)
+//                await consumptionInjection.fetchPvPowerPrediction()
               }
             }
           }
@@ -101,6 +103,16 @@ struct HomeView: View {
     Rectangle()
       .fill(.blue)
       .opacity(0.2).ignoresSafeArea()
+  }
+}
+
+extension HomeView {
+  func fetchElectricityData(for period: Int) async {
+    do {
+      try await consumptionInjection.fetchElectricityData(period: period)
+    } catch {
+      self.error = error as? ElectricityConsumptionInjectionError ?? .missingData
+    }
   }
 }
 

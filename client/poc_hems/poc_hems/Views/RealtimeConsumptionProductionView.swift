@@ -13,6 +13,8 @@ struct RealtimeConsumptionProductionView: View {
   @ObservedObject var electricityDetails: ElectricityDetailsViewModel
   @Binding var period: Int
   
+  @State private var error: ElectricityConsumptionInjectionError?
+  
   var body: some View {
     GeometryReader { bounds in
       VStack {
@@ -45,9 +47,9 @@ struct RealtimeConsumptionProductionView: View {
       .frame(width: bounds.size.width)
       .task {
         await electricityDetails.fetchElectricityDetails(period: 1)
-        await consumptionInjection.fetchElectricityData(period: 1)
-        await consumptionInjection.fetchElectricityData(period: 6)
-        await consumptionInjection.fetchPvPowerPrediction()
+        await fetchElectricityData(for: 1)
+//        await consumptionInjection.fetchElectricityData(period: 6)
+//        await consumptionInjection.fetchPvPowerPrediction()
       }
     }
   }
@@ -121,6 +123,16 @@ struct RealtimeConsumptionProductionView: View {
           .padding(.top, 0.5)
       }
       .padding(10)
+    }
+  }
+}
+
+extension RealtimeConsumptionProductionView {
+  func fetchElectricityData(for period: Int) async {
+    do {
+      try await consumptionInjection.fetchElectricityData(period: period)
+    } catch {
+      self.error = error as? ElectricityConsumptionInjectionError ?? .missingData
     }
   }
 }

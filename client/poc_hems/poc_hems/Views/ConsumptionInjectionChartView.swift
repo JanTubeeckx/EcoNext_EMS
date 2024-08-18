@@ -15,6 +15,8 @@ struct ConsumptionInjectionChart: View {
   @Binding var isPrediction: Bool
   @Binding var selectPeriod: Int
   
+  @State private var error: ElectricityConsumptionInjectionError?
+  
   var body: some View {
     periodControls
     if (consumptionInjection.isPrediction) {
@@ -36,7 +38,9 @@ struct ConsumptionInjectionChart: View {
     .pickerStyle(SegmentedPickerStyle())
     .padding()
     .onChange(of: selectPeriod) {
-      consumptionInjection.changePeriod(selectedPeriod: selectPeriod)
+      Task {
+        await consumptionInjection.changePeriod(selectedPeriod: selectPeriod)
+      }
     }
   }
   
@@ -90,7 +94,7 @@ struct ConsumptionInjectionChart: View {
       }
     }
     .task {
-      await consumptionInjection.fetchElectricityData(period: 6)
+      await fetchElectricityData(for: 6)
     }
     .chartXAxis {
       AxisMarks(
@@ -110,5 +114,15 @@ struct ConsumptionInjectionChart: View {
     .frame(height: 200)
     .padding(.horizontal, 20)
     .padding(.vertical, 20)
+  }
+}
+
+extension ConsumptionInjectionChart {
+  func fetchElectricityData(for period: Int) async {
+    do {
+      try await consumptionInjection.fetchElectricityData(period: period)
+    } catch {
+      self.error = error as? ElectricityConsumptionInjectionError ?? .missingData
+    }
   }
 }

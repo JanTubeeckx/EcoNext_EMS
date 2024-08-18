@@ -15,13 +15,21 @@ class ConsumptionAndInjectionViewModel: ObservableObject {
   @Published var isConsumptionInjectionChart = false
   @Published var isPrediction = false
   @Published var selectPeriod = Period.day.rawValue
+  @State private var error: ElectricityConsumptionInjectionError?
   
-  var newConsumptionInjectionData: [ElectricityConsumptionAndInjectionTimeSerie] {
+  var dailyConsumptionInjectionData: [ElectricityConsumptionAndInjectionTimeSerie] {
     get async throws {
-      let feedURL = URL(string: "https://flask-server-hems.azurewebsites.net/electricity-data?period=\(selectPeriod)")!
       let data = try await downloader.httpData(from: feedURL)
       let allData = try decoder.decode([ElectricityConsumptionAndInjectionTimeSerie].self, from: data)
       return allData
+    }
+  }
+  
+  var pvPowerPredictionData: [PvPowerPrediction] {
+    get async throws {
+      let data = try await downloader.httpData(from: feedURL)
+      let predictionData = try decoder.decode([PvPowerPrediction].self, from: data)
+      return predictionData
     }
   }
   
@@ -33,7 +41,7 @@ class ConsumptionAndInjectionViewModel: ObservableObject {
     return aDecoder
   }()
   
-  
+  private var feedURL = URL(string: "https://flask-server-hems.azurewebsites.net/electricity-data?period=\(selectPeriod)")!
   
   private let downloader: any HTTPDataDownloader
   
@@ -47,79 +55,45 @@ class ConsumptionAndInjectionViewModel: ObservableObject {
     isConsumptionInjectionChart = true
   }
   
-  func changePeriod(selectedPeriod: Int) {
+  func changePeriod(selectedPeriod: Int) async {
     switch selectedPeriod {
     case 1:
-      showDailyConsumptionInjection(period: 1)
+      await showConsumptionInjection(period: selectedPeriod)
     case 6:
-      showWeeklyConsumptionInjection(period: 6)
+      await showConsumptionInjection(period: selectedPeriod)
     default:
-      showPVPowerPrediction()
+      await showPVPowerPrediction()
     }
   }
   
-  func showDailyConsumptionInjection(period: Int) {
-    Task {
-      await fetchElectricityData(period: period)
-    }
-    isPrediction = false
-  }
-  
-  func showWeeklyConsumptionInjection(period: Int) {
-    Task {
-      await fetchElectricityData(period: period)
+  func showConsumptionInjection(period: Int) async {
+    do {
+      try await fetchElectricityData(period: period)
+    } catch {
+      self.error = error as? ElectricityConsumptionInjectionError
     }
     isPrediction = false
   }
   
-  func showPVPowerPrediction() {
-    Task {
-      await fetchPvPowerPrediction()
+  func showPVPowerPrediction() async {
+    do {
+      try await fetchPvPowerPrediction()
+    } catch {
+      self.error = error as? ElectricityConsumptionInjectionError
     }
     isPrediction = true
   }
   
-  func fetchElectricityData(period: Int) async {
-    let url = URL(string: "https://flask-server-hems.azurewebsites.net/electricity-data?period=\(period)")!
-    URLSession.shared.dataTask(with: url) {data, response, error in
-      guard let data = data else {return}
-      do {
-        let decoder = JSONDecoder()
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:"
-        decoder.dateDecodingStrategy = .formatted(dateFormatter)
-        let decodedData = try
-        decoder.decode([ElectricityConsumptionAndInjectionTimeSerie].self, from: data)
-        DispatchQueue.main.async {
-          self.consumptionInjectionData = decodedData
-//          print(self.consumptionInjectionData)
-        }
-      }catch {
-        print(error)
-      }
-    }.resume()
+  func fetchElectricityData(period: Int) async throws {
+    feedURL = URL(string: "https://flask-server-hems.azurewebsites.net/electricity-data?period=\(period)")!
+    let latestData = try await dailyConsumptionInjectionData
+    self.consumptionInjectionData = latestData
   }
   
-  func fetchPvPowerPrediction() async {
-    let url = URL(string: "https://flask-server-hems.azurewebsites.net/pvpower-prediction")!
-    URLSession.shared.dataTask(with: url) {data, response, error in
-      guard let predictiondata = data else {return}
-      do {
-        let decoder = JSONDecoder()
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:"
-        dateFormatter.timeZone = TimeZone(secondsFromGMT: 3600)
-        decoder.dateDecodingStrategy = .formatted(dateFormatter)
-        let decodedData = try
-        decoder.decode([PvPowerPrediction].self, from: predictiondata)
-        DispatchQueue.main.async {
-          self.predictiondata = decodedData
-//          print(self.predictiondata)
-        }
-      }catch {
-        print(error)
-      }
-    }.resume()
+  func fetchPvPowerPrediction() async throws {
+    feedURL = URL(string: "https://flask-server-hems.azurewebsites.net/pvpower-prediction")!
+    let latestData = try await pvPowerPredictionData
+    self.predictiondata = latestData
   }
 }
 
