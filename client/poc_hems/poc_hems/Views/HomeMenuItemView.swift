@@ -26,7 +26,7 @@ struct HomeMenuItemView: View {
     .background(.white)
     .foregroundColor(.black)
     .cornerRadius(10)
-//    .shadow(color: Color(.systemGray5), radius: 5, x: 0, y: 2)
+    //    .shadow(color: Color(.systemGray5), radius: 5, x: 0, y: 2)
   }
 }
 

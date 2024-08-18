@@ -36,6 +36,6 @@ class ElectricityDetailsViewModel: ObservableObject {
     //    totalProduction = Float(electricityDetails[0].total_production[1])!
     //    totalInjection = Float(electricityDetails[0].total_injection[1])!
     selfConsumption = production - injection
-    //    totalSelfConsumption = totalProduction - totalInjection
+    totalSelfConsumption = totalProduction - totalInjection
   }
 }

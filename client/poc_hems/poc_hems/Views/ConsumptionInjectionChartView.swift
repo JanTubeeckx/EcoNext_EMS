@@ -24,9 +24,12 @@ struct ConsumptionInjectionChart: View {
     } else {
       consumptionInjectionChart
     }
-    Rectangle()
-      .fill(Gradient(colors: [.blue, .orange]))
-      .opacity(0.2).ignoresSafeArea()
+    ZStack {
+      Rectangle()
+        .fill(Gradient(colors: [.blue, .orange]))
+        .opacity(0.2).ignoresSafeArea()
+      consumptionInjectionDetails
+    }
   }
   
   var periodControls: some View {
@@ -94,6 +97,7 @@ struct ConsumptionInjectionChart: View {
       }
     }
     .task {
+      await electricityDetails.fetchElectricityDetails(period: 1)
       await fetchElectricityData(for: 6)
       await fetchPvPowerPrediction()
     }
@@ -116,6 +120,57 @@ struct ConsumptionInjectionChart: View {
     .padding(.horizontal, 20)
     .padding(.vertical, 20)
   }
+  
+  var background: some View {
+    RoundedRectangle(cornerRadius: 5.0)
+      .fill(Color(.white))
+      .padding(5)
+  }
+  
+  var consumptionInjectionDetails: some View {
+    VStack {
+      consumptionInjectionDetail(by: "bolt",
+                                 label: electricityDetails.electricityDetails.first?.total_day_production[0] ?? "",
+                                 color:Color.blue,
+                                 value: electricityDetails.electricityDetails.first?.total_day_production[1] ?? "",
+                                 unit: electricityDetails.electricityDetails.first?.total_day_production[2] ?? "")
+      consumptionInjectionDetail(by: "arrowshape.down",
+                                 label: electricityDetails.electricityDetails.first?.total_injection[0] ?? "",
+                                 color:Color.orange,
+                                 value: electricityDetails.electricityDetails.first?.total_injection[1] ?? "",
+                                 unit: electricityDetails.electricityDetails.first?.total_injection[2] ?? "")
+      consumptionInjectionDetail(by: "eurosign.circle",
+                                 label: electricityDetails.electricityDetails.first?.monthly_capacity_rate[0] ?? "",
+                                 color:Color.red,
+                                 value: electricityDetails.electricityDetails.first?.monthly_capacity_rate[1] ?? "",
+                                 unit: "")
+    }
+    .padding(20)
+  }
+  
+  func consumptionInjectionDetail(by icon: String, label: String, color: Color, value: String, unit: String) -> some View {
+    VStack (alignment: .leading) {
+      Text(label)
+        .font(.headline).bold()
+        .padding(.leading, 5)
+        .padding(.top, 10)
+        .padding(.bottom, 0)
+      ZStack {
+        background
+        HStack {
+          Image(systemName: icon)
+            .font(.system(size: 20.0))
+            .foregroundColor(color)
+          Text(value + unit)
+            .frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
+            .font(.system(size: 16).bold())
+            .foregroundColor(Color(.systemGray))
+            .padding(.top, 0.5)
+            .padding(.trailing, 20)
+        }
+      }
+    }
+  }
 }
 
 extension ConsumptionInjectionChart {
@@ -134,4 +189,15 @@ extension ConsumptionInjectionChart {
       self.error = error as? ElectricityConsumptionInjectionError ?? .missingData
     }
   }
+}
+
+#Preview {
+  struct Previewer: View {
+    @State private var error: ElectricityConsumptionInjectionError?
+    
+    var body: some View {
+      ConsumptionInjectionChart(consumptionInjection: ConsumptionAndInjectionViewModel(), electricityDetails: ElectricityDetailsViewModel(), period: .constant(1), isPrediction: .constant(false), selectPeriod: .constant(1))
+    }
+  }
+  return Previewer()
 }

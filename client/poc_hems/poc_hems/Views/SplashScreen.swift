@@ -43,10 +43,6 @@ struct SplashScreen: View {
   }
 }
 
-//#Preview {
-//  SplashScreen(electricityDetails: ElectricityDetailsViewModel(), selectPeriod: $selectPeriod)
-//}
-
 #Preview {
   struct Previewer: View {
     @State var selectPeriod: Int = 1

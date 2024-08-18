@@ -49,7 +49,7 @@ struct HomeView: View {
                       }
                       if item.id == 2 {
                         DeviceListView(devices: devices, device: device, store: DeviceStore())
-//                        ActiveDeviceListView(devices: devices, device: device)
+                        //                        ActiveDeviceListView(devices: devices, device: device)
                       }
                       if item.id == 3 {
                         ConsumptionInjectionChart(consumptionInjection: consumptionInjection, electricityDetails: electricityDetails, period: $period, isPrediction: $isPrediction, selectPeriod: $selectPeriod)

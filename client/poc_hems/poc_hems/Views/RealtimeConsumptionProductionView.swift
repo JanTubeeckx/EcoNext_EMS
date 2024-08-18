@@ -61,7 +61,7 @@ struct RealtimeConsumptionProductionView: View {
       .padding(.bottom, 5)
       .padding(.horizontal, 25)
   }
-
+  
   var background: some View {
     RoundedRectangle(cornerRadius: 10.0 )
       .fill(Gradient(colors: [.orange, .green]))
