@@ -48,7 +48,7 @@ struct RealtimeConsumptionProductionView: View {
       .task {
         await electricityDetails.fetchElectricityDetails(period: 1)
         await fetchElectricityData(for: 1)
-//        await consumptionInjection.fetchElectricityData(period: 6)
+        await fetchElectricityData(for: 6)
 //        await consumptionInjection.fetchPvPowerPrediction()
       }
     }

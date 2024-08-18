@@ -17,11 +17,32 @@ class ConsumptionAndInjectionViewModel: ObservableObject {
   @Published var selectPeriod = Period.day.rawValue
   @State private var error: ElectricityConsumptionInjectionError?
   
-  var dailyConsumptionInjectionData: [ElectricityConsumptionAndInjectionTimeSerie] {
+  private let consumptionAndInjectionCache: NSCache<NSString, CacheEntryObject> = NSCache()
+  
+  var newConsumptionInjectionData: [ElectricityConsumptionAndInjectionTimeSerie] {
     get async throws {
-      let data = try await downloader.httpData(from: feedURL)
-      let allData = try decoder.decode([ElectricityConsumptionAndInjectionTimeSerie].self, from: data)
-      return allData
+      if let cached = consumptionAndInjectionCache[feedURL] {
+        switch cached {
+        case .ready(let allData):
+          return allData
+        case .inProgress(let task):
+          return try await task.value
+        }
+      }
+      let task = Task<[ElectricityConsumptionAndInjectionTimeSerie], Error> {
+        let data = try await downloader.httpData(from: feedURL)
+        let allData = try decoder.decode([ElectricityConsumptionAndInjectionTimeSerie].self, from: data)
+        return allData
+      }
+      consumptionAndInjectionCache[feedURL] = .inProgress(task)
+      do {
+        let allData = try await task.value
+        consumptionAndInjectionCache[feedURL] = .ready(allData)
+        return allData
+      } catch {
+        consumptionAndInjectionCache[feedURL] = nil
+        throw error
+      }
     }
   }
   
@@ -86,7 +107,7 @@ class ConsumptionAndInjectionViewModel: ObservableObject {
   
   func fetchElectricityData(period: Int) async throws {
     feedURL = URL(string: "https://flask-server-hems.azurewebsites.net/electricity-data?period=\(period)")!
-    let latestData = try await dailyConsumptionInjectionData
+    let latestData = try await newConsumptionInjectionData
     self.consumptionInjectionData = latestData
   }
   
