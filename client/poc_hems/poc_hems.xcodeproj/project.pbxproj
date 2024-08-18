@@ -20,6 +20,7 @@
 		C93DE74F2C7136B7009FBAB0 /* TestDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C93DE74E2C7136B7009FBAB0 /* TestDownloader.swift */; };
 		C943FDF72C63FBE10090BC4C /* DeviceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C943FDF62C63FBE10090BC4C /* DeviceViewModel.swift */; };
 		C94DCE942C61131D00CC68C6 /* ConsumptionInjectionChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94DCE932C61131D00CC68C6 /* ConsumptionInjectionChartView.swift */; };
+		C9503CB32C72803000354C44 /* SplashScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9503CB22C72803000354C44 /* SplashScreen.swift */; };
 		C950B13B2C66B2B600B601CD /* WebService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C950B13A2C66B2B600B601CD /* WebService.swift */; };
 		C95CA3C52BEA0B35008488B4 /* ActiveDeviceListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C95CA3C42BEA0B35008488B4 /* ActiveDeviceListView.swift */; };
 		C98899082BD4F6FE0034D4A1 /* RealtimeConsumptionProductionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C98899072BD4F6FE0034D4A1 /* RealtimeConsumptionProductionView.swift */; };
@@ -79,6 +80,7 @@
 		C93DE74E2C7136B7009FBAB0 /* TestDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestDownloader.swift; sourceTree = "<group>"; };
 		C943FDF62C63FBE10090BC4C /* DeviceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceViewModel.swift; sourceTree = "<group>"; };
 		C94DCE932C61131D00CC68C6 /* ConsumptionInjectionChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsumptionInjectionChartView.swift; sourceTree = "<group>"; };
+		C9503CB22C72803000354C44 /* SplashScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreen.swift; sourceTree = "<group>"; };
 		C950B13A2C66B2B600B601CD /* WebService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebService.swift; sourceTree = "<group>"; };
 		C95CA3C42BEA0B35008488B4 /* ActiveDeviceListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveDeviceListView.swift; sourceTree = "<group>"; };
 		C98899072BD4F6FE0034D4A1 /* RealtimeConsumptionProductionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealtimeConsumptionProductionView.swift; sourceTree = "<group>"; };
@@ -211,6 +213,7 @@
 				C9D74D992C708CD300F0DC69 /* HomeMenuItemView.swift */,
 				C9D74D912C707E5000F0DC69 /* HomeView.swift */,
 				C98899072BD4F6FE0034D4A1 /* RealtimeConsumptionProductionView.swift */,
+				C9503CB22C72803000354C44 /* SplashScreen.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -408,6 +411,7 @@
 				C93DE74D2C71348F009FBAB0 /* TestData.swift in Sources */,
 				C9FAAFAB2C15DC530084D220 /* ElectricityDetailsView.swift in Sources */,
 				C9D74D922C707E5000F0DC69 /* HomeView.swift in Sources */,
+				C9503CB32C72803000354C44 /* SplashScreen.swift in Sources */,
 				C943FDF72C63FBE10090BC4C /* DeviceViewModel.swift in Sources */,
 				C9FBFA0F2C72412200F25B20 /* DeviceStore.swift in Sources */,
 				C9D74D982C708B9D00F0DC69 /* Card.swift in Sources */,

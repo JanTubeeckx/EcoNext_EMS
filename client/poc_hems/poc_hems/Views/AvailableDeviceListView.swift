@@ -16,6 +16,7 @@ struct AvailableDeviceListView: View {
   @ObservedObject var devicevm: DeviceViewModel
   @State var isTapped: Bool = false
   @State var ids: [Int] = []
+  @State var changeView = false
   
   var body: some View {
     infoLabel
@@ -47,20 +48,29 @@ struct AvailableDeviceListView: View {
             }
           }
           .padding(25)
-          Button(action: {
-            Task {
-              try await store.save(devices: addedDevices)
+          NavigationStack {
+            VStack {
+              Button(action: {
+                Task {
+                  try await store.save(devices: addedDevices)
+                }
+                self.changeView = true
+              }, label: {
+                Text("Bevestig")
+                  .foregroundColor(.white)
+                  .font(.title3)
+                  .bold()
+                  .padding(12)
+              })
+              .navigationDestination(isPresented: $changeView) {
+                HomeView(menuItems: HomeMenuItem.sampleData, devices: .constant(addedDevices), consumptionInjection: ConsumptionAndInjectionViewModel(), device: DeviceViewModel(), electricityDetails: ElectricityDetailsViewModel(), period: .constant(1), isPrediction: .constant(false), selectPeriod: .constant(1))
+              }
+              .buttonStyle(.borderedProminent)
+              .tint(.black)
+              .padding(.top, 60)
             }
-          }) {
-            Text("Bevestig")
-              .foregroundColor(.white)
-              .font(.title3)
-              .bold()
-              .padding(12)
           }
-          .buttonStyle(.borderedProminent)
-          .tint(.black)
-          .padding(.top, 60)
+//          NavigationLink("", destination: DeviceListView(devices: addedDevices, device: devicevm, store: DeviceStore()), isActive: $changeView)
         }
       }
     }

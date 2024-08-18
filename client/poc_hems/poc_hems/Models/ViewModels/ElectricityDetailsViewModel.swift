@@ -25,6 +25,7 @@ class ElectricityDetailsViewModel: ObservableObject {
       .downloadData(fromURL: "https://flask-server-hems.azurewebsites.net/consumption-production-details?period=\(period)")
     else {return}
     electricityDetails = downloadedDetails
+    print(electricityDetails)
     let cons = electricityDetails[0].current_consumption
     let inj = electricityDetails[0].current_injection
     let prod_minus_inj = electricityDetails[0].production_minus_injection

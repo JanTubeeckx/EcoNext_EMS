@@ -48,7 +48,7 @@ struct HomeView: View {
                         RealtimeConsumptionProductionView(consumptionInjection: consumptionInjection, electricityDetails: electricityDetails, period: $period)
                       }
                       if item.id == 2 {
-                        DeviceListView(device: device, store: DeviceStore(), devices: $devices)
+                        DeviceListView(devices: devices, device: device, store: DeviceStore())
 //                        ActiveDeviceListView(devices: devices, device: device)
                       }
                       if item.id == 3 {

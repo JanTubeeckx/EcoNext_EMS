@@ -33,7 +33,6 @@ class DeviceStore: ObservableObject {
   }
   
   func save(devices: [Device]) async throws {
-    print(devices)
     let task = Task {
       let data = try JSONEncoder().encode(devices)
       let outfile = try Self.fileURL()

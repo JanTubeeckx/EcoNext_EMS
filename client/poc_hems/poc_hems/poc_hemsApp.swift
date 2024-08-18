@@ -20,12 +20,10 @@ struct poc_hemsApp: App {
   var body: some Scene {
     #if os(iOS)
     WindowGroup {
-      HomeView(menuItems: HomeMenuItem.sampleData, devices: $store.devices, consumptionInjection: ConsumptionAndInjectionViewModel(), device: DeviceViewModel(), electricityDetails: ElectricityDetailsViewModel(), period: $period, isPrediction: $isPrediction, selectPeriod: $selectPeriod
-      )
+      SplashScreen(electricityDetails: electricityDetails, selectPeriod: $selectPeriod)
       .task {
         do {
           try await store.load()
-          print(store.devices)
         } catch {
           fatalError(error.localizedDescription)
         }

@@ -8,19 +8,16 @@
 import SwiftUI
 
 struct DeviceListView: View {
+  let devices: [Device]
   @ObservedObject var device: DeviceViewModel
   @ObservedObject var store: DeviceStore
-  @Binding var devices: [Device]
   
   var body: some View {
     VStack {
       if (device.isAvailableDeviceList) {
         AvailableDeviceListView(devices: Device.availableDevices, store: store, devicevm: device)
-          .onAppear {
-            
-          }
       } else {
-        ActiveDeviceListView(device: device, store: store, devices: $devices)
+        ActiveDeviceListView(device: device, store: store, devices: .constant(devices))
       }
     }
     .onAppear() {
@@ -32,5 +29,5 @@ struct DeviceListView: View {
 }
 
 #Preview {
-  DeviceListView(device: DeviceViewModel(), store: DeviceStore(), devices: .constant(Device.sampleData))
+  DeviceListView(devices: Device.sampleData, device: DeviceViewModel(), store: DeviceStore())
 }
