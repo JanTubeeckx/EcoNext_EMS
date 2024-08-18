@@ -1,7 +1,7 @@
-# BP_Hogent
+# POC EcoNext_EMS
 
-Deze app is een proof of concept voor mijn bachelorproef Toegepaste Informatica aan de HoGent.
+Deze app is een proof of concept voor een energy management systeem.
 
-De onderzoeksvraag is of het elektriciteitsverbruik van gezinnen automatisch kan worden bijgestuurd en gespreid door de toepassing van artificiële intelligentie (AI).
+De app geeft in de eerste plaats inzicht in het energieverbruik en de eigen elektriciteitsproductie.
 
-## Uitlezen digitale elektriciteitsmeter
+Daarnaast zal de app ook gebruikt worden om huishoudtoestellen aan te sturen die automatisch worden opgestart op basis van de stroomproductie die met behump van AI voorspeld werd. 
