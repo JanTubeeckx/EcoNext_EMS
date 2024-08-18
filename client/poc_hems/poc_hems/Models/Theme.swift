@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum Theme: String {
+enum Theme: String, Codable {
   case bubblegum
   case buttercup
   case indigo

@@ -41,6 +41,8 @@
 		C9FAAFB32C15E1880084D220 /* PVPowerPrediction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FAAFB22C15E1880084D220 /* PVPowerPrediction.swift */; };
 		C9FBFA092C71FDB000F25B20 /* CacheEntryObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FBFA082C71FDB000F25B20 /* CacheEntryObject.swift */; };
 		C9FBFA0B2C71FF6300F25B20 /* NSCache+Subscript.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FBFA0A2C71FF6300F25B20 /* NSCache+Subscript.swift */; };
+		C9FBFA0D2C7230F900F25B20 /* DeviceListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FBFA0C2C7230F900F25B20 /* DeviceListView.swift */; };
+		C9FBFA0F2C72412200F25B20 /* DeviceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FBFA0E2C72412200F25B20 /* DeviceStore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -98,6 +100,8 @@
 		C9FAAFB22C15E1880084D220 /* PVPowerPrediction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PVPowerPrediction.swift; sourceTree = "<group>"; };
 		C9FBFA082C71FDB000F25B20 /* CacheEntryObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheEntryObject.swift; sourceTree = "<group>"; };
 		C9FBFA0A2C71FF6300F25B20 /* NSCache+Subscript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSCache+Subscript.swift"; sourceTree = "<group>"; };
+		C9FBFA0C2C7230F900F25B20 /* DeviceListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceListView.swift; sourceTree = "<group>"; };
+		C9FBFA0E2C72412200F25B20 /* DeviceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceStore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -197,15 +201,16 @@
 		C95CA3C32BEA0A4E008488B4 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				C9E356382BE95CAD009202B8 /* DeviceView.swift */,
-				C98899072BD4F6FE0034D4A1 /* RealtimeConsumptionProductionView.swift */,
 				C95CA3C42BEA0B35008488B4 /* ActiveDeviceListView.swift */,
-				C9FAAFAA2C15DC530084D220 /* ElectricityDetailsView.swift */,
-				C9FAAFB02C15E0CB0084D220 /* ConsumptionProductionInjectionChartView.swift */,
-				C94DCE932C61131D00CC68C6 /* ConsumptionInjectionChartView.swift */,
-				C9D74D912C707E5000F0DC69 /* HomeView.swift */,
-				C9D74D992C708CD300F0DC69 /* HomeMenuItemView.swift */,
 				C9388A392C71222900AEAC49 /* AvailableDeviceListView.swift */,
+				C94DCE932C61131D00CC68C6 /* ConsumptionInjectionChartView.swift */,
+				C9FAAFB02C15E0CB0084D220 /* ConsumptionProductionInjectionChartView.swift */,
+				C9FBFA0C2C7230F900F25B20 /* DeviceListView.swift */,
+				C9E356382BE95CAD009202B8 /* DeviceView.swift */,
+				C9FAAFAA2C15DC530084D220 /* ElectricityDetailsView.swift */,
+				C9D74D992C708CD300F0DC69 /* HomeMenuItemView.swift */,
+				C9D74D912C707E5000F0DC69 /* HomeView.swift */,
+				C98899072BD4F6FE0034D4A1 /* RealtimeConsumptionProductionView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -244,6 +249,7 @@
 				C9E356342BE953C5009202B8 /* Theme.swift */,
 				C9D585A22BF12857002AD9EF /* ViewModels */,
 				C950B13A2C66B2B600B601CD /* WebService.swift */,
+				C9FBFA0E2C72412200F25B20 /* DeviceStore.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -390,6 +396,7 @@
 				C919A1AD2C6F8A3C00BDC945 /* ElectricityConsumptionInjectionError.swift in Sources */,
 				C9FAAFAD2C15DDC80084D220 /* ElectricityDetails.swift in Sources */,
 				C9D74D9A2C708CD300F0DC69 /* HomeMenuItemView.swift in Sources */,
+				C9FBFA0D2C7230F900F25B20 /* DeviceListView.swift in Sources */,
 				C9D74D942C70803200F0DC69 /* HomeMenuItem.swift in Sources */,
 				C93716C62BC322D5009CA28E /* poc_hemsApp.swift in Sources */,
 				C9FAAFAF2C15E00F0084D220 /* ElectricityDetailsViewModel.swift in Sources */,
@@ -402,6 +409,7 @@
 				C9FAAFAB2C15DC530084D220 /* ElectricityDetailsView.swift in Sources */,
 				C9D74D922C707E5000F0DC69 /* HomeView.swift in Sources */,
 				C943FDF72C63FBE10090BC4C /* DeviceViewModel.swift in Sources */,
+				C9FBFA0F2C72412200F25B20 /* DeviceStore.swift in Sources */,
 				C9D74D982C708B9D00F0DC69 /* Card.swift in Sources */,
 				C9D585A42BF12889002AD9EF /* ConsumptionAndInjectionViewModel.swift in Sources */,
 				C9D5859D2BF11749002AD9EF /* ElectricityConsumptionAndInjection.swift in Sources */,

@@ -95,6 +95,7 @@ struct ConsumptionInjectionChart: View {
     }
     .task {
       await fetchElectricityData(for: 6)
+      await fetchPvPowerPrediction()
     }
     .chartXAxis {
       AxisMarks(
@@ -121,6 +122,14 @@ extension ConsumptionInjectionChart {
   func fetchElectricityData(for period: Int) async {
     do {
       try await consumptionInjection.fetchElectricityData(period: period)
+    } catch {
+      self.error = error as? ElectricityConsumptionInjectionError ?? .missingData
+    }
+  }
+  
+  func fetchPvPowerPrediction() async {
+    do {
+      try await consumptionInjection.fetchPvPowerPrediction()
     } catch {
       self.error = error as? ElectricityConsumptionInjectionError ?? .missingData
     }

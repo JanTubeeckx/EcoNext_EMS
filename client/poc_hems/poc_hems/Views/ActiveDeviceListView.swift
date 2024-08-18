@@ -8,16 +8,24 @@
 import SwiftUI
 
 struct ActiveDeviceListView: View {
-  let devices: [Device]
+  @ObservedObject var device: DeviceViewModel
+  @ObservedObject var store: DeviceStore
+  @Binding var devices: [Device]
+  
   var body: some View {
     infoLabel
-    List(devices, id: \.description) { device in
+    List(store.devices, id: \.description) { device in
       DeviceView(device: device)
         .listRowBackground(device.theme.mainColor)
     }
     .toolbar {
-      Button(action: {}) {
+      Button(action: { device.showAvailableDeviceList() }) {
         Image(systemName: "plus")
+      }
+    }
+    .onAppear() {
+      Task {
+        try await store.load()
       }
     }
     .background(.blue.opacity(0.2)).ignoresSafeArea()
@@ -35,5 +43,5 @@ struct ActiveDeviceListView: View {
 }
 
 #Preview {
-  ActiveDeviceListView(devices: Device.sampleData)
+  ActiveDeviceListView(device: DeviceViewModel(), store: DeviceStore(), devices: .constant(Device.sampleData))
 }

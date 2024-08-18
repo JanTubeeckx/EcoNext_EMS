@@ -9,8 +9,9 @@ import SwiftUI
 
 @main
 struct poc_hemsApp: App {
-  @StateObject var consumptionInjection = ConsumptionAndInjectionViewModel()
-  @StateObject var electricityDetails = ElectricityDetailsViewModel()
+  @StateObject private var consumptionInjection = ConsumptionAndInjectionViewModel()
+  @StateObject private var electricityDetails = ElectricityDetailsViewModel()
+  @StateObject private var store = DeviceStore()
   @State var period: Int = 1
   @State var isPrediction: Bool = false
   @State private var selectPeriod: Int = 1
@@ -19,8 +20,16 @@ struct poc_hemsApp: App {
   var body: some Scene {
     #if os(iOS)
     WindowGroup {
-      HomeView(menuItems: HomeMenuItem.sampleData, devices: Device.sampleData, consumptionInjection: ConsumptionAndInjectionViewModel(), electricityDetails: ElectricityDetailsViewModel(), period: $period, isPrediction: $isPrediction, selectPeriod: $selectPeriod
+      HomeView(menuItems: HomeMenuItem.sampleData, devices: $store.devices, consumptionInjection: ConsumptionAndInjectionViewModel(), device: DeviceViewModel(), electricityDetails: ElectricityDetailsViewModel(), period: $period, isPrediction: $isPrediction, selectPeriod: $selectPeriod
       )
+      .task {
+        do {
+          try await store.load()
+          print(store.devices)
+        } catch {
+          fatalError(error.localizedDescription)
+        }
+      }
     }
     #elseif os(macOS)
     WindowGroup {

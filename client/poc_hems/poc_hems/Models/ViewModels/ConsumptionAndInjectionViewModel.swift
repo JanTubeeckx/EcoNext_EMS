@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 class ConsumptionAndInjectionViewModel: ObservableObject {
   private var consumptionAndInjection: ElectricityConsumptionAndInjection = ElectricityConsumptionAndInjection()
   var consumptionInjectionData: [ElectricityConsumptionAndInjectionTimeSerie] = []
@@ -82,27 +83,29 @@ class ConsumptionAndInjectionViewModel: ObservableObject {
       await showConsumptionInjection(period: selectedPeriod)
     case 6:
       await showConsumptionInjection(period: selectedPeriod)
-    default:
+    case 0:
       await showPVPowerPrediction()
+    default:
+      return
     }
   }
   
   func showConsumptionInjection(period: Int) async {
     do {
+      isPrediction = false
       try await fetchElectricityData(period: period)
     } catch {
       self.error = error as? ElectricityConsumptionInjectionError
     }
-    isPrediction = false
   }
   
   func showPVPowerPrediction() async {
     do {
+      isPrediction = true
       try await fetchPvPowerPrediction()
     } catch {
       self.error = error as? ElectricityConsumptionInjectionError
     }
-    isPrediction = true
   }
   
   func fetchElectricityData(period: Int) async throws {

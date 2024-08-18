@@ -48,8 +48,7 @@ struct RealtimeConsumptionProductionView: View {
       .task {
         await electricityDetails.fetchElectricityDetails(period: 1)
         await fetchElectricityData(for: 1)
-        await fetchElectricityData(for: 6)
-//        await consumptionInjection.fetchPvPowerPrediction()
+        await fetchPvPowerPrediction()
       }
     }
   }
@@ -131,6 +130,14 @@ extension RealtimeConsumptionProductionView {
   func fetchElectricityData(for period: Int) async {
     do {
       try await consumptionInjection.fetchElectricityData(period: period)
+    } catch {
+      self.error = error as? ElectricityConsumptionInjectionError ?? .missingData
+    }
+  }
+  
+  func fetchPvPowerPrediction() async {
+    do {
+      try await consumptionInjection.fetchPvPowerPrediction()
     } catch {
       self.error = error as? ElectricityConsumptionInjectionError ?? .missingData
     }

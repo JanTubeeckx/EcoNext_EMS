@@ -19,7 +19,7 @@ class poc_hemsTests: XCTestCase {
   
   func testFetchElectricityConsumptionAndInjectionData() async throws {
     let downloader = TestDownloader()
-    let client = ConsumptionAndInjectionViewModel(downloader: downloader)
+    let client = await ConsumptionAndInjectionViewModel(downloader: downloader)
     let consumptionAndInjectionData = try await client.newConsumptionInjectionData
     
     XCTAssertEqual(consumptionAndInjectionData.count, 14)

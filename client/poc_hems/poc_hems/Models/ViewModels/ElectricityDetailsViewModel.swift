@@ -7,7 +7,8 @@
 
 import SwiftUI
 
-@MainActor class ElectricityDetailsViewModel: ObservableObject {
+@MainActor 
+class ElectricityDetailsViewModel: ObservableObject {
   @Published var electricityDetails = [ElectricityDetails]()
   @Published var consumption = Float()
   @Published var production = Float()

@@ -9,21 +9,23 @@ import SwiftUI
 
 struct HomeView: View {
   let menuItems: [HomeMenuItem]
-  let devices: [Device]
   
   @ObservedObject var consumptionInjection: ConsumptionAndInjectionViewModel
   @ObservedObject var electricityDetails: ElectricityDetailsViewModel
+  @ObservedObject var device: DeviceViewModel
+  @Binding var devices: [Device]
   @Binding var period: Int
   @Binding var isPrediction: Bool
   @Binding var selectPeriod: Int
   
   @State private var error: ElectricityConsumptionInjectionError?
   
-  init(menuItems: [HomeMenuItem], devices: [Device], consumptionInjection: ConsumptionAndInjectionViewModel, electricityDetails: ElectricityDetailsViewModel, period: Binding<Int>, isPrediction: Binding<Bool>, selectPeriod: Binding<Int>) {
+  init(menuItems: [HomeMenuItem], devices: Binding<[Device]>, consumptionInjection: ConsumptionAndInjectionViewModel, device: DeviceViewModel, electricityDetails: ElectricityDetailsViewModel, period: Binding<Int>, isPrediction: Binding<Bool>, selectPeriod: Binding<Int>) {
     self.menuItems = menuItems
-    self.devices = devices
     self.consumptionInjection = consumptionInjection
     self.electricityDetails = electricityDetails
+    self.device = device
+    self._devices = devices
     self._period = period
     self._isPrediction = isPrediction
     self._selectPeriod = selectPeriod
@@ -43,13 +45,14 @@ struct HomeView: View {
                   NavigationLink(
                     destination: {
                       if item.id == 1 {
-                        RealtimeConsumptionProductionView(consumptionInjection: ConsumptionAndInjectionViewModel(), electricityDetails: ElectricityDetailsViewModel(), period: $period)
+                        RealtimeConsumptionProductionView(consumptionInjection: consumptionInjection, electricityDetails: electricityDetails, period: $period)
                       }
                       if item.id == 2 {
-                        ActiveDeviceListView(devices: devices)
+                        DeviceListView(device: device, store: DeviceStore(), devices: $devices)
+//                        ActiveDeviceListView(devices: devices, device: device)
                       }
                       if item.id == 3 {
-                        ConsumptionInjectionChart(consumptionInjection: ConsumptionAndInjectionViewModel(), electricityDetails: ElectricityDetailsViewModel(), period: $period, isPrediction: $isPrediction, selectPeriod: $selectPeriod)
+                        ConsumptionInjectionChart(consumptionInjection: consumptionInjection, electricityDetails: electricityDetails, period: $period, isPrediction: $isPrediction, selectPeriod: $selectPeriod)
                       }
                     }
                   ) {
@@ -63,7 +66,7 @@ struct HomeView: View {
                 await electricityDetails.fetchElectricityDetails(period: 1)
                 await fetchElectricityData(for: 1)
                 await fetchElectricityData(for: 6)
-//                await consumptionInjection.fetchPvPowerPrediction()
+                await fetchPvPowerPrediction()
               }
             }
           }
@@ -114,16 +117,25 @@ extension HomeView {
       self.error = error as? ElectricityConsumptionInjectionError ?? .missingData
     }
   }
+  
+  func fetchPvPowerPrediction() async {
+    do {
+      try await consumptionInjection.fetchPvPowerPrediction()
+    } catch {
+      self.error = error as? ElectricityConsumptionInjectionError ?? .missingData
+    }
+  }
 }
 
 #Preview {
   struct Previewer: View {
+    @State var devices: [Device] = Device.sampleData
     @State var period: Int = 1
     @State var isPrediction: Bool = false
     @State var selectPeriod: Int = 1
     
     var body: some View {
-      HomeView(menuItems: HomeMenuItem.sampleData, devices: Device.sampleData, consumptionInjection: ConsumptionAndInjectionViewModel(), electricityDetails: ElectricityDetailsViewModel(), period: $period, isPrediction: $isPrediction, selectPeriod: $selectPeriod)
+      HomeView(menuItems: HomeMenuItem.sampleData, devices: $devices, consumptionInjection: ConsumptionAndInjectionViewModel(), device: DeviceViewModel(), electricityDetails: ElectricityDetailsViewModel(), period: $period, isPrediction: $isPrediction, selectPeriod: $selectPeriod)
     }
   }
   return Previewer()

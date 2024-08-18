@@ -7,10 +7,21 @@
 
 import Foundation
 
-class DeviceViewModel {
-  private var device: Device = Device(icon: "washer",
-                                      description: "Wasmachine",
-                                      durationInMinutes: 240,
-                                      powerConsumptionInKwh: 1.0,
-                                      theme: .systemgray6)
+@MainActor
+class DeviceViewModel: ObservableObject {
+  private var store: DeviceStore = DeviceStore()
+  @Published var isAvailableDeviceList = false
+  
+  // MARK: - Intents
+  
+  func showAvailableDeviceList() {
+    isAvailableDeviceList = true
+  }
+  
+  func showActiveDeviceList() {
+    isAvailableDeviceList.toggle()
+    Task {
+      try await store.load()
+    }
+  }
 }
