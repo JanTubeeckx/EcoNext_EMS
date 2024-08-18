@@ -20,11 +20,6 @@ struct DeviceListView: View {
         ActiveDeviceListView(device: device, store: store, devices: .constant(devices))
       }
     }
-    .onAppear() {
-      Task {
-        try await store.load()
-      }
-    }
   }
 }
 

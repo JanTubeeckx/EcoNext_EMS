@@ -25,7 +25,6 @@ class ElectricityDetailsViewModel: ObservableObject {
       .downloadData(fromURL: "https://flask-server-hems.azurewebsites.net/consumption-production-details?period=\(period)")
     else {return}
     electricityDetails = downloadedDetails
-    print(electricityDetails)
     let cons = electricityDetails[0].current_consumption
     let inj = electricityDetails[0].current_injection
     let prod_minus_inj = electricityDetails[0].production_minus_injection
@@ -33,8 +32,6 @@ class ElectricityDetailsViewModel: ObservableObject {
     consumption = Float(electricityDetails[0].current_consumption[1])!
     production = Float(electricityDetails[0].current_production[1])!
     injection = Float(electricityDetails[0].current_injection[1])!
-    //    totalProduction = Float(electricityDetails[0].total_production[1])!
-    //    totalInjection = Float(electricityDetails[0].total_injection[1])!
     selfConsumption = production - injection
     totalSelfConsumption = totalProduction - totalInjection
   }

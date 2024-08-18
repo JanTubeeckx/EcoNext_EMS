@@ -65,7 +65,6 @@ struct HomeView: View {
               .task {
                 await electricityDetails.fetchElectricityDetails(period: 1)
                 await fetchElectricityData(for: 1)
-                await fetchElectricityData(for: 6)
                 await fetchPvPowerPrediction()
               }
             }

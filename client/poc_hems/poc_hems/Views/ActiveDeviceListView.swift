@@ -14,7 +14,7 @@ struct ActiveDeviceListView: View {
   
   var body: some View {
     infoLabel
-    List(store.devices, id: \.description) { device in
+    List(devices, id: \.description) { device in
       DeviceView(device: device)
         .listRowBackground(device.theme.mainColor)
     }
@@ -23,7 +23,7 @@ struct ActiveDeviceListView: View {
         Image(systemName: "plus")
       }
     }
-    .onAppear() {
+    .task {
       Task {
         try await store.load()
       }
