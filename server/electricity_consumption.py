@@ -57,8 +57,6 @@ def get_electricity_consumption_data(period):
   "quarter_peak FROM meter_reading WHERE time >= now() - INTERVAL '" +
   str(time_interval) + " hours' ORDER BY time")
   consumption_df = consumption.to_pandas()
-  # Remove missing values
-  consumption_df = consumption_df.dropna()
   # Convert UTC-timestamp InfluxDB to local time
   consumption_df['time'] = consumption_df['time'] + timedelta(hours=2)
   # Remove nanoseconds from timestamp
@@ -98,7 +96,8 @@ def get_electricity_consumption_and_injection_data(period):
     electricity_consumption = electricity_consumption.resample('60min').mean()
   # consumption_and_production = electricity_consumption.merge(electricity_production[['time', 'current_power']]) 
   electricity_consumption['time'] = electricity_consumption['time'].dt.strftime("%Y-%m-%d %H:%M") 
-  # print(electricity_consumption)
+  # Drop missing values
+  electricity_consumption.dropna(inplace=True)
   return electricity_consumption
 
 def get_electricity_consumption_and_production_details(period):
