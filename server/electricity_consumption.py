@@ -57,6 +57,8 @@ def get_electricity_consumption_data(period):
   "quarter_peak FROM meter_reading WHERE time >= now() - INTERVAL '" +
   str(time_interval) + " hours' ORDER BY time")
   consumption_df = consumption.to_pandas()
+  # Remove missing values
+  consumption_df = consumption_df.dropna()
   # Convert UTC-timestamp InfluxDB to local time
   consumption_df['time'] = consumption_df['time'] + timedelta(hours=2)
   # Remove nanoseconds from timestamp
@@ -72,6 +74,8 @@ def get_electricity_production_data(period):
   ">= now() - INTERVAL '" + str(time_interval) + " hours' ORDER BY time")
   # client2.close()
   production_df = solar_production.to_pandas()
+  # Remove missing values
+  production_df = production_df.dropna()
   # Convert UTC-timestamp InfluxDB to local time
   production_df['time'] = production_df['time'] + timedelta(hours=2)
   # Remove nanoseconds from timestamp
@@ -152,7 +156,6 @@ def get_electricity_consumption_and_production_details(period):
   # Total revenue of PV power self consumption
   revenue_selfconsumption = str(round(total_production * current_electricity_price, 2)) + " €"
   electricity_details["revenue_selfconsumption"] = ["Winst zelfverbruik", revenue_selfconsumption]
-  print(electricity_details)
   return [electricity_details]
 
 def get_current_production():
