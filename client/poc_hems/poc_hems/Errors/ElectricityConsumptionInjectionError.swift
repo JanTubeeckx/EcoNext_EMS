@@ -8,17 +8,17 @@
 import Foundation
 
 enum ElectricityConsumptionInjectionError: Error {
-  case missingData
+	case missingData
 }
 
 extension ElectricityConsumptionInjectionError: LocalizedError {
-  var errorDescription: String? {
-    switch self {
-    case .missingData:
-      return NSLocalizedString(
-        "Found and will discard a timeserie missing a valid time, consumption or injection.",
-        comment: ""
-      )
-    }
-  }
+	var errorDescription: String? {
+		switch self {
+		case .missingData:
+			return NSLocalizedString(
+				"Found missing data (null values) while decoding.",
+				comment: ""
+			)
+		}
+	}
 }

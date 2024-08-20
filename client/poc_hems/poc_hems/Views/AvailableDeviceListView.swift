@@ -14,6 +14,7 @@ struct AvailableDeviceListView: View {
   let columns = [GridItem(.flexible()), GridItem(.flexible())]
   @ObservedObject var store: DeviceStore
   @ObservedObject var devicevm: DeviceViewModel
+  @Binding var selectPeriod: Int
   @State var isTapped: Bool = false
   @State var ids: [Int] = []
   @State var changeView = false
@@ -63,7 +64,8 @@ struct AvailableDeviceListView: View {
                   .padding(12)
               })
               .navigationDestination(isPresented: $changeView) {
-                HomeView(menuItems: HomeMenuItem.sampleData, devices: .constant(addedDevices), consumptionInjection: ConsumptionAndInjectionViewModel(), device: DeviceViewModel(), electricityDetails: ElectricityDetailsViewModel(), period: .constant(1), isPrediction: .constant(false), selectPeriod: .constant(1))
+                HomeView(menuItems: HomeMenuItem.sampleData, devices: .constant(addedDevices), consumptionInjection: ConsumptionAndInjectionViewModel(), device: DeviceViewModel(), electricityDetails: ElectricityDetailsViewModel(), period: .constant(1), isPrediction: .constant(false), selectPeriod: $selectPeriod)
+                  .navigationBarBackButtonHidden(true)
               }
               .buttonStyle(.borderedProminent)
               .tint(.black)
@@ -92,5 +94,5 @@ struct AvailableDeviceListView: View {
 }
 
 #Preview {
-  AvailableDeviceListView(devices: Device.availableDevices, store: DeviceStore(), devicevm: DeviceViewModel())
+  AvailableDeviceListView(devices: Device.availableDevices, store: DeviceStore(), devicevm: DeviceViewModel(), selectPeriod: .constant(1))
 }

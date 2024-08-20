@@ -7,14 +7,14 @@
 
 import Foundation
 
-struct ElectricityConsumptionAndInjectionTimeSerie: Identifiable {
+struct ElectricityConsumptionAndInjectionTimeSerie {
   
   let time: Date
   let current_consumption: Double
   let current_production: Double
 }
 
-extension ElectricityConsumptionAndInjectionTimeSerie {
+extension ElectricityConsumptionAndInjectionTimeSerie: Identifiable {
   var id: Date { time }
 }
 
@@ -36,7 +36,7 @@ extension ElectricityConsumptionAndInjectionTimeSerie: Decodable {
           let current_consumption = rawConsumption,
           let current_production = rawInjection
     else {
-      throw ElectricityConsumptionInjectionError.missingData
+		throw ElectricityConsumptionInjectionError.missingData
     }
     
     self.time = time

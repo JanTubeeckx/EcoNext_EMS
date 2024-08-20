@@ -9,19 +9,19 @@ import XCTest
 @testable import poc_hems
 
 class poc_hemsTests: XCTestCase {
-
-  func testElectricityDataJSONDecoderDecodesElectricityConsumptionAndInjectionTimeSerie() throws {
-    let decoder = JSONDecoder()
-    let electricityConsumptionAndInjectionTimeSerie = try decoder.decode(ElectricityConsumptionAndInjectionTimeSerie.self, from: testFeatureDecodeElectricityConsumptionAndInjectionTimeSerie)
-
-    XCTAssertEqual(electricityConsumptionAndInjectionTimeSerie.current_production, -203.1166666667)
-  }
-  
-  func testFetchElectricityConsumptionAndInjectionData() async throws {
-    let downloader = TestDownloader()
-    let client = await ConsumptionAndInjectionViewModel(downloader: downloader)
-    let consumptionAndInjectionData = try await client.newConsumptionInjectionData
-    
-    XCTAssertEqual(consumptionAndInjectionData.count, 14)
-  }
+	
+	func testElectricityDataJSONDecoderDecodesElectricityConsumptionAndInjectionTimeSerie() throws {
+		let decoder = JSONDecoder()
+		let electricityConsumptionAndInjectionTimeSerie = try decoder.decode(ElectricityConsumptionAndInjectionTimeSerie.self, from: testFeatureDecodeElectricityConsumptionAndInjectionTimeSerie)
+		
+		XCTAssertEqual(electricityConsumptionAndInjectionTimeSerie.current_production, -203.1166666667)
+	}
+	
+	func testFetchElectricityConsumptionAndInjectionData() async throws {
+		let downloader = TestDownloader()
+		let client = ElectricityDataClient(downloader: downloader)
+		let consumptionAndInjectionData = try await client.electricityConsumptionInjection(from: 1)
+		
+		XCTAssertEqual(consumptionAndInjectionData.count, 14)
+	}
 }
