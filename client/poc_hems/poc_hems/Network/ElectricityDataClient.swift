@@ -27,8 +27,20 @@ class ElectricityDataClient {
 		let url = URL(string: "https://flask-server-hems.azurewebsites.net/electricity-data?period=\(period)")!
 		let data = try await downloader.httpData(from: url)
 		let electricityConsumptionInjection = try decoder.decode([ElectricityConsumptionAndInjectionTimeSerie].self, from: data)
-		print(electricityConsumptionInjection)
 		return electricityConsumptionInjection
 	}
 	
+	func electricityDetails(from period: Int) async throws -> [ElectricityDetails] {
+		let url = URL(string: "https://flask-server-hems.azurewebsites.net/consumption-production-details?period=\(period)")!
+		let data = try await downloader.httpData(from: url)
+		let electricityDetails = try decoder.decode([ElectricityDetails].self, from: data)
+		return electricityDetails
+	}
+	
+	func pvPowerPrediction() async throws -> [PvPowerPrediction] {
+		let url = URL(string: "https://flask-server-hems.azurewebsites.net/pvpower-prediction")!
+		let data = try await downloader.httpData(from: url)
+		let pvPowerPrediciton = try decoder.decode([PvPowerPrediction].self, from: data)
+		return pvPowerPrediciton
+	}
 }

@@ -16,13 +16,13 @@ struct ConsumptionInjectionChart: View {
 	@ObservedObject var electricityDetails: ElectricityDetailsViewModel
 	@Binding var period: Int
 	@Binding var isPrediction: Bool
-	@Binding var selectPeriod: Int
+	@State var selectPeriod: Int
 	
 	@State private var error: ElectricityConsumptionInjectionError?
 	
 	var body: some View {
 		periodControls
-		if (consumptionInjection.isPrediction) {
+		if (provider.isPrediction) {
 			predictionChart
 		} else {
 			consumptionInjectionChart
@@ -45,14 +45,16 @@ struct ConsumptionInjectionChart: View {
 		.padding()
 		.onChange(of: selectPeriod) {
 			Task {
-				await consumptionInjection.changePeriod(selectedPeriod: selectPeriod)
+				
+				try await provider.changePeriod(selectedPeriod: selectPeriod)
+				print(isPrediction)
 			}
 		}
 	}
 	
 	var predictionChart: some View {
 		Chart {
-			ForEach(consumptionInjection.predictiondata, id: \.time) { e in
+			ForEach(provider.pvPowerPrediction, id: \.time) { e in
 				LineMark(
 					x: .value("Time", e.time),
 					y: .value("Prediction", e.pv_power_prediction),
@@ -80,7 +82,7 @@ struct ConsumptionInjectionChart: View {
 	
 	var consumptionInjectionChart: some View {
 		Chart {
-			ForEach(provider.dailyElectricityConsumptionInjection, id: \.time) { e in
+			ForEach(provider.electricityConsumptionInjection, id: \.time) { e in
 				LineMark(
 					x: .value("Time", e.time),
 					y: .value("Current consumption", e.current_consumption),
@@ -108,15 +110,6 @@ struct ConsumptionInjectionChart: View {
 			AxisMarks(
 				values: .automatic(desiredCount: 6)
 			)
-		}
-		//    .onAppear {
-		//      Task {
-		//        await fetchWeeklyElectricityData()
-		//      }
-		//    }
-		.task {
-			try? await provider.fetchDailyElectricityConsumptionInjection()
-			//      await fetchPvPowerPrediction()
 		}
 		.chartForegroundStyleScale([
 			"Verbruik (Watt)" : Color.blue,
@@ -198,24 +191,6 @@ extension ConsumptionInjectionChart {
 	}
 }
 
-//extension ConsumptionInjectionChart {
-//  func fetchElectricityData(for period: Int) async {
-//    do {
-//      try await consumptionInjection.fetchElectricityData(period: period)
-//    } catch {
-//      self.error = error as? ElectricityConsumptionInjectionError ?? .missingData
-//    }
-//  }
-//
-//  func fetchPvPowerPrediction() async {
-//    do {
-//      try await consumptionInjection.fetchPvPowerPrediction()
-//    } catch {
-//      self.error = error as? ElectricityConsumptionInjectionError ?? .missingData
-//    }
-//  }
-//}
-
 #Preview {
 	struct Previewer: View {
 		@State private var error: ElectricityConsumptionInjectionError?
@@ -224,7 +199,8 @@ extension ConsumptionInjectionChart {
 		@State var selectPeriod: Int = 1
 		
 		var body: some View {
-			ConsumptionInjectionChart(consumptionInjection: ConsumptionAndInjectionViewModel(), electricityDetails: ElectricityDetailsViewModel(), period: $period, isPrediction: .constant(false), selectPeriod: $selectPeriod)
+			ConsumptionInjectionChart(consumptionInjection: ConsumptionAndInjectionViewModel(), electricityDetails: ElectricityDetailsViewModel(), period: $period, isPrediction: .constant(false), selectPeriod: selectPeriod)
+				.environmentObject(ElectricityDataProvider(client: ElectricityDataClient(downloader: TestDownloader())))
 		}
 	}
 	return Previewer()

@@ -14,8 +14,8 @@ class ConsumptionAndInjectionViewModel: ObservableObject {
 	var predictiondata: [PvPowerPrediction] = []
 	@Published var period = 1
 	@Published var isConsumptionInjectionChart = false
-	@Published var isPrediction = false
-	@Published var selectPeriod = Period.day.rawValue
+	//	@Published var isPrediction = false
+	//	@Published var selectPeriod = Period.day.rawValue
 	@State private var error: ElectricityConsumptionInjectionError?
 	
 	private let consumptionAndInjectionCache: NSCache<NSString, CacheEntryObject> = NSCache()
@@ -63,7 +63,7 @@ class ConsumptionAndInjectionViewModel: ObservableObject {
 		return aDecoder
 	}()
 	
-	private var feedURL = URL(string: "https://flask-server-hems.azurewebsites.net/electricity-data?period=\(selectPeriod)")!
+	private var feedURL = URL(string: "https://flask-server-hems.azurewebsites.net/electricity-data?period=1")!
 	
 	private let downloader: any HTTPDataDownloader
 	
@@ -75,46 +75,6 @@ class ConsumptionAndInjectionViewModel: ObservableObject {
 	
 	func showConsumptionInjectionChart() {
 		isConsumptionInjectionChart = true
-	}
-	
-	func changePeriod(selectedPeriod: Int) async {
-		switch selectedPeriod {
-		case 1:
-			await showDailyConsumptionInjection()
-		case 6:
-			await showWeeklyConsumptionInjection()
-		case 0:
-			await showPVPowerPrediction()
-		default:
-			return
-		}
-	}
-	
-	func showDailyConsumptionInjection() async {
-		do {
-			isPrediction = false
-			try await fetchDailyElectricityData()
-		} catch {
-			self.error = error as? ElectricityConsumptionInjectionError
-		}
-	}
-	
-	func showWeeklyConsumptionInjection() async {
-		do {
-			isPrediction = false
-			try await fetchWeeklyElectricityData()
-		} catch {
-			self.error = error as? ElectricityConsumptionInjectionError
-		}
-	}
-	
-	func showPVPowerPrediction() async {
-		do {
-			isPrediction = true
-			try await fetchPvPowerPrediction()
-		} catch {
-			self.error = error as? ElectricityConsumptionInjectionError
-		}
 	}
 	
 	func fetchDailyElectricityData() async throws {
@@ -142,6 +102,6 @@ class ConsumptionAndInjectionViewModel: ObservableObject {
 	}
 }
 
-extension ConsumptionAndInjectionViewModel {
-	static var selectPeriod = Period.day.rawValue
-}
+//extension ConsumptionAndInjectionViewModel {
+//	static var selectPeriod = Period.day.rawValue
+//}

@@ -1,112 +1,120 @@
 //
-//  SplashScreen.swift
+//  ElectricityDetails.swift
 //  poc_hems
 //
-//  Created by Jan Tubeeckx on 18/08/2024.
+//  Created by Jan Tubeeckx on 09/06/2024.
 //
 
 import SwiftUI
 
-struct SplashScreen: View {
+struct ElectricityDetailsView: View {
 	@EnvironmentObject var provider: ElectricityDataProvider
-	
-	
-	
-	@ObservedObject var consumptionInjection: ConsumptionAndInjectionViewModel
-	@ObservedObject var electricityDetails: ElectricityDetailsViewModel
-	@State private var isLoaded: Bool = false
-	@State private var fadeInOut: Bool = false
 	@State private var error: ElectricityConsumptionInjectionError?
-	@Binding var selectPeriod: Int
 	
 	var body: some View {
-		ZStack {
-			if self.isLoaded {
-				HomeView(
-					menuItems: HomeMenuItem.sampleData,
-					devices: .constant(addedDevices),
-					consumptionInjection: ConsumptionAndInjectionViewModel(),
-					device: DeviceViewModel(),
-					electricityDetails: ElectricityDetailsViewModel(),
-					period: .constant(1),
-					isPrediction: .constant(false),
-					selectPeriod: $selectPeriod
-				)
-			} else {
-				Image("logo")
-					.resizable()
-					.scaledToFit()
-					.frame(width: 280)
-					.onAppear {
-						withAnimation(.easeInOut(duration: 1.5)) {
-							self.fadeInOut.toggle()
-						}
-					}
-					.opacity(self.fadeInOut ? 1 : 0)
+		VStack {
+			VStack() {
+				consumptionInjectionDetails
 			}
+			.padding(.vertical, 15)
 		}
 		.task {
-			
-			await electricityDetails.fetchElectricityDetails(period: 1)
-			await fetchDailyElectricityData()
-			//                await fetchWeeklyElectricityData()
-			//                await fetchElectricityData(for: 1)
-			//                await fetchElectricityData(for: 6)
-			await fetchPvPowerPrediction()
+			await fetchDailyElectricityDetails()
 		}
-		.onAppear {
-			DispatchQueue.main.asyncAfter(deadline: .now() + 4.0) {
-				withAnimation(.easeOut(duration: 0.7)) {
-					self.isLoaded = true
+		.frame(maxHeight: 130)
+	}
+	
+	var background: some View {
+		RoundedRectangle(cornerRadius: 5.0)
+			.fill(Color(.white))
+			.padding(5)
+	}
+	
+	var consumption: some View {
+		electricityDetail(by: provider.dailyElectricityDetails.first?.current_consumption[0] ?? "",
+						  icon: "arrowshape.up",
+						  color:Color.blue,
+						  value: provider.dailyElectricityDetails.first?.current_consumption[1] ?? "",
+						  unit: provider.dailyElectricityDetails.first?.current_consumption[2] ?? "")
+	}
+	
+	var selfConsumption: some View {
+		electricityDetail(by: provider.dailyElectricityDetails.first?.production_minus_injection[0] ?? "",
+						  icon: "leaf.arrow.triangle.circlepath",
+						  color:Color.green,
+						  value: provider.dailyElectricityDetails.first?.production_minus_injection[1] ?? "",
+						  unit: provider.dailyElectricityDetails.first?.production_minus_injection[2] ?? "")
+	}
+	
+	var injection: some View {
+		electricityDetail(by: provider.dailyElectricityDetails.first?.current_injection[0] ?? "",
+						  icon: "arrowshape.down",
+						  color:Color.orange,
+						  value: provider.dailyElectricityDetails.first?.current_injection[1] ?? "",
+						  unit: provider.dailyElectricityDetails.first?.current_injection[2] ?? "")
+	}
+	
+	var consumptionInjectionDetails: some View {
+		HStack {
+			consumption
+			selfConsumption
+			injection
+		}
+		.padding(.horizontal, 25)
+	}
+	
+	var revenueSelfConsumption: some View {
+		electricityDetail(by: provider.dailyElectricityDetails.first?.revenue_selfconsumption[0] ?? "",
+						  icon: "eurosign.circle",
+						  color:Color.green,
+						  value: provider.dailyElectricityDetails.first?.revenue_selfconsumption[1] ?? "",
+						  unit: "")
+	}
+	
+	var revenueInjection: some View {
+		electricityDetail(by: provider.dailyElectricityDetails.first?.revenue_injection[0] ?? "",
+						  icon: "eurosign.circle",
+						  color:Color.orange,
+						  value: provider.dailyElectricityDetails.first?.revenue_injection[1] ?? "",
+						  unit: "")
+	}
+	
+	var revenueDetails: some View {
+		HStack {
+			revenueSelfConsumption
+			revenueInjection
+		}
+		.padding(15)
+	}
+	
+	func electricityDetail(by label: String, icon: String, color: Color, value: String, unit: String) -> some View {
+		VStack {
+			Text(label)
+				.font(.subheadline)
+			ZStack {
+				background
+				VStack {
+					Image(systemName: icon)
+						.font(.system(size: 18.0))
+						.foregroundColor(color)
+					Text(value + unit)
+						.frame(maxWidth: .infinity, alignment: .center)
+						.font(.system(size: 16).bold())
+						.foregroundColor(Color(.systemGray))
+						.padding(.top, 0.5)
 				}
 			}
 		}
 	}
 }
 
-extension SplashScreen {
-	func fetchDailyElectricityData() async {
+extension ElectricityDetailsView {
+	func fetchDailyElectricityDetails() async {
 		do {
-			try await provider.fetchDailyElectricityConsumptionInjection()
+			try await provider.fetchDailyElectricityDetails()
 		} catch {
 			self.error = error as? ElectricityConsumptionInjectionError ?? .missingData
 			print(self.error.unsafelyUnwrapped.localizedDescription)
 		}
 	}
-	
-	func fetchWeeklyElectricityData() async {
-		do {
-			try await provider.fetchWeeklyElectricityConsumptionInjection()
-		} catch {
-			self.error = error as? ElectricityConsumptionInjectionError ?? .missingData
-		}
-	}
-	
-	func fetchPvPowerPrediction() async {
-		do {
-			try await consumptionInjection.fetchPvPowerPrediction()
-		} catch {
-			self.error = error as? ElectricityConsumptionInjectionError ?? .missingData
-		}
-	}
 }
-
-struct SplashScreen_Previews: PreviewProvider {
-	static var previews: some View {
-		SplashScreen(consumptionInjection: ConsumptionAndInjectionViewModel(), electricityDetails: ElectricityDetailsViewModel(), selectPeriod: .constant(1))
-			.environmentObject(
-				ElectricityDataProvider(client:
-											ElectricityDataClient(downloader: TestDownloader())))
-	}
-}
-
-//#Preview {
-//	struct Previewer: View {
-//		@State var selectPeriod: Int = 1
-//		
-//		var body: some View {
-//			SplashScreen(consumptionInjection: ConsumptionAndInjectionViewModel(), electricityDetails: ElectricityDetailsViewModel(), selectPeriod: $selectPeriod)
-//		}
-//	}
-//	return Previewer()
-//}
