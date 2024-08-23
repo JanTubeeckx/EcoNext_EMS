@@ -57,8 +57,8 @@ def get_electricity_consumption_data(period):
   "quarter_peak FROM meter_reading WHERE time >= now() - INTERVAL '" +
   str(time_interval) + " hours' ORDER BY time")
   consumption_df = consumption.to_pandas()
-  # Convert UTC-timestamp InfluxDB to local time
-  consumption_df['time'] = consumption_df['time'] + timedelta(hours=2)
+  # # Convert UTC-timestamp InfluxDB to local time
+  # consumption_df['time'] = consumption_df['time'] + timedelta(hours=2)
   # Remove nanoseconds from timestamp
   consumption_df['time'] = consumption_df['time'].apply(lambda x: x.replace(microsecond=0))
   consumption_df['current_consumption'] = consumption_df['current_consumption'] * 1000
