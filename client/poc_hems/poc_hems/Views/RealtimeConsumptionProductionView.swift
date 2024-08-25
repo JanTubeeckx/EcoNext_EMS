@@ -30,13 +30,11 @@ struct RealtimeConsumptionProductionView: View {
 						background
 						VStack {
 							ElectricityDetailsView()
+								.padding(.top, 20)
 							ConsumptionProductionInjectionChart()
 							revenueDetails
 						}
-						.padding(
-							.bottom,
-							40
-						)
+						.padding(.bottom, 40)
 					}
 				}
 			}
@@ -60,7 +58,9 @@ struct RealtimeConsumptionProductionView: View {
 	
 	var background: some View {
 		RoundedRectangle(cornerRadius: 10.0 )
-			.fill(Gradient(colors: [.orange, .green]))
+			.fill(Gradient(colors: provider.consumption > provider.production ? [.blue, .white] : 
+							(provider.injection > 0 && provider.injection > provider.selfConsumption) ? [.orange, .green] :
+							[.green, .orange]))
 			.opacity(0.2).ignoresSafeArea()
 	}
 	

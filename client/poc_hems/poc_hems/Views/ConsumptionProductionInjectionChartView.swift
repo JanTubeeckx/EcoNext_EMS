@@ -57,7 +57,8 @@ struct ConsumptionProductionInjectionChart: View {
 			}
 		}
 		.chartLegend(alignment: .center, spacing: 25)
-		.frame(maxWidth: 700, minHeight: 350)
-		.padding(40)
+		.frame(maxWidth: 700, minHeight: 340)
+		.padding(.horizontal, 40)
+		.padding(.bottom, 25)
 	}
 }
