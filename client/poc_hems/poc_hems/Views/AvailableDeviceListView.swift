@@ -63,8 +63,21 @@ struct AvailableDeviceListView: View {
 									.padding(12)
 							})
 							.navigationDestination(isPresented: $changeView) {
-								HomeView(menuItems: HomeMenuItem.sampleData, devices: .constant(addedDevices), consumptionInjection: ConsumptionAndInjectionViewModel(), device: DeviceViewModel(), electricityDetails: ElectricityDetailsViewModel(), period: .constant(1), isPrediction: .constant(false))
-									.navigationBarBackButtonHidden(true)
+								HomeView(
+									menuItems: HomeMenuItem.sampleData,
+									devices: .constant(
+										addedDevices
+									),
+									device: DeviceViewModel(),
+									period: .constant(
+										1
+									),
+									isPrediction: .constant(
+										false
+									)
+								).navigationBarBackButtonHidden(
+									true
+								)
 							}
 							.buttonStyle(.borderedProminent)
 							.tint(.black)

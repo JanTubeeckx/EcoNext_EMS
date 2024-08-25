@@ -9,15 +9,11 @@ import SwiftUI
 import Charts
 
 struct ConsumptionInjectionChart: View {
+	
 	@EnvironmentObject var provider: ElectricityDataProvider
-	
-	
-	@ObservedObject var consumptionInjection: ConsumptionAndInjectionViewModel
-	@ObservedObject var electricityDetails: ElectricityDetailsViewModel
 	@Binding var period: Int
 	@Binding var isPrediction: Bool
-	@State var selectPeriod: Int
-	
+	@State var selectPeriod: Int = 1
 	@State private var error: ElectricityConsumptionInjectionError?
 	
 	var body: some View {
@@ -45,10 +41,11 @@ struct ConsumptionInjectionChart: View {
 		.padding()
 		.onChange(of: selectPeriod) {
 			Task {
-				
 				try await provider.changePeriod(selectedPeriod: selectPeriod)
-				print(isPrediction)
 			}
+		}
+		.onAppear{
+			selectPeriod = 1
 		}
 	}
 	
@@ -130,19 +127,19 @@ struct ConsumptionInjectionChart: View {
 	var consumptionInjectionDetails: some View {
 		VStack {
 			consumptionInjectionDetail(by: "bolt",
-									   label: electricityDetails.electricityDetails.first?.total_day_production[0] ?? "",
+									   label: provider.dailyElectricityDetails.first?.total_day_production[0] ?? "",
 									   color:Color.blue,
-									   value: electricityDetails.electricityDetails.first?.total_day_production[1] ?? "",
-									   unit: electricityDetails.electricityDetails.first?.total_day_production[2] ?? "")
+									   value: provider.dailyElectricityDetails.first?.total_day_production[1] ?? "",
+									   unit: provider.dailyElectricityDetails.first?.total_day_production[2] ?? "")
 			consumptionInjectionDetail(by: "arrowshape.down",
-									   label: electricityDetails.electricityDetails.first?.total_injection[0] ?? "",
+									   label: provider.dailyElectricityDetails.first?.total_injection[0] ?? "",
 									   color:Color.orange,
-									   value: electricityDetails.electricityDetails.first?.total_injection[1] ?? "",
-									   unit: electricityDetails.electricityDetails.first?.total_injection[2] ?? "")
+									   value: provider.dailyElectricityDetails.first?.total_injection[1] ?? "",
+									   unit: provider.dailyElectricityDetails.first?.total_injection[2] ?? "")
 			consumptionInjectionDetail(by: "eurosign.circle",
-									   label: electricityDetails.electricityDetails.first?.monthly_capacity_rate[0] ?? "",
+									   label: provider.dailyElectricityDetails.first?.monthly_capacity_rate[0] ?? "",
 									   color:Color.red,
-									   value: electricityDetails.electricityDetails.first?.monthly_capacity_rate[1] ?? "",
+									   value: provider.dailyElectricityDetails.first?.monthly_capacity_rate[1] ?? "",
 									   unit: "")
 		}
 		.padding(20)
@@ -173,24 +170,6 @@ struct ConsumptionInjectionChart: View {
 	}
 }
 
-extension ConsumptionInjectionChart {
-	func fetchWeeklyElectricityData() async {
-		do {
-			try await consumptionInjection.fetchWeeklyElectricityData()
-		} catch {
-			self.error = error as? ElectricityConsumptionInjectionError ?? .missingData
-		}
-	}
-	
-	func fetchPvPowerPrediction() async {
-		do {
-			try await consumptionInjection.fetchPvPowerPrediction()
-		} catch {
-			self.error = error as? ElectricityConsumptionInjectionError ?? .missingData
-		}
-	}
-}
-
 #Preview {
 	struct Previewer: View {
 		@State private var error: ElectricityConsumptionInjectionError?
@@ -199,7 +178,7 @@ extension ConsumptionInjectionChart {
 		@State var selectPeriod: Int = 1
 		
 		var body: some View {
-			ConsumptionInjectionChart(consumptionInjection: ConsumptionAndInjectionViewModel(), electricityDetails: ElectricityDetailsViewModel(), period: $period, isPrediction: .constant(false), selectPeriod: selectPeriod)
+			ConsumptionInjectionChart(period: $period, isPrediction: .constant(false), selectPeriod: selectPeriod)
 				.environmentObject(ElectricityDataProvider(client: ElectricityDataClient(downloader: TestDownloader())))
 		}
 	}

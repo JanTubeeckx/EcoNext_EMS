@@ -9,23 +9,20 @@ import SwiftUI
 import Foundation
 
 struct RealtimeConsumptionProductionView: View {
+	
 	@EnvironmentObject var provider: ElectricityDataProvider
-	
-	@ObservedObject var consumptionInjection: ConsumptionAndInjectionViewModel
-	@ObservedObject var electricityDetails: ElectricityDetailsViewModel
 	@Binding var period: Int
-	
+	@State var isConsumptionInjectionChart: Bool = false
 	@State private var error: ElectricityConsumptionInjectionError?
 	
 	var body: some View {
 		GeometryReader { bounds in
 			VStack {
-				if consumptionInjection.isConsumptionInjectionChart {
+				if isConsumptionInjectionChart {
 					ConsumptionInjectionChart(
-						consumptionInjection: consumptionInjection,
-						electricityDetails: electricityDetails,
-						period: $consumptionInjection.period,
-						isPrediction: $provider.isPrediction, selectPeriod: 1
+						period: $period,
+						isPrediction: $provider.isPrediction,
+						selectPeriod: 1
 					)
 				} else {
 					infoLabel
@@ -33,24 +30,22 @@ struct RealtimeConsumptionProductionView: View {
 						background
 						VStack {
 							ElectricityDetailsView()
-							ConsumptionProductionInjectionChart(electricityDetails: electricityDetails)
+							ConsumptionProductionInjectionChart()
 							revenueDetails
 						}
-						.padding(.bottom, 40)
+						.padding(
+							.bottom,
+							40
+						)
 					}
 				}
 			}
 			.toolbar {
-				Button(action: {consumptionInjection.showConsumptionInjectionChart()}) {
+				Button(action: {isConsumptionInjectionChart = true}) {
 					Image(systemName: "chart.bar.xaxis")
 				}
 			}
 			.frame(width: bounds.size.width)
-			.task {
-				await electricityDetails.fetchElectricityDetails(period: 1)
-				await fetchElectricityData(for: 1)
-				await fetchPvPowerPrediction()
-			}
 		}
 	}
 	
@@ -80,7 +75,7 @@ struct RealtimeConsumptionProductionView: View {
 			by: "eurosign.circle",
 			label: "Bespaard",
 			color:Color.green,
-			value: electricityDetails.electricityDetails.first?.revenue_selfconsumption[1] ?? "",
+			value: provider.dailyElectricityDetails.first?.revenue_selfconsumption[1] ?? "",
 			unit: ""
 		)
 	}
@@ -90,7 +85,7 @@ struct RealtimeConsumptionProductionView: View {
 			by: "eurosign.circle",
 			label: "Verdiend",
 			color:Color.orange,
-			value: electricityDetails.electricityDetails.first?.revenue_injection[1] ?? "",
+			value: provider.dailyElectricityDetails.first?.revenue_injection[1] ?? "",
 			unit: ""
 		)
 	}
@@ -127,28 +122,6 @@ struct RealtimeConsumptionProductionView: View {
 	}
 }
 
-extension RealtimeConsumptionProductionView {
-	func fetchElectricityData(for period: Int) async {
-		do {
-			try await consumptionInjection.fetchElectricityData(period: period)
-		} catch {
-			self.error = error as? ElectricityConsumptionInjectionError ?? .missingData
-		}
-	}
-	
-	func fetchPvPowerPrediction() async {
-		do {
-			try await consumptionInjection.fetchPvPowerPrediction()
-		} catch {
-			self.error = error as? ElectricityConsumptionInjectionError ?? .missingData
-		}
-	}
-}
-
 #Preview {
-	RealtimeConsumptionProductionView(
-		consumptionInjection: ConsumptionAndInjectionViewModel(),
-		electricityDetails: ElectricityDetailsViewModel(),
-		period: .constant(1)
-	)
+	RealtimeConsumptionProductionView(period: .constant(1))
 }

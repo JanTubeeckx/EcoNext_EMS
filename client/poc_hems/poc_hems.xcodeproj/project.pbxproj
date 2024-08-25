@@ -29,7 +29,6 @@
 		C998C2782C694FC200870142 /* Period.swift in Sources */ = {isa = PBXBuildFile; fileRef = C998C2772C694FC100870142 /* Period.swift */; };
 		C998C27A2C6A9C7A00870142 /* ElectricityConsumptionAndInjectionTimeSerie.swift in Sources */ = {isa = PBXBuildFile; fileRef = C998C2792C6A9C7A00870142 /* ElectricityConsumptionAndInjectionTimeSerie.swift */; };
 		C9D5859D2BF11749002AD9EF /* ElectricityConsumptionAndInjection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D5859C2BF11749002AD9EF /* ElectricityConsumptionAndInjection.swift */; };
-		C9D585A42BF12889002AD9EF /* ConsumptionAndInjectionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D585A32BF12889002AD9EF /* ConsumptionAndInjectionViewModel.swift */; };
 		C9D74D922C707E5000F0DC69 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D74D912C707E5000F0DC69 /* HomeView.swift */; };
 		C9D74D942C70803200F0DC69 /* HomeMenuItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D74D932C70803200F0DC69 /* HomeMenuItem.swift */; };
 		C9D74D9A2C708CD300F0DC69 /* HomeMenuItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D74D992C708CD300F0DC69 /* HomeMenuItemView.swift */; };
@@ -38,7 +37,6 @@
 		C9E356392BE95CAD009202B8 /* DeviceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9E356382BE95CAD009202B8 /* DeviceView.swift */; };
 		C9FAAFAB2C15DC530084D220 /* ElectricityDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FAAFAA2C15DC530084D220 /* ElectricityDetailsView.swift */; };
 		C9FAAFAD2C15DDC80084D220 /* ElectricityDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FAAFAC2C15DDC80084D220 /* ElectricityDetails.swift */; };
-		C9FAAFAF2C15E00F0084D220 /* ElectricityDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FAAFAE2C15E00F0084D220 /* ElectricityDetailsViewModel.swift */; };
 		C9FAAFB12C15E0CB0084D220 /* ConsumptionProductionInjectionChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FAAFB02C15E0CB0084D220 /* ConsumptionProductionInjectionChartView.swift */; };
 		C9FAAFB32C15E1880084D220 /* PVPowerPrediction.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FAAFB22C15E1880084D220 /* PVPowerPrediction.swift */; };
 		C9FBFA092C71FDB000F25B20 /* CacheEntryObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FBFA082C71FDB000F25B20 /* CacheEntryObject.swift */; };
@@ -90,7 +88,6 @@
 		C998C2772C694FC100870142 /* Period.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Period.swift; sourceTree = "<group>"; };
 		C998C2792C6A9C7A00870142 /* ElectricityConsumptionAndInjectionTimeSerie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElectricityConsumptionAndInjectionTimeSerie.swift; sourceTree = "<group>"; };
 		C9D5859C2BF11749002AD9EF /* ElectricityConsumptionAndInjection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElectricityConsumptionAndInjection.swift; sourceTree = "<group>"; };
-		C9D585A32BF12889002AD9EF /* ConsumptionAndInjectionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsumptionAndInjectionViewModel.swift; sourceTree = "<group>"; };
 		C9D74D912C707E5000F0DC69 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		C9D74D932C70803200F0DC69 /* HomeMenuItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeMenuItem.swift; sourceTree = "<group>"; };
 		C9D74D992C708CD300F0DC69 /* HomeMenuItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeMenuItemView.swift; sourceTree = "<group>"; };
@@ -99,7 +96,6 @@
 		C9E356382BE95CAD009202B8 /* DeviceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceView.swift; sourceTree = "<group>"; };
 		C9FAAFAA2C15DC530084D220 /* ElectricityDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElectricityDetailsView.swift; sourceTree = "<group>"; };
 		C9FAAFAC2C15DDC80084D220 /* ElectricityDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElectricityDetails.swift; sourceTree = "<group>"; };
-		C9FAAFAE2C15E00F0084D220 /* ElectricityDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElectricityDetailsViewModel.swift; sourceTree = "<group>"; };
 		C9FAAFB02C15E0CB0084D220 /* ConsumptionProductionInjectionChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsumptionProductionInjectionChartView.swift; sourceTree = "<group>"; };
 		C9FAAFB22C15E1880084D220 /* PVPowerPrediction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PVPowerPrediction.swift; sourceTree = "<group>"; };
 		C9FBFA082C71FDB000F25B20 /* CacheEntryObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheEntryObject.swift; sourceTree = "<group>"; };
@@ -235,8 +231,6 @@
 		C9D585A22BF12857002AD9EF /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				C9D585A32BF12889002AD9EF /* ConsumptionAndInjectionViewModel.swift */,
-				C9FAAFAE2C15E00F0084D220 /* ElectricityDetailsViewModel.swift */,
 				C943FDF62C63FBE10090BC4C /* DeviceViewModel.swift */,
 			);
 			path = ViewModels;
@@ -405,7 +399,6 @@
 				C9FBFA0D2C7230F900F25B20 /* DeviceListView.swift in Sources */,
 				C9D74D942C70803200F0DC69 /* HomeMenuItem.swift in Sources */,
 				C93716C62BC322D5009CA28E /* poc_hemsApp.swift in Sources */,
-				C9FAAFAF2C15E00F0084D220 /* ElectricityDetailsViewModel.swift in Sources */,
 				C9896ECB2C74F8AC00C7AA5C /* ElectricityDataClient.swift in Sources */,
 				C9FBFA092C71FDB000F25B20 /* CacheEntryObject.swift in Sources */,
 				C98899082BD4F6FE0034D4A1 /* RealtimeConsumptionProductionView.swift in Sources */,
@@ -419,7 +412,6 @@
 				C9503CB32C72803000354C44 /* SplashScreen.swift in Sources */,
 				C943FDF72C63FBE10090BC4C /* DeviceViewModel.swift in Sources */,
 				C9FBFA0F2C72412200F25B20 /* DeviceStore.swift in Sources */,
-				C9D585A42BF12889002AD9EF /* ConsumptionAndInjectionViewModel.swift in Sources */,
 				C9D5859D2BF11749002AD9EF /* ElectricityConsumptionAndInjection.swift in Sources */,
 				C998C27A2C6A9C7A00870142 /* ElectricityConsumptionAndInjectionTimeSerie.swift in Sources */,
 				C9E356392BE95CAD009202B8 /* DeviceView.swift in Sources */,

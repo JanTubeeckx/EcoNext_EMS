@@ -8,12 +8,8 @@
 import SwiftUI
 
 struct SplashScreen: View {
+	
 	@EnvironmentObject var provider: ElectricityDataProvider
-	
-	
-	
-	@ObservedObject var consumptionInjection: ConsumptionAndInjectionViewModel
-	@ObservedObject var electricityDetails: ElectricityDetailsViewModel
 	@State private var isLoaded: Bool = false
 	@State private var fadeInOut: Bool = false
 	@State private var error: ElectricityConsumptionInjectionError?
@@ -24,9 +20,7 @@ struct SplashScreen: View {
 				HomeView(
 					menuItems: HomeMenuItem.sampleData,
 					devices: .constant(addedDevices),
-					consumptionInjection: ConsumptionAndInjectionViewModel(),
 					device: DeviceViewModel(),
-					electricityDetails: ElectricityDetailsViewModel(),
 					period: .constant(1),
 					isPrediction: .constant(false)
 				)
@@ -97,9 +91,14 @@ extension SplashScreen {
 
 struct SplashScreen_Previews: PreviewProvider {
 	static var previews: some View {
-		SplashScreen(consumptionInjection: ConsumptionAndInjectionViewModel(), electricityDetails: ElectricityDetailsViewModel())
+		SplashScreen()
 			.environmentObject(
-				ElectricityDataProvider(client:
-											ElectricityDataClient(downloader: TestDownloader())))
+				ElectricityDataProvider(
+					client:
+						ElectricityDataClient(
+							downloader: TestDownloader()
+						)
+				)
+			)
 	}
 }

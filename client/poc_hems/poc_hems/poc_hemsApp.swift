@@ -9,10 +9,8 @@ import SwiftUI
 
 @main
 struct poc_hemsApp: App {
-	@StateObject var electricityDataProvider = ElectricityDataProvider()
 	
-	@StateObject private var consumptionInjection = ConsumptionAndInjectionViewModel()
-	@StateObject private var electricityDetails = ElectricityDetailsViewModel()
+	@StateObject var electricityDataProvider = ElectricityDataProvider()
 	@StateObject private var store = DeviceStore()
 	@State var period: Int = 1
 	@State var isPrediction: Bool = false
@@ -21,10 +19,7 @@ struct poc_hemsApp: App {
 	var body: some Scene {
 #if os(iOS)
 		WindowGroup {
-			SplashScreen(
-				consumptionInjection: consumptionInjection,
-				electricityDetails: electricityDetails
-			)
+			SplashScreen()
 			.task {
 				do {
 					try await store.load()
@@ -40,7 +35,7 @@ struct poc_hemsApp: App {
 				menuItems: HomeMenuItem.sampleData,
 				devices: Device.sampleData,
 				consumptionInjection: ConsumptionAndInjectionViewModel(),
-				electricityDetails: ElectricityDetailsViewModel(),
+				provider: ElectricityDetailsViewModel(),
 				period: $period,
 				isPrediction: $isPrediction
 			)

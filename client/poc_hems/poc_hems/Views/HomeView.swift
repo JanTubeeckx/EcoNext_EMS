@@ -8,23 +8,21 @@
 import SwiftUI
 
 struct HomeView: View {
-	let menuItems: [HomeMenuItem]
 	
 	@EnvironmentObject var provider: ElectricityDataProvider
-	
-	@ObservedObject var consumptionInjection: ConsumptionAndInjectionViewModel
-	@ObservedObject var electricityDetails: ElectricityDetailsViewModel
-	@ObservedObject var device: DeviceViewModel
 	@Binding var devices: [Device]
 	@Binding var period: Int
 	@Binding var isPrediction: Bool
-	
 	@State private var error: ElectricityConsumptionInjectionError?
 	
-	init(menuItems: [HomeMenuItem], devices: Binding<[Device]>, consumptionInjection: ConsumptionAndInjectionViewModel, device: DeviceViewModel, electricityDetails: ElectricityDetailsViewModel, period: Binding<Int>, isPrediction: Binding<Bool>) {
+	let menuItems: [HomeMenuItem]
+
+	@ObservedObject var device: DeviceViewModel
+	
+	
+	init(menuItems: [HomeMenuItem], devices: Binding<[Device]>, device: DeviceViewModel,
+		 period: Binding<Int>, isPrediction: Binding<Bool>) {
 		self.menuItems = menuItems
-		self.consumptionInjection = consumptionInjection
-		self.electricityDetails = electricityDetails
 		self.device = device
 		self._devices = devices
 		self._period = period
@@ -45,13 +43,13 @@ struct HomeView: View {
 									NavigationLink(
 										destination: {
 											if item.id == 1 {
-												RealtimeConsumptionProductionView(consumptionInjection: consumptionInjection, electricityDetails: electricityDetails, period: $period)
+												RealtimeConsumptionProductionView(period: $period)
 											}
 											if item.id == 2 {
 												DeviceListView(devices: devices, device: device, store: DeviceStore())
 											}
 											if item.id == 3 {
-												ConsumptionInjectionChart(consumptionInjection: consumptionInjection, electricityDetails: electricityDetails, period: $period, isPrediction: $isPrediction, selectPeriod: 1)
+												ConsumptionInjectionChart(period: $period, isPrediction: $isPrediction, selectPeriod: 1)
 											}
 										}
 									) {
@@ -61,15 +59,6 @@ struct HomeView: View {
 							}
 							.padding(.top, 20)
 							.padding(.horizontal, 30)
-							.task {
-								await electricityDetails.fetchElectricityDetails(period: 1)
-								//								try await provider.fetchDailyElectricityConsumptionInjection()
-								//                await fetchDailyElectricityData()
-								//                await fetchWeeklyElectricityData()
-								//                await fetchElectricityData(for: 1)
-								//                await fetchElectricityData(for: 6)
-								await fetchPvPowerPrediction()
-							}
 						}
 					}
 					.padding(.top, 20)
@@ -111,50 +100,6 @@ struct HomeView: View {
 	}
 }
 
-//extension HomeView {
-//  func fetchElectricityData(for period: Int) async {
-//    do {
-//      try await consumptionInjection.fetchElectricityData(period: period)
-//    } catch {
-//      self.error = error as? ElectricityConsumptionInjectionError ?? .missingData
-//    }
-//  }
-//
-//  func fetchPvPowerPrediction() async {
-//    do {
-//      try await consumptionInjection.fetchPvPowerPrediction()
-//    } catch {
-//      self.error = error as? ElectricityConsumptionInjectionError ?? .missingData
-//    }
-//  }
-//}
-
-extension HomeView {
-	func fetchDailyElectricityData() async {
-		do {
-			try await consumptionInjection.fetchDailyElectricityData()
-		} catch {
-			self.error = error as? ElectricityConsumptionInjectionError ?? .missingData
-		}
-	}
-	
-	func fetchWeeklyElectricityData() async {
-		do {
-			try await consumptionInjection.fetchWeeklyElectricityData()
-		} catch {
-			self.error = error as? ElectricityConsumptionInjectionError ?? .missingData
-		}
-	}
-	
-	func fetchPvPowerPrediction() async {
-		do {
-			try await consumptionInjection.fetchPvPowerPrediction()
-		} catch {
-			self.error = error as? ElectricityConsumptionInjectionError ?? .missingData
-		}
-	}
-}
-
 #Preview {
 	struct Previewer: View {
 		@State var devices: [Device] = Device.sampleData
@@ -162,8 +107,20 @@ extension HomeView {
 		@State var isPrediction: Bool = false
 		
 		var body: some View {
-			HomeView(menuItems: HomeMenuItem.sampleData, devices: $devices, consumptionInjection: ConsumptionAndInjectionViewModel(), device: DeviceViewModel(), electricityDetails: ElectricityDetailsViewModel(), period: $period, isPrediction: $isPrediction)
-				.environmentObject(ElectricityDataProvider(client: ElectricityDataClient(downloader: TestDownloader())))
+			HomeView(
+				menuItems: HomeMenuItem.sampleData,
+				devices: $devices,
+				device: DeviceViewModel(),
+				period: $period,
+				isPrediction: $isPrediction
+			)
+			.environmentObject(
+				ElectricityDataProvider(
+					client: ElectricityDataClient(
+						downloader: TestDownloader()
+					)
+				)
+			)
 		}
 	}
 	return Previewer()
