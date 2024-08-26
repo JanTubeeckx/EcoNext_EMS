@@ -80,7 +80,7 @@ def convert_predicted_solar_radiation_to_pv_power(prediction):
     number_of_pv_panels = 10
     peak_power_pv_panel = 215
     surrounding_factor = 0.85
-    total_pv_peak_power = number_of_pv_panels * peak_power_pv_panel * surrounding_factor
+    total_pv_peak_power = number_of_pv_panels * peak_power_pv_panel
     # Standard test conditions manufacturer
     standard_solar_radiation = 1000
     standard_temperature = 25
@@ -171,7 +171,6 @@ def predict_pv_power(solar_irradiance_df, isProduction):
     prediction['time'] = prediction['time'].dt.strftime("%Y-%m-%d %H:%M") 
     prediction.loc[(prediction.index.hour < 6), 'pv_power_prediction'] = 0
     prediction.loc[(prediction.index.hour > 21), 'pv_power_prediction'] = 0
-    print(prediction.tail(60))
     return prediction
 
 def main():
