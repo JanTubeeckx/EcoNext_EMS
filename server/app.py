@@ -7,7 +7,7 @@ import pandas as pd
 app = Flask(__name__)
 scheduler = APScheduler()
 
-@scheduler.task('interval', id='pvpower_forecast', minutes=244)
+@scheduler.task('interval', id='pvpower_forecast', minutes=360)
 def predict_pvpower():
   pv_power_forecast.main()
 

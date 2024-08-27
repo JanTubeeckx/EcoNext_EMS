@@ -38,7 +38,7 @@ def get_irradiance_data():
                                 label=None, 
                                 map_variables=True, 
                                 server='api.soda-solardata.com', 
-                                timeout=60)
+                                timeout=90)
   return data
 
 def create_irradiance_dataframe():
