@@ -55,18 +55,29 @@ def create_features(df):
 def add_lag_features(df):
     solar_irradiation = 'ghi'
     target_map = df[solar_irradiation].to_dict()
-    # df['lag_1'] = (df.index - pd.Timedelta('12 hours')).map(target_map)
-    # df['lag_2'] = (df.index - pd.Timedelta('24 hours')).map(target_map)
-    # df['lag_3'] = (df.index - pd.Timedelta('48 hours')).map(target_map)
-    # df['lag_4'] = (df.index - pd.Timedelta('72 hours')).map(target_map)
-    df['lag_1'] = (df.index - pd.Timedelta('1 day')).map(target_map)
-    df['lag_2'] = (df.index - pd.Timedelta('2 days')).map(target_map)
-    df['lag_3'] = (df.index - pd.Timedelta('3 days')).map(target_map)
-    df['lag_4'] = (df.index - pd.Timedelta('7 days')).map(target_map)
+    df['lag_1'] = (df.index - pd.Timedelta('12 hours')).map(target_map)
+    df['lag_2'] = (df.index - pd.Timedelta('24 hours')).map(target_map)
+    df['lag_3'] = (df.index - pd.Timedelta('48 hours')).map(target_map)
+    df['lag_4'] = (df.index - pd.Timedelta('72 hours')).map(target_map)
+
+    # df['lag_1'] = (df.index - pd.Timedelta('1 day')).map(target_map)
+    # df['lag_2'] = (df.index - pd.Timedelta('2 days')).map(target_map)
+    # df['lag_3'] = (df.index - pd.Timedelta('3 days')).map(target_map)
+    # df['lag_4'] = (df.index - pd.Timedelta('7 days')).map(target_map)
+
     # df['lag_1'] = (df.index - pd.Timedelta('364 days')).map(target_map)
     # df['lag_2'] = (df.index - pd.Timedelta('728 days')).map(target_map)
     # df['lag_3'] = (df.index - pd.Timedelta('1092 days')).map(target_map)
     # df['lag_4'] = (df.index - pd.Timedelta('1456 days')).map(target_map)
+
+    # df['lag_1'] = (df.index - pd.Timedelta('1 day')).map(target_map)
+    # df['lag_2'] = (df.index - pd.Timedelta('3 days')).map(target_map)
+    # df['lag_3'] = (df.index - pd.Timedelta('7 days')).map(target_map)
+    # df['lag_4'] = (df.index - pd.Timedelta('30 days')).map(target_map)
+    # df['lag_5'] = (df.index - pd.Timedelta('364 days')).map(target_map)
+    # df['lag_6'] = (df.index - pd.Timedelta('728 days')).map(target_map)
+    # df['lag_7'] = (df.index - pd.Timedelta('1092 days')).map(target_map)
+    # df['lag_8'] = (df.index - pd.Timedelta('1456 days')).map(target_map)
     return df
 
 def investigate_correlations(historical_data):
@@ -80,7 +91,7 @@ def convert_predicted_solar_radiation_to_pv_power(prediction):
     number_of_pv_panels = 10
     peak_power_pv_panel = 215
     surrounding_factor = 0.85
-    total_pv_peak_power = number_of_pv_panels * peak_power_pv_panel
+    total_pv_peak_power = number_of_pv_panels * peak_power_pv_panel * surrounding_factor
     # Standard test conditions manufacturer
     standard_solar_radiation = 1000
     standard_temperature = 25
@@ -118,14 +129,16 @@ def predict_pv_power(solar_irradiance_df, isProduction):
     # Split data in features and value to predict
     FEATURES = ['hour', 'dayofweek', 'quarter', 'month', 'year', 'dayofyear', 
                 'dayofmonth', 'temperatuur', 'luchtvochtigheid', 'lag_1', 'lag_2', 
-                'lag_3', 'lag_4']
+                'lag_3', 'lag_4'
+                # , 'lag_5', 'lag_6', 'lag_7', 'lag_8'
+                ]
     TARGET = [solar_irradiation]
     # Apply the forecast model 
-    X_all = df[FEATURES]
-    y_all = df[TARGET]
-    xgb_model.fit(X_all, y_all,
-                eval_set=[(X_all, y_all)],
-                verbose=0)
+    # X_all = df[FEATURES]
+    # y_all = df[TARGET]
+    # xgb_model.fit(X_all, y_all,
+    #             eval_set=[(X_all, y_all)],
+    #             verbose=0)
     if visualize:
         xgb.plot_importance(xgb_model)
     # Create dataframe to write future values of solar irradiation
@@ -151,14 +164,22 @@ def predict_pv_power(solar_irradiance_df, isProduction):
     future_with_features.loc[future_with_features['solar_irr_prediction'] < 0, 'solar_irr_prediction'] = 0
     future_with_features.drop(columns=['hour', 'dayofweek', 'quarter', 'month', 'year', 'dayofyear', 
                                     'dayofmonth', 'temperatuur', 'luchtvochtigheid', 'windsnelheid', 'lag_1',
-                                    'lag_2', 'lag_3', 'lag_4', 'ghi', 'dhi', 'bhi'], inplace=True)
+                                    'lag_2', 'lag_3', 'lag_4',
+                                    #  'lag_5', 'lag_6', 'lag_7', 'lag_8', 
+                                     'ghi', 
+                                    'dhi', 'bhi'], inplace=True)
     # Adjust prediction with hours in shade
     future_with_features.loc[future_with_features.index.hour > 13,
                             'solar_irr_prediction'] = future_with_features['solar_irr_prediction'] * 0.6
     # future_with_features['solar_irr_prediction'].plot(figsize=(15,5))
     # Combine time series forecast with weather forecast for most important parameters
     prediction = future_with_features.join(weather_forecast)
+
+
     prediction.index = prediction.index - timedelta(hours=1)
+
+
+    
     # Convert predicted solar irradiance to PV power
     convert_predicted_solar_radiation_to_pv_power(prediction)
     # Give prediction dataframe final format to display in iOS app

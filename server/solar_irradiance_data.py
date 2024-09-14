@@ -45,7 +45,7 @@ def create_irradiance_dataframe():
   data = get_irradiance_data()
   # Construct dataframe from received data
   solar_irradiance_df = pd.DataFrame.from_dict(data[0])
-  solar_irradiance_df.index = solar_irradiance_df.index + pd.Timedelta(minutes=240)
+  solar_irradiance_df.index = solar_irradiance_df.index + pd.Timedelta(minutes=120)
   solar_irradiance_df.index = pd.to_datetime(solar_irradiance_df.index).tz_convert(None)
   solar_irradiance_df = solar_irradiance_df.drop(columns=['Observation period', 'ghi_extra', 'ghi_clear', 'bhi_clear', 'dhi_clear', 'dni_clear', 'dni', 'Reliability'])
   return solar_irradiance_df

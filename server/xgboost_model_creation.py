@@ -45,14 +45,29 @@ def create_features(df):
 def add_lag_features(df):
     solar_irradiation = 'ghi'
     target_map = df[solar_irradiation].to_dict()
-    df['lag_1'] = (df.index - pd.Timedelta('1 day')).map(target_map)
-    df['lag_2'] = (df.index - pd.Timedelta('2 days')).map(target_map)
-    df['lag_3'] = (df.index - pd.Timedelta('3 days')).map(target_map)
-    df['lag_4'] = (df.index - pd.Timedelta('7 days')).map(target_map)
     # df['lag_1'] = (df.index - pd.Timedelta('12 hours')).map(target_map)
     # df['lag_2'] = (df.index - pd.Timedelta('24 hours')).map(target_map)
     # df['lag_3'] = (df.index - pd.Timedelta('48 hours')).map(target_map)
     # df['lag_4'] = (df.index - pd.Timedelta('72 hours')).map(target_map)
+
+    df['lag_1'] = (df.index - pd.Timedelta('1 day')).map(target_map)
+    df['lag_2'] = (df.index - pd.Timedelta('2 days')).map(target_map)
+    df['lag_3'] = (df.index - pd.Timedelta('3 days')).map(target_map)
+    df['lag_4'] = (df.index - pd.Timedelta('7 days')).map(target_map)
+
+    # df['lag_1'] = (df.index - pd.Timedelta('364 days')).map(target_map)
+    # df['lag_2'] = (df.index - pd.Timedelta('728 days')).map(target_map)
+    # df['lag_3'] = (df.index - pd.Timedelta('1092 days')).map(target_map)
+    # df['lag_4'] = (df.index - pd.Timedelta('1456 days')).map(target_map)
+
+    # df['lag_1'] = (df.index - pd.Timedelta('1 day')).map(target_map)
+    # df['lag_2'] = (df.index - pd.Timedelta('3 days')).map(target_map)
+    # df['lag_3'] = (df.index - pd.Timedelta('7 days')).map(target_map)
+    # df['lag_4'] = (df.index - pd.Timedelta('30 days')).map(target_map)
+    # df['lag_5'] = (df.index - pd.Timedelta('364 days')).map(target_map)
+    # df['lag_6'] = (df.index - pd.Timedelta('728 days')).map(target_map)
+    # df['lag_7'] = (df.index - pd.Timedelta('1092 days')).map(target_map)
+    # df['lag_8'] = (df.index - pd.Timedelta('1456 days')).map(target_map)
     return df
 
 # Create and train model
@@ -85,9 +100,14 @@ def create_and_train_model():
         test = create_features(test)
         test = add_lag_features(test)
 
+        # FEATURES = ['hour', 'dayofweek', 'quarter', 'month', 'year', 'dayofyear', 
+        #             'dayofmonth', 'dhi', 'bhi', 'temperatuur', 'luchtvochtigheid',
+        #             'lag_1', 'lag_2', 'lag_3', 'lag_4']
         FEATURES = ['hour', 'dayofweek', 'quarter', 'month', 'year', 'dayofyear', 
-                    'dayofmonth', 'dhi', 'bhi', 'temperatuur', 'luchtvochtigheid',
-                    'lag_1', 'lag_2', 'lag_3', 'lag_4']
+                    'dayofmonth', 'temperatuur', 'luchtvochtigheid',
+                    'lag_1', 'lag_2', 'lag_3', 'lag_4'
+                    # , 'lag_5', 'lag_6', 'lag_7', 'lag_8'
+                    ]
         TARGET = ['ghi']
 
         X_train = train[FEATURES]
@@ -98,12 +118,13 @@ def create_and_train_model():
 
         xgb_model = xgb.XGBRegressor(learning_rate=0.15,
                                      n_estimators=5000,
+                                    #  early_stopping_rounds=50,
                                      objective='reg:squarederror',
                                      max_depth=5)
         
-        xgb_model.fit(X_train, y_train,
-                    eval_set=[(X_train, y_train), (X_test, y_test)],
-                    verbose=100)
+        xgb_model.fit(X_train, y_train, 
+                      eval_set=[(X_train, y_train), (X_test, y_test)],
+                      verbose=100)
         
         y_prediction = xgb_model.predict(X_test)
         predictions.append(y_prediction)
